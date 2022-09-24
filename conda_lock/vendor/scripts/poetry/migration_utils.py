@@ -166,9 +166,9 @@ def upgrade_to(stage: tuple[int, ...]) -> None:
     if stage not in [s.stage for s in unapplied_stages]:
         raise RuntimeError(f"Cannot update to unknown stage {stage}")
     for migration_stage in unapplied_stages:
+        execute_migration_stage(migration_stage)
         if migration_stage.stage == stage:
             break
-        execute_migration_stage(migration_stage)
 
 
 def reset_to(stage: tuple[int, ...]) -> None:
