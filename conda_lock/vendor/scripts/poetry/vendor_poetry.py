@@ -39,11 +39,13 @@ def current():
 
 @app.command()
 def upgrade(stage: str):
+    """Upgrade to the given stage"""
     upgrade_to(str_to_stage(stage))
 
 
 @app.command()
 def reset(stage: str):
+    """Reset to the given former stage"""
     reset_to(str_to_stage(stage))
 
 
