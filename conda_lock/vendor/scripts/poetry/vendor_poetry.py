@@ -29,6 +29,12 @@ def add_migration():
     random_characters = "".join(random.choices(string.ascii_letters, k=10))
     asdf.write_text(random_characters)
 
+@migration_stage(stage=2, description="Add another migration")
+def add_another_migration():
+    asdf = Path("xyz")
+    random_characters = "".join(random.choices(string.ascii_letters, k=10))
+    asdf.write_text(random_characters)
+
 
 @app.command()
 def current():
