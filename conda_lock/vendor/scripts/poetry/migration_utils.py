@@ -180,7 +180,7 @@ def reset_to(stage: tuple[int, ...]) -> None:
         raise RuntimeError(
             f"Cannot reset to stage {stage} when current stage is {current_stage.stage}"
         )
-    if stage not in [s.stage for s in applied_stages]:
+    if stage != () and stage not in [s.stage for s in applied_stages]:
         raise RuntimeError(f"Cannot reset to unknown stage {stage}")
     for migration_stage in reversed(applied_stages):
         if migration_stage.stage == stage:

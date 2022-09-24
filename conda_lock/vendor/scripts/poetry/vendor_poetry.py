@@ -18,7 +18,7 @@ app = typer.Typer()
 
 
 def str_to_stage(stage: str) -> tuple[int, ...]:
-    if stage.lower == "none":
+    if stage.lower() == "none":
         return ()
     return tuple(int(x) for x in stage.split("."))
 
