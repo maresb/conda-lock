@@ -1,6 +1,6 @@
-from poetry.core.pyproject.toml import PyProjectTOML
-from poetry.factory import Factory
-from poetry.utils._compat import Path
+from conda_lock.vendor.poetry_core.pyproject.toml import PyProjectTOML
+from conda_lock.vendor.poetry.factory import Factory
+from conda_lock.vendor.poetry.utils._compat import Path
 
 from .command import Command
 

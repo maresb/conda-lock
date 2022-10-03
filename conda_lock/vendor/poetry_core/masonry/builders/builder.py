@@ -15,9 +15,9 @@ from typing import Optional
 from typing import Set
 from typing import Union
 
-from poetry.core.utils._compat import Path
-from poetry.core.utils._compat import to_str
-from poetry.core.vcs import get_vcs
+from conda_lock.vendor.poetry_core.utils._compat import Path
+from conda_lock.vendor.poetry_core.utils._compat import to_str
+from conda_lock.vendor.poetry_core.vcs import get_vcs
 
 from ..metadata import Metadata
 from ..utils.module import Module
@@ -25,7 +25,7 @@ from ..utils.package_include import PackageInclude
 
 
 if TYPE_CHECKING:
-    from poetry.core.poetry import Poetry  # noqa
+    from conda_lock.vendor.poetry_core.poetry import Poetry  # noqa
 
 
 AUTHOR_REGEX = re.compile(r"(?u)^(?P<name>[- .,\w\d'’\"()]+) <(?P<email>.+?)>$")
@@ -47,8 +47,8 @@ class Builder(object):
         self, poetry, ignore_packages_formats=False, executable=None
     ):  # type: ("Poetry", bool, Optional[Union[Path, str]]) -> None
         self._poetry = poetry
-        self._package = poetry.package
-        self._path = poetry.file.parent
+        self._package = conda_lock.vendor.poetry.package
+        self._path = conda_lock.vendor.poetry.file.parent
         self._excluded_files = None  # type: Optional[Set[str]]
         self._executable = Path(executable or sys.executable)
 

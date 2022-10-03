@@ -13,7 +13,7 @@ class RunCommand(EnvCommand):
     ]
 
     def __init__(self):  # type: () -> None
-        from poetry.console.args.run_args_parser import RunArgsParser
+        from conda_lock.vendor.poetry.console.args.run_args_parser import RunArgsParser
 
         super(RunCommand, self).__init__()
 
@@ -50,11 +50,11 @@ class RunCommand(EnvCommand):
 
     @property
     def _module(self):
-        from poetry.core.masonry.utils.module import Module
+        from conda_lock.vendor.poetry_core.masonry.utils.module import Module
 
         poetry = self.poetry
-        package = poetry.package
-        path = poetry.file.parent
+        package = conda_lock.vendor.poetry.package
+        path = conda_lock.vendor.poetry.file.parent
         module = Module(package.name, path.as_posix(), package.packages)
 
         return module

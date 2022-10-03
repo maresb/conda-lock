@@ -5,11 +5,11 @@ from subprocess import CalledProcessError
 
 from clikit.api.io import IO
 
-from poetry.core.pyproject.toml import PyProjectTOML
-from poetry.repositories.pool import Pool
-from poetry.utils._compat import encode
-from poetry.utils.env import Env
-from poetry.utils.helpers import safe_rmtree
+from conda_lock.vendor.poetry_core.pyproject.toml import PyProjectTOML
+from conda_lock.vendor.poetry.repositories.pool import Pool
+from conda_lock.vendor.poetry.utils._compat import encode
+from conda_lock.vendor.poetry.utils.env import Env
+from conda_lock.vendor.poetry.utils.helpers import safe_rmtree
 
 from .base_installer import BaseInstaller
 
@@ -182,8 +182,8 @@ class PipInstaller(BaseInstaller):
         return name
 
     def install_directory(self, package):
-        from poetry.factory import Factory
-        from poetry.io.null_io import NullIO
+        from conda_lock.vendor.poetry.factory import Factory
+        from conda_lock.vendor.poetry.io.null_io import NullIO
 
         if package.root_dir:
             req = (package.root_dir / package.source_url).as_posix()
@@ -210,7 +210,7 @@ class PipInstaller(BaseInstaller):
 
             if package_poetry is not None:
                 if package.develop and not package_poetry.package.build_script:
-                    from poetry.masonry.builders.editable import EditableBuilder
+                    from conda_lock.vendor.poetry.masonry.builders.editable import EditableBuilder
 
                     # This is a Poetry package in editable mode
                     # we can use the EditableBuilder without going through pip
@@ -220,7 +220,7 @@ class PipInstaller(BaseInstaller):
 
                     return 0
                 elif legacy_pip or package_poetry.package.build_script:
-                    from poetry.core.masonry.builders.sdist import SdistBuilder
+                    from conda_lock.vendor.poetry_core.masonry.builders.sdist import SdistBuilder
 
                     # We need to rely on creating a temporary setup.py
                     # file since the version of pip does not support
@@ -244,8 +244,8 @@ class PipInstaller(BaseInstaller):
         return self.run(*args)
 
     def install_git(self, package):
-        from poetry.core.packages import Package
-        from poetry.core.vcs import Git
+        from conda_lock.vendor.poetry_core.packages import Package
+        from conda_lock.vendor.poetry_core.vcs import Git
 
         src_dir = self._env.path / "src" / package.name
         if src_dir.exists():

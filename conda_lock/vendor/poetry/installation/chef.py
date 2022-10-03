@@ -3,8 +3,8 @@ import json
 
 from typing import TYPE_CHECKING
 
-from poetry.core.packages.utils.link import Link
-from poetry.utils._compat import Path
+from conda_lock.vendor.poetry_core.packages.utils.link import Link
+from conda_lock.vendor.poetry.utils._compat import Path
 
 from .chooser import InvalidWheelName
 from .chooser import Wheel
@@ -14,8 +14,8 @@ if TYPE_CHECKING:
     from typing import List
     from typing import Optional
 
-    from poetry.config.config import Config
-    from poetry.utils.env import Env
+    from conda_lock.vendor.poetry.config.config import Config
+    from conda_lock.vendor.poetry.utils.env import Env
 
 
 class Chef:

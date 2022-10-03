@@ -3,8 +3,8 @@ from typing import List
 from typing import Mapping
 from typing import Sequence
 
-from poetry.core.packages import Package
-from poetry.utils.helpers import canonicalize_name
+from conda_lock.vendor.poetry_core.packages import Package
+from conda_lock.vendor.poetry.utils.helpers import canonicalize_name
 
 
 def get_extra_package_names(

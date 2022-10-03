@@ -6,10 +6,10 @@ from collections import namedtuple
 from typing import Any
 from typing import Optional
 
-from poetry.core.utils._compat import PY36
-from poetry.core.utils._compat import WINDOWS
-from poetry.core.utils._compat import Path
-from poetry.core.utils._compat import decode
+from conda_lock.vendor.poetry_core.utils._compat import PY36
+from conda_lock.vendor.poetry_core.utils._compat import WINDOWS
+from conda_lock.vendor.poetry_core.utils._compat import Path
+from conda_lock.vendor.poetry_core.utils._compat import decode
 
 
 pattern_formats = {

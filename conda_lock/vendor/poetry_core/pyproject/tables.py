@@ -2,12 +2,12 @@ from typing import TYPE_CHECKING
 from typing import List
 from typing import Optional
 
-from poetry.core.utils._compat import Path
-from poetry.core.utils.helpers import canonicalize_name
+from conda_lock.vendor.poetry_core.utils._compat import Path
+from conda_lock.vendor.poetry_core.utils.helpers import canonicalize_name
 
 
 if TYPE_CHECKING:
-    from poetry.core.packages import Dependency  # noqa
+    from conda_lock.vendor.poetry_core.packages import Dependency  # noqa
 
 
 # TODO: Convert to dataclass once python 2.7, 3.5 is dropped
@@ -27,9 +27,9 @@ class BuildSystem:
     def dependencies(self):  # type: () -> List["Dependency"]
         if self._dependencies is None:
             # avoid circular dependency when loading DirectoryDependency
-            from poetry.core.packages import DirectoryDependency
-            from poetry.core.packages import FileDependency
-            from poetry.core.packages import dependency_from_pep_508
+            from conda_lock.vendor.poetry_core.packages import DirectoryDependency
+            from conda_lock.vendor.poetry_core.packages import FileDependency
+            from conda_lock.vendor.poetry_core.packages import dependency_from_pep_508
 
             self._dependencies = []
             for requirement in self.requires:

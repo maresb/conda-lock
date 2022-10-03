@@ -8,18 +8,18 @@ from typing import Optional
 
 from clikit.io import ConsoleIO
 
-from poetry.core.packages import Package
-from poetry.core.packages.project_package import ProjectPackage
-from poetry.installation.operations import Install
-from poetry.installation.operations import Uninstall
-from poetry.installation.operations import Update
-from poetry.installation.operations.operation import Operation
-from poetry.mixology import resolve_version
-from poetry.mixology.failure import SolveFailure
-from poetry.packages import DependencyPackage
-from poetry.repositories import Pool
-from poetry.repositories import Repository
-from poetry.utils.env import Env
+from conda_lock.vendor.poetry_core.packages import Package
+from conda_lock.vendor.poetry_core.packages.project_package import ProjectPackage
+from conda_lock.vendor.poetry.installation.operations import Install
+from conda_lock.vendor.poetry.installation.operations import Uninstall
+from conda_lock.vendor.poetry.installation.operations import Update
+from conda_lock.vendor.poetry.installation.operations.operation import Operation
+from conda_lock.vendor.poetry.mixology import resolve_version
+from conda_lock.vendor.poetry.mixology.failure import SolveFailure
+from conda_lock.vendor.poetry.packages import DependencyPackage
+from conda_lock.vendor.poetry.repositories import Pool
+from conda_lock.vendor.poetry.repositories import Repository
+from conda_lock.vendor.poetry.utils.env import Env
 
 from .exceptions import OverrideNeeded
 from .exceptions import SolverProblemError
@@ -85,7 +85,7 @@ class Solver:
                     installed = True
 
                     if pkg.source_type == "git" and package.source_type == "git":
-                        from poetry.core.vcs.git import Git
+                        from conda_lock.vendor.poetry_core.vcs.git import Git
 
                         # Trying to find the currently installed version
                         pkg_source_url = Git.normalize_url(pkg.source_url)

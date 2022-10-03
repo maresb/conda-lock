@@ -5,10 +5,10 @@ from typing import Union
 from tomlkit.container import Container
 from tomlkit.toml_document import TOMLDocument
 
-from poetry.core.pyproject.exceptions import PyProjectException
-from poetry.core.pyproject.tables import BuildSystem
-from poetry.core.toml import TOMLFile
-from poetry.core.utils._compat import Path
+from conda_lock.vendor.poetry_core.pyproject.exceptions import PyProjectException
+from conda_lock.vendor.poetry_core.pyproject.tables import BuildSystem
+from conda_lock.vendor.poetry_core.toml import TOMLFile
+from conda_lock.vendor.poetry_core.utils._compat import Path
 
 
 class PyProjectTOML:

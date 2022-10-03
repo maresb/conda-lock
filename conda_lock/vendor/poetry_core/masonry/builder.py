@@ -2,14 +2,14 @@ from typing import TYPE_CHECKING
 from typing import Optional
 from typing import Union
 
-from poetry.core.utils._compat import Path
+from conda_lock.vendor.poetry_core.utils._compat import Path
 
 from .builders.sdist import SdistBuilder
 from .builders.wheel import WheelBuilder
 
 
 if TYPE_CHECKING:
-    from poetry.core.poetry import Poetry  # noqa
+    from conda_lock.vendor.poetry_core.poetry import Poetry  # noqa
 
 
 class Builder:

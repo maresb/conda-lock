@@ -11,8 +11,8 @@ from lark import Lark
 from lark import UnexpectedCharacters
 from lark import UnexpectedToken
 
-from poetry.core.semver import parse_constraint
-from poetry.core.semver.exceptions import ParseConstraintError
+from conda_lock.vendor.poetry_core.semver import parse_constraint
+from conda_lock.vendor.poetry_core.semver.exceptions import ParseConstraintError
 
 from .markers import _compact_markers
 

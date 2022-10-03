@@ -14,21 +14,21 @@ from cachecontrol.controller import logger as cache_control_logger
 from cachy import CacheManager
 from html5lib.html5parser import parse
 
-from poetry.core.packages import Dependency
-from poetry.core.packages import Package
-from poetry.core.packages import dependency_from_pep_508
-from poetry.core.packages.utils.link import Link
-from poetry.core.semver import VersionConstraint
-from poetry.core.semver import VersionRange
-from poetry.core.semver import parse_constraint
-from poetry.core.semver.exceptions import ParseVersionError
-from poetry.core.version.markers import parse_marker
-from poetry.locations import REPOSITORY_CACHE_DIR
-from poetry.utils._compat import Path
-from poetry.utils._compat import to_str
-from poetry.utils.helpers import download_file
-from poetry.utils.helpers import temporary_directory
-from poetry.utils.patterns import wheel_file_re
+from conda_lock.vendor.poetry_core.packages import Dependency
+from conda_lock.vendor.poetry_core.packages import Package
+from conda_lock.vendor.poetry_core.packages import dependency_from_pep_508
+from conda_lock.vendor.poetry_core.packages.utils.link import Link
+from conda_lock.vendor.poetry_core.semver import VersionConstraint
+from conda_lock.vendor.poetry_core.semver import VersionRange
+from conda_lock.vendor.poetry_core.semver import parse_constraint
+from conda_lock.vendor.poetry_core.semver.exceptions import ParseVersionError
+from conda_lock.vendor.poetry_core.version.markers import parse_marker
+from conda_lock.vendor.poetry.locations import REPOSITORY_CACHE_DIR
+from conda_lock.vendor.poetry.utils._compat import Path
+from conda_lock.vendor.poetry.utils._compat import to_str
+from conda_lock.vendor.poetry.utils.helpers import download_file
+from conda_lock.vendor.poetry.utils.helpers import temporary_directory
+from conda_lock.vendor.poetry.utils.patterns import wheel_file_re
 
 from ..inspection.info import PackageInfo
 from .exceptions import PackageNotFound

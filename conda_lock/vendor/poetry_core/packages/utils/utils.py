@@ -13,25 +13,25 @@ from six.moves.urllib.parse import unquote  # noqa
 from six.moves.urllib.parse import urlsplit  # noqa
 from six.moves.urllib.request import url2pathname  # noqa
 
-from poetry.core.packages.constraints.constraint import Constraint
-from poetry.core.packages.constraints.multi_constraint import MultiConstraint
-from poetry.core.packages.constraints.union_constraint import UnionConstraint
-from poetry.core.semver import EmptyConstraint
-from poetry.core.semver import Version
-from poetry.core.semver import VersionConstraint
-from poetry.core.semver import VersionRange
-from poetry.core.semver import VersionUnion
-from poetry.core.semver import parse_constraint
-from poetry.core.utils._compat import Path
-from poetry.core.version.markers import BaseMarker
-from poetry.core.version.markers import MarkerUnion
-from poetry.core.version.markers import MultiMarker
-from poetry.core.version.markers import SingleMarker
+from conda_lock.vendor.poetry_core.packages.constraints.constraint import Constraint
+from conda_lock.vendor.poetry_core.packages.constraints.multi_constraint import MultiConstraint
+from conda_lock.vendor.poetry_core.packages.constraints.union_constraint import UnionConstraint
+from conda_lock.vendor.poetry_core.semver import EmptyConstraint
+from conda_lock.vendor.poetry_core.semver import Version
+from conda_lock.vendor.poetry_core.semver import VersionConstraint
+from conda_lock.vendor.poetry_core.semver import VersionRange
+from conda_lock.vendor.poetry_core.semver import VersionUnion
+from conda_lock.vendor.poetry_core.semver import parse_constraint
+from conda_lock.vendor.poetry_core.utils._compat import Path
+from conda_lock.vendor.poetry_core.version.markers import BaseMarker
+from conda_lock.vendor.poetry_core.version.markers import MarkerUnion
+from conda_lock.vendor.poetry_core.version.markers import MultiMarker
+from conda_lock.vendor.poetry_core.version.markers import SingleMarker
 
 
 if TYPE_CHECKING:
-    from poetry.core.packages.constraints import BaseConstraint  # noqa
-    from poetry.core.semver import VersionTypes  # noqa
+    from conda_lock.vendor.poetry_core.packages.constraints import BaseConstraint  # noqa
+    from conda_lock.vendor.poetry_core.semver import VersionTypes  # noqa
 
 BZ2_EXTENSIONS = (".tar.bz2", ".tbz")
 XZ_EXTENSIONS = (".tar.xz", ".txz", ".tlz", ".tar.lz", ".tar.lzma")

@@ -4,13 +4,13 @@ from __future__ import unicode_literals
 from typing import TYPE_CHECKING
 from typing import Any
 
-from poetry.core.pyproject import PyProjectTOML
-from poetry.core.utils._compat import Path  # noqa
+from conda_lock.vendor.poetry_core.pyproject import PyProjectTOML
+from conda_lock.vendor.poetry_core.utils._compat import Path  # noqa
 
 
 if TYPE_CHECKING:
-    from poetry.core.packages import ProjectPackage  # noqa
-    from poetry.core.pyproject.toml import PyProjectTOMLFile  # noqa
+    from conda_lock.vendor.poetry_core.packages import ProjectPackage  # noqa
+    from conda_lock.vendor.poetry_core.pyproject.toml import PyProjectTOMLFile  # noqa
 
 
 class Poetry(object):

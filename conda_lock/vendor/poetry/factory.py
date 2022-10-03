@@ -6,8 +6,8 @@ from typing import Optional
 
 from clikit.api.io.io import IO
 
-from poetry.core.factory import Factory as BaseFactory
-from poetry.core.toml.file import TOMLFile
+from conda_lock.vendor.poetry_core.factory import Factory as BaseFactory
+from conda_lock.vendor.poetry_core.toml.file import TOMLFile
 
 from .config.config import Config
 from .config.file_config_source import FileConfigSource
@@ -70,7 +70,7 @@ class Factory(BaseFactory):
         )
 
         # Configuring sources
-        sources = poetry.local_config.get("source", [])
+        sources = conda_lock.vendor.poetry.local_config.get("source", [])
         for source in sources:
             repository = self.create_legacy_repository(source, config)
             is_default = source.get("default", False)
@@ -86,17 +86,17 @@ class Factory(BaseFactory):
 
                 io.write_line(message)
 
-            poetry.pool.add_repository(repository, is_default, secondary=is_secondary)
+            conda_lock.vendor.poetry.pool.add_repository(repository, is_default, secondary=is_secondary)
 
         # Put PyPI last to prefer private repositories
         # unless we have no default source AND no primary sources
         # (default = false, secondary = false)
-        if poetry.pool.has_default():
+        if conda_lock.vendor.poetry.pool.has_default():
             if io.is_debug():
                 io.write_line("Deactivating the PyPI repository")
         else:
-            default = not poetry.pool.has_primary_repositories()
-            poetry.pool.add_repository(PyPiRepository(), default, not default)
+            default = not conda_lock.vendor.poetry.pool.has_primary_repositories()
+            conda_lock.vendor.poetry.pool.add_repository(PyPiRepository(), default, not default)
 
         return poetry
 

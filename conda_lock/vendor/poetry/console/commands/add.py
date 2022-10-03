@@ -69,7 +69,7 @@ class AddCommand(InstallerCommand, InitCommand):
     def handle(self):
         from tomlkit import inline_table
 
-        from poetry.core.semver import parse_constraint
+        from conda_lock.vendor.poetry_core.semver import parse_constraint
 
         packages = self.argument("name")
         is_dev = self.option("dev")

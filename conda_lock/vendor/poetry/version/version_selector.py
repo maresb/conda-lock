@@ -1,7 +1,7 @@
 from typing import Union
 
-from poetry.core.packages import Package
-from poetry.core.semver import Version
+from conda_lock.vendor.poetry_core.packages import Package
+from conda_lock.vendor.poetry_core.semver import Version
 
 
 class VersionSelector(object):
@@ -19,7 +19,7 @@ class VersionSelector(object):
         Given a package name and optional version,
         returns the latest Package that matches
         """
-        from poetry.factory import Factory
+        from conda_lock.vendor.poetry.factory import Factory
 
         dependency = Factory.create_dependency(
             package_name,

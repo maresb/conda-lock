@@ -10,10 +10,10 @@ from typing import Optional
 
 import requests
 
-from poetry.config.config import Config
-from poetry.core.packages.package import Package
-from poetry.core.version import Version
-from poetry.utils._compat import Path
+from conda_lock.vendor.poetry.config.config import Config
+from conda_lock.vendor.poetry_core.packages.package import Package
+from conda_lock.vendor.poetry_core.version import Version
+from conda_lock.vendor.poetry.utils._compat import Path
 
 
 try:

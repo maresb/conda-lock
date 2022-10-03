@@ -28,13 +28,13 @@ class DebugResolveCommand(InitCommand):
     loggers = ["poetry.repositories.pypi_repository", "poetry.inspection.info"]
 
     def handle(self):
-        from poetry.core.packages.project_package import ProjectPackage
-        from poetry.factory import Factory
-        from poetry.io.null_io import NullIO
-        from poetry.puzzle import Solver
-        from poetry.repositories.pool import Pool
-        from poetry.repositories.repository import Repository
-        from poetry.utils.env import EnvManager
+        from conda_lock.vendor.poetry_core.packages.project_package import ProjectPackage
+        from conda_lock.vendor.poetry.factory import Factory
+        from conda_lock.vendor.poetry.io.null_io import NullIO
+        from conda_lock.vendor.poetry.puzzle import Solver
+        from conda_lock.vendor.poetry.repositories.pool import Pool
+        from conda_lock.vendor.poetry.repositories.repository import Repository
+        from conda_lock.vendor.poetry.utils.env import EnvManager
 
         packages = self.argument("package")
 

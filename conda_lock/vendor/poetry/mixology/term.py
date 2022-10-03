@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import Union
 
-from poetry.core.packages import Dependency
+from conda_lock.vendor.poetry_core.packages import Dependency
 
 from .set_relation import SetRelation
 

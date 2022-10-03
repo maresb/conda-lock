@@ -4,7 +4,7 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from poetry.core.vcs import git
+from conda_lock.vendor.poetry_core.vcs import git
 
 from .dependency import Dependency
 

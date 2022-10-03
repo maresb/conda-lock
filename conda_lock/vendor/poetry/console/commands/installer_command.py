@@ -4,8 +4,8 @@ from .env_command import EnvCommand
 
 
 if TYPE_CHECKING:
-    from poetry.installation.installer import Installer
-    from poetry.installation.installer import Optional
+    from conda_lock.vendor.poetry.installation.installer import Installer
+    from conda_lock.vendor.poetry.installation.installer import Optional
 
 
 class InstallerCommand(EnvCommand):

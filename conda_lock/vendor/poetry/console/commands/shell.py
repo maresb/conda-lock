@@ -17,7 +17,7 @@ If one doesn't exist yet, it will be created.
 """
 
     def handle(self):
-        from poetry.utils.shell import Shell
+        from conda_lock.vendor.poetry.utils.shell import Shell
 
         # Check if it's already activated or doesn't exist and won't be created
         venv_activated = strtobool(environ.get("POETRY_ACTIVE", "0")) or getattr(

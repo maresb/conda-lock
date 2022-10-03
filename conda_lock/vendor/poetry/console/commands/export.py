@@ -1,6 +1,6 @@
 from cleo import option
 
-from poetry.utils.exporter import Exporter
+from conda_lock.vendor.poetry.utils.exporter import Exporter
 
 from .command import Command
 

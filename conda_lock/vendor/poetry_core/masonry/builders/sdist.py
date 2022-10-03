@@ -21,10 +21,10 @@ from typing import Optional
 from typing import Set
 from typing import Tuple
 
-from poetry.core.utils._compat import Path
-from poetry.core.utils._compat import decode
-from poetry.core.utils._compat import encode
-from poetry.core.utils._compat import to_str
+from conda_lock.vendor.poetry_core.utils._compat import Path
+from conda_lock.vendor.poetry_core.utils._compat import decode
+from conda_lock.vendor.poetry_core.utils._compat import encode
+from conda_lock.vendor.poetry_core.utils._compat import to_str
 
 from ..utils.helpers import normalize_file_permissions
 from ..utils.package_include import PackageInclude
@@ -33,8 +33,8 @@ from .builder import BuildIncludeFile
 
 
 if TYPE_CHECKING:
-    from poetry.core.packages import Dependency  # noqa
-    from poetry.core.packages import ProjectPackage  # noqa
+    from conda_lock.vendor.poetry_core.packages import Dependency  # noqa
+    from conda_lock.vendor.poetry_core.packages import ProjectPackage  # noqa
 
 SETUP = """\
 # -*- coding: utf-8 -*-

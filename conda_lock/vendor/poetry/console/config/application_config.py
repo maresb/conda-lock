@@ -2,7 +2,7 @@ import logging
 
 from typing import Any
 
-from cleo.config import ApplicationConfig as BaseApplicationConfig
+from conda_lock.vendor.cleo.config import ApplicationConfig as BaseApplicationConfig
 from clikit.api.application.application import Application
 from clikit.api.args.raw_args import RawArgs
 from clikit.api.event import PRE_HANDLE
@@ -25,12 +25,12 @@ from clikit.io.input_stream import StandardInputStream
 from clikit.io.output_stream import ErrorOutputStream
 from clikit.io.output_stream import StandardOutputStream
 
-from poetry.console.commands.command import Command
-from poetry.console.commands.env_command import EnvCommand
-from poetry.console.commands.installer_command import InstallerCommand
-from poetry.console.logging.io_formatter import IOFormatter
-from poetry.console.logging.io_handler import IOHandler
-from poetry.utils._compat import PY36
+from conda_lock.vendor.poetry.console.commands.command import Command
+from conda_lock.vendor.poetry.console.commands.env_command import EnvCommand
+from conda_lock.vendor.poetry.console.commands.installer_command import InstallerCommand
+from conda_lock.vendor.poetry.console.logging.io_formatter import IOFormatter
+from conda_lock.vendor.poetry.console.logging.io_handler import IOHandler
+from conda_lock.vendor.poetry.utils._compat import PY36
 
 
 class ApplicationConfig(BaseApplicationConfig):
@@ -56,7 +56,7 @@ class ApplicationConfig(BaseApplicationConfig):
         self.add_event_listener(PRE_HANDLE, self.set_installer)
 
         if PY36:
-            from poetry.mixology.solutions.providers import (
+            from conda_lock.vendor.poetry.mixology.solutions.providers import (
                 PythonRequirementSolutionProvider,
             )
 
@@ -103,7 +103,7 @@ class ApplicationConfig(BaseApplicationConfig):
             logger.setLevel(level)
 
     def set_env(self, event, event_name, _):  # type: (PreHandleEvent, str, Any) -> None
-        from poetry.utils.env import EnvManager
+        from conda_lock.vendor.poetry.utils.env import EnvManager
 
         command = event.command.config.handler  # type: EnvCommand
         if not isinstance(command, EnvCommand):
@@ -135,18 +135,18 @@ class ApplicationConfig(BaseApplicationConfig):
         if command.installer is not None:
             return
 
-        from poetry.installation.installer import Installer
+        from conda_lock.vendor.poetry.installation.installer import Installer
 
         poetry = command.poetry
         installer = Installer(
             event.io,
             command.env,
-            poetry.package,
-            poetry.locker,
-            poetry.pool,
-            poetry.config,
+            conda_lock.vendor.poetry.package,
+            conda_lock.vendor.poetry.locker,
+            conda_lock.vendor.poetry.pool,
+            conda_lock.vendor.poetry.config,
         )
-        installer.use_executor(poetry.config.get("experimental.new-installer", False))
+        installer.use_executor(conda_lock.vendor.poetry.config.get("experimental.new-installer", False))
         command.set_installer(installer)
 
     def resolve_help_command(

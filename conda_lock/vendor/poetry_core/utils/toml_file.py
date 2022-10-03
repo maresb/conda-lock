@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import Any
 
-from poetry.core.toml import TOMLFile
+from conda_lock.vendor.poetry_core.toml import TOMLFile
 
 
 class TomlFile(TOMLFile):

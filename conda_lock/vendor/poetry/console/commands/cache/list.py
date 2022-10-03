@@ -9,7 +9,7 @@ class CacheListCommand(Command):
     description = "List Poetry's caches."
 
     def handle(self):
-        from poetry.locations import REPOSITORY_CACHE_DIR
+        from conda_lock.vendor.poetry.locations import REPOSITORY_CACHE_DIR
 
         if os.path.exists(str(REPOSITORY_CACHE_DIR)):
             caches = list(sorted(REPOSITORY_CACHE_DIR.iterdir()))

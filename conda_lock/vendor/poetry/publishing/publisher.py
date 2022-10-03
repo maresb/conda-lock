@@ -2,10 +2,10 @@ import logging
 
 from typing import Optional
 
-from poetry.utils._compat import Path
-from poetry.utils.helpers import get_cert
-from poetry.utils.helpers import get_client_cert
-from poetry.utils.password_manager import PasswordManager
+from conda_lock.vendor.poetry.utils._compat import Path
+from conda_lock.vendor.poetry.utils.helpers import get_cert
+from conda_lock.vendor.poetry.utils.helpers import get_client_cert
+from conda_lock.vendor.poetry.utils.password_manager import PasswordManager
 
 from .uploader import Uploader
 
@@ -20,10 +20,10 @@ class Publisher:
 
     def __init__(self, poetry, io):
         self._poetry = poetry
-        self._package = poetry.package
+        self._package = conda_lock.vendor.poetry.package
         self._io = io
         self._uploader = Uploader(poetry, io)
-        self._password_manager = PasswordManager(poetry.config)
+        self._password_manager = PasswordManager(conda_lock.vendor.poetry.config)
 
     @property
     def files(self):

@@ -4,15 +4,15 @@ from typing import Union
 
 from clikit.api.io import IO
 
-from poetry.config.config import Config
-from poetry.core.packages.project_package import ProjectPackage
-from poetry.io.null_io import NullIO
-from poetry.packages import Locker
-from poetry.repositories import Pool
-from poetry.repositories import Repository
-from poetry.repositories.installed_repository import InstalledRepository
-from poetry.utils.extras import get_extra_package_names
-from poetry.utils.helpers import canonicalize_name
+from conda_lock.vendor.poetry.config.config import Config
+from conda_lock.vendor.poetry_core.packages.project_package import ProjectPackage
+from conda_lock.vendor.poetry.io.null_io import NullIO
+from conda_lock.vendor.poetry.packages import Locker
+from conda_lock.vendor.poetry.repositories import Pool
+from conda_lock.vendor.poetry.repositories import Repository
+from conda_lock.vendor.poetry.repositories.installed_repository import InstalledRepository
+from conda_lock.vendor.poetry.utils.extras import get_extra_package_names
+from conda_lock.vendor.poetry.utils.helpers import canonicalize_name
 
 from .base_installer import BaseInstaller
 from .executor import Executor
@@ -178,7 +178,7 @@ class Installer:
         return self
 
     def _do_refresh(self):
-        from poetry.puzzle import Solver
+        from conda_lock.vendor.poetry.puzzle import Solver
 
         # Checking extras
         for extra in self._extras:
@@ -204,7 +204,7 @@ class Installer:
         return 0
 
     def _do_install(self, local_repo):
-        from poetry.puzzle import Solver
+        from conda_lock.vendor.poetry.puzzle import Solver
 
         locked_repository = Repository()
         if self._update:

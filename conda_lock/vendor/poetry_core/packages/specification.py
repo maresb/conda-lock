@@ -2,7 +2,7 @@ from typing import FrozenSet
 from typing import List
 from typing import Optional
 
-from poetry.core.utils.helpers import canonicalize_name
+from conda_lock.vendor.poetry_core.utils.helpers import canonicalize_name
 
 
 class PackageSpecification(object):

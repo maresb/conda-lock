@@ -5,10 +5,10 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from poetry.core.semver import parse_constraint
-from poetry.core.utils._compat import Path
-from poetry.core.utils.patterns import wheel_file_re
-from poetry.core.version.requirements import Requirement
+from conda_lock.vendor.poetry_core.semver import parse_constraint
+from conda_lock.vendor.poetry_core.utils._compat import Path
+from conda_lock.vendor.poetry_core.utils.patterns import wheel_file_re
+from conda_lock.vendor.poetry_core.version.requirements import Requirement
 
 from .dependency import Dependency
 from .directory_dependency import DirectoryDependency
@@ -59,7 +59,7 @@ def dependency_from_pep_508(
     path is specified, this is used as the base directory if the identified dependency is
     of file or directory type.
     """
-    from poetry.core.vcs.git import ParsedUrl
+    from conda_lock.vendor.poetry_core.vcs.git import ParsedUrl
 
     # Removing comments
     parts = name.split("#", 1)

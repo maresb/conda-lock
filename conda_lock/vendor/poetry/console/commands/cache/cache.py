@@ -1,4 +1,4 @@
-from poetry.console.commands.cache.list import CacheListCommand
+from conda_lock.vendor.poetry.console.commands.cache.list import CacheListCommand
 
 from ..command import Command
 from .clear import CacheClearCommand

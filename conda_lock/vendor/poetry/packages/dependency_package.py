@@ -1,7 +1,7 @@
 from typing import List
 
-from poetry.core.packages.dependency import Dependency
-from poetry.core.packages.package import Package
+from conda_lock.vendor.poetry_core.packages.dependency import Dependency
+from conda_lock.vendor.poetry_core.packages.package import Package
 
 
 class DependencyPackage(object):

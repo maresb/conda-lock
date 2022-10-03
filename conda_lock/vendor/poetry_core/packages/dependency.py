@@ -5,15 +5,15 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-import poetry.core.packages
+import conda_lock.vendor.poetry_core.packages
 
-from poetry.core.semver import Version
-from poetry.core.semver import VersionConstraint
-from poetry.core.semver import VersionRange
-from poetry.core.semver import VersionUnion
-from poetry.core.semver import parse_constraint
-from poetry.core.version.markers import AnyMarker
-from poetry.core.version.markers import parse_marker
+from conda_lock.vendor.poetry_core.semver import Version
+from conda_lock.vendor.poetry_core.semver import VersionConstraint
+from conda_lock.vendor.poetry_core.semver import VersionRange
+from conda_lock.vendor.poetry_core.semver import VersionUnion
+from conda_lock.vendor.poetry_core.semver import parse_constraint
+from conda_lock.vendor.poetry_core.version.markers import AnyMarker
+from conda_lock.vendor.poetry_core.version.markers import parse_marker
 
 from .constraints import parse_constraint as parse_generic_constraint
 from .constraints.constraint import Constraint
@@ -24,8 +24,8 @@ from .utils.utils import convert_markers
 
 
 if TYPE_CHECKING:
-    from poetry.core.version.markers import BaseMarker  # noqa
-    from poetry.core.version.markers import VersionTypes  # noqa
+    from conda_lock.vendor.poetry_core.version.markers import BaseMarker  # noqa
+    from conda_lock.vendor.poetry_core.version.markers import VersionTypes  # noqa
 
     from .constraints import BaseConstraint  # noqa
 
@@ -213,7 +213,7 @@ class Dependency(PackageSpecification):
     def is_url(self):  # type: () -> bool
         return False
 
-    def accepts(self, package):  # type: (poetry.core.packages.Package) -> bool
+    def accepts(self, package):  # type: (conda_lock.vendor.poetry_core.packages.Package) -> bool
         """
         Determines if the given package matches this dependency.
         """

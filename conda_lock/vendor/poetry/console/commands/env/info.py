@@ -11,7 +11,7 @@ class EnvInfoCommand(Command):
     options = [option("path", "p", "Only display the environment's path.")]
 
     def handle(self):
-        from poetry.utils.env import EnvManager
+        from conda_lock.vendor.poetry.utils.env import EnvManager
 
         env = EnvManager(self.poetry).get()
 

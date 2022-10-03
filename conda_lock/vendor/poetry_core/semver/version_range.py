@@ -9,7 +9,7 @@ from .version_union import VersionUnion
 
 
 if TYPE_CHECKING:
-    from poetry.core.semver.version import Version
+    from conda_lock.vendor.poetry_core.semver.version import Version
 
     from . import VersionTypes  # noqa
 

@@ -28,20 +28,20 @@ from packaging.tags import interpreter_name
 from packaging.tags import interpreter_version
 from packaging.tags import sys_tags
 
-from poetry.core.semver import parse_constraint
-from poetry.core.semver.version import Version
-from poetry.core.toml.file import TOMLFile
-from poetry.core.version.markers import BaseMarker
-from poetry.locations import CACHE_DIR
-from poetry.poetry import Poetry
-from poetry.utils._compat import CalledProcessError
-from poetry.utils._compat import Path
-from poetry.utils._compat import decode
-from poetry.utils._compat import encode
-from poetry.utils._compat import list_to_shell_command
-from poetry.utils._compat import subprocess
-from poetry.utils.helpers import is_dir_writable
-from poetry.utils.helpers import paths_csv
+from conda_lock.vendor.poetry_core.semver import parse_constraint
+from conda_lock.vendor.poetry_core.semver.version import Version
+from conda_lock.vendor.poetry_core.toml.file import TOMLFile
+from conda_lock.vendor.poetry_core.version.markers import BaseMarker
+from conda_lock.vendor.poetry.locations import CACHE_DIR
+from conda_lock.vendor.poetry.poetry import Poetry
+from conda_lock.vendor.poetry.utils._compat import CalledProcessError
+from conda_lock.vendor.poetry.utils._compat import Path
+from conda_lock.vendor.poetry.utils._compat import decode
+from conda_lock.vendor.poetry.utils._compat import encode
+from conda_lock.vendor.poetry.utils._compat import list_to_shell_command
+from conda_lock.vendor.poetry.utils._compat import subprocess
+from conda_lock.vendor.poetry.utils.helpers import is_dir_writable
+from conda_lock.vendor.poetry.utils.helpers import paths_csv
 
 
 GET_ENVIRONMENT_INFO = """\
@@ -885,7 +885,7 @@ class EnvManager(object):
             if prefix.joinpath("poetry_env").exists():
                 env = GenericEnv(base_prefix, child_env=env)
             else:
-                from poetry.locations import data_dir
+                from conda_lock.vendor.poetry.locations import data_dir
 
                 try:
                     prefix.relative_to(data_dir())

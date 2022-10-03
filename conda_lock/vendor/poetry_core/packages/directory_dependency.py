@@ -3,8 +3,8 @@ from typing import FrozenSet
 from typing import List
 from typing import Union
 
-from poetry.core.pyproject import PyProjectTOML
-from poetry.core.utils._compat import Path
+from conda_lock.vendor.poetry_core.pyproject import PyProjectTOML
+from conda_lock.vendor.poetry_core.utils._compat import Path
 
 
 if TYPE_CHECKING:

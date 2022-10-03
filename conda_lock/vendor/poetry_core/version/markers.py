@@ -14,7 +14,7 @@ from lark import Tree
 
 
 if TYPE_CHECKING:
-    from poetry.core.semver import VersionTypes  # noqa
+    from conda_lock.vendor.poetry_core.semver import VersionTypes  # noqa
 
 MarkerTypes = Union[
     "AnyMarker", "EmptyMarker", "SingleMarker", "MultiMarker", "MarkerUnion"
@@ -185,10 +185,10 @@ class SingleMarker(BaseMarker):
     def __init__(
         self, name, constraint
     ):  # type: (str, Union[str, "VersionTypes"]) -> None
-        from poetry.core.packages.constraints import (
+        from conda_lock.vendor.poetry_core.packages.constraints import (
             parse_constraint as parse_generic_constraint,
         )
-        from poetry.core.semver import parse_constraint
+        from conda_lock.vendor.poetry_core.semver import parse_constraint
 
         self._name = ALIASES.get(name, name)
         self._constraint_string = str(constraint)
@@ -336,7 +336,7 @@ class SingleMarker(BaseMarker):
             # This one is more tricky to handle
             # since it's technically a multi marker
             # so the inverse will be a union of inverse
-            from poetry.core.semver import VersionRange
+            from conda_lock.vendor.poetry_core.semver import VersionRange
 
             if not isinstance(self._constraint, VersionRange):
                 # The constraint must be a version range, otherwise

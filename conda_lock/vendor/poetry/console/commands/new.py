@@ -3,7 +3,7 @@ import sys
 from cleo import argument
 from cleo import option
 
-from poetry.utils.helpers import module_name
+from conda_lock.vendor.poetry.utils.helpers import module_name
 
 from .command import Command
 
@@ -20,11 +20,11 @@ class NewCommand(Command):
     ]
 
     def handle(self):
-        from poetry.core.semver import parse_constraint
-        from poetry.core.vcs.git import GitConfig
-        from poetry.layouts import layout
-        from poetry.utils._compat import Path
-        from poetry.utils.env import SystemEnv
+        from conda_lock.vendor.poetry_core.semver import parse_constraint
+        from conda_lock.vendor.poetry_core.vcs.git import GitConfig
+        from conda_lock.vendor.poetry.layouts import layout
+        from conda_lock.vendor.poetry.utils._compat import Path
+        from conda_lock.vendor.poetry.utils.env import SystemEnv
 
         if self.option("src"):
             layout_ = layout("src")

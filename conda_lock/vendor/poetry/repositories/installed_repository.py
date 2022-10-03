@@ -3,11 +3,11 @@ import itertools
 from typing import Set
 from typing import Union
 
-from poetry.core.packages import Package
-from poetry.core.utils.helpers import module_name
-from poetry.utils._compat import Path
-from poetry.utils._compat import metadata
-from poetry.utils.env import Env
+from conda_lock.vendor.poetry_core.packages import Package
+from conda_lock.vendor.poetry_core.utils.helpers import module_name
+from conda_lock.vendor.poetry.utils._compat import Path
+from conda_lock.vendor.poetry.utils._compat import metadata
+from conda_lock.vendor.poetry.utils.env import Env
 
 from .repository import Repository
 
@@ -70,7 +70,7 @@ class InstalledRepository(Repository):
     def set_package_vcs_properties_from_path(
         cls, src, package
     ):  # type: (Path, Package) -> None
-        from poetry.core.vcs.git import Git
+        from conda_lock.vendor.poetry_core.vcs.git import Git
 
         git = Git()
         revision = git.rev_parse("HEAD", src).strip()

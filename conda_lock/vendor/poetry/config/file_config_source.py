@@ -9,7 +9,7 @@ from .config_source import ConfigSource
 
 
 if TYPE_CHECKING:
-    from poetry.core.toml.file import TOMLFile  # noqa
+    from conda_lock.vendor.poetry_core.toml.file import TOMLFile  # noqa
 
 
 class FileConfigSource(ConfigSource):

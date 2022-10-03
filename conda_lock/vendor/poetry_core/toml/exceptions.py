@@ -1,6 +1,6 @@
 from tomlkit.exceptions import TOMLKitError
 
-from poetry.core.exceptions import PoetryCoreException
+from conda_lock.vendor.poetry_core.exceptions import PoetryCoreException
 
 
 class TOMLError(TOMLKitError, PoetryCoreException):

@@ -19,7 +19,7 @@ class BuildCommand(EnvCommand):
     ]
 
     def handle(self):
-        from poetry.core.masonry import Builder
+        from conda_lock.vendor.poetry_core.masonry import Builder
 
         fmt = "all"
         if self.option("format"):

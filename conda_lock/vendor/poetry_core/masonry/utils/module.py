@@ -3,8 +3,8 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
-from poetry.core.utils._compat import Path
-from poetry.core.utils.helpers import module_name
+from conda_lock.vendor.poetry_core.utils._compat import Path
+from conda_lock.vendor.poetry_core.utils.helpers import module_name
 
 from .include import Include
 from .package_include import PackageInclude

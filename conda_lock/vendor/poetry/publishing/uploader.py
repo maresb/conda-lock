@@ -17,13 +17,13 @@ from requests_toolbelt import user_agent
 from requests_toolbelt.multipart import MultipartEncoder
 from requests_toolbelt.multipart import MultipartEncoderMonitor
 
-from poetry.__version__ import __version__
-from poetry.core.masonry.metadata import Metadata
-from poetry.core.masonry.utils.helpers import escape_name
-from poetry.core.masonry.utils.helpers import escape_version
-from poetry.utils._compat import Path
-from poetry.utils.helpers import normalize_version
-from poetry.utils.patterns import wheel_file_re
+from conda_lock.vendor.poetry.__version__ import __version__
+from conda_lock.vendor.poetry_core.masonry.metadata import Metadata
+from conda_lock.vendor.poetry_core.masonry.utils.helpers import escape_name
+from conda_lock.vendor.poetry_core.masonry.utils.helpers import escape_version
+from conda_lock.vendor.poetry.utils._compat import Path
+from conda_lock.vendor.poetry.utils.helpers import normalize_version
+from conda_lock.vendor.poetry.utils.patterns import wheel_file_re
 
 
 _has_blake2 = hasattr(hashlib, "blake2b")
@@ -48,7 +48,7 @@ class UploadError(Exception):
 class Uploader:
     def __init__(self, poetry, io):
         self._poetry = poetry
-        self._package = poetry.package
+        self._package = conda_lock.vendor.poetry.package
         self._io = io
         self._username = None
         self._password = None

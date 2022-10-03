@@ -22,11 +22,11 @@ from typing import Union
 
 from packaging.tags import sys_tags
 
-from poetry.core import __version__
-from poetry.core.semver import parse_constraint
-from poetry.core.utils._compat import PY2
-from poetry.core.utils._compat import Path
-from poetry.core.utils._compat import decode
+from conda_lock.vendor.poetry.core import __version__
+from conda_lock.vendor.poetry_core.semver import parse_constraint
+from conda_lock.vendor.poetry_core.utils._compat import PY2
+from conda_lock.vendor.poetry_core.utils._compat import Path
+from conda_lock.vendor.poetry_core.utils._compat import decode
 
 from ..utils.helpers import escape_name
 from ..utils.helpers import escape_version
@@ -37,7 +37,7 @@ from .sdist import SdistBuilder
 
 
 if TYPE_CHECKING:
-    from poetry.core.poetry import Poetry  # noqa
+    from conda_lock.vendor.poetry_core.poetry import Poetry  # noqa
 
 wheel_file_template = """\
 Wheel-Version: 1.0

@@ -10,8 +10,8 @@ from typing import Iterator
 from typing import List
 from typing import Union
 
-from poetry.core.utils._compat import Path
-from poetry.core.version import Version
+from conda_lock.vendor.poetry_core.utils._compat import Path
+from conda_lock.vendor.poetry_core.version import Version
 
 
 try:

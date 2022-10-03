@@ -7,9 +7,9 @@ import requests
 import requests.auth
 import requests.exceptions
 
-from poetry.exceptions import PoetryException
-from poetry.utils._compat import urlparse
-from poetry.utils.password_manager import PasswordManager
+from conda_lock.vendor.poetry.exceptions import PoetryException
+from conda_lock.vendor.poetry.utils._compat import urlparse
+from conda_lock.vendor.poetry.utils.password_manager import PasswordManager
 
 
 if TYPE_CHECKING:
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
     from clikit.api.io import IO
 
-    from poetry.config.config import Config
+    from conda_lock.vendor.poetry.config.config import Config
 
 
 logger = logging.getLogger()

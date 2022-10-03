@@ -5,11 +5,11 @@ from tomlkit import dumps
 from tomlkit import loads
 from tomlkit import table
 
-from poetry.utils.helpers import module_name
+from conda_lock.vendor.poetry.utils.helpers import module_name
 
 
 if TYPE_CHECKING:
-    from poetry.core.pyproject.toml import PyProjectTOML
+    from conda_lock.vendor.poetry_core.pyproject.toml import PyProjectTOML
 
 TESTS_DEFAULT = u"""from {package_name} import __version__
 
@@ -160,5 +160,5 @@ class Layout(object):
 
         poetry = path / "pyproject.toml"
 
-        with poetry.open("w", encoding="utf-8") as f:
+        with conda_lock.vendor.poetry.open("w", encoding="utf-8") as f:
             f.write(content)

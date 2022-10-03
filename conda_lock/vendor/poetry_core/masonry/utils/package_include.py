@@ -1,7 +1,7 @@
 from typing import List
 from typing import Optional
 
-from poetry.core.utils._compat import Path
+from conda_lock.vendor.poetry_core.utils._compat import Path
 
 from .include import Include
 

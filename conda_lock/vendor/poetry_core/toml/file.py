@@ -5,8 +5,8 @@ from typing import Union
 from tomlkit.exceptions import TOMLKitError
 from tomlkit.toml_file import TOMLFile as BaseTOMLFile
 
-from poetry.core.toml import TOMLError
-from poetry.core.utils._compat import Path
+from conda_lock.vendor.poetry_core.toml import TOMLError
+from conda_lock.vendor.poetry_core.utils._compat import Path
 
 
 if TYPE_CHECKING:

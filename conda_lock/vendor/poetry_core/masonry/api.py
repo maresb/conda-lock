@@ -8,9 +8,9 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
-from poetry.core.factory import Factory
-from poetry.core.utils._compat import Path
-from poetry.core.utils._compat import unicode
+from conda_lock.vendor.poetry_core.factory import Factory
+from conda_lock.vendor.poetry_core.utils._compat import Path
+from conda_lock.vendor.poetry_core.utils._compat import unicode
 
 from .builders.sdist import SdistBuilder
 from .builders.wheel import WheelBuilder
@@ -46,7 +46,7 @@ def prepare_metadata_for_build_wheel(
     dist_info = Path(metadata_directory, builder.dist_info)
     dist_info.mkdir(parents=True, exist_ok=True)
 
-    if "scripts" in poetry.local_config or "plugins" in poetry.local_config:
+    if "scripts" in conda_lock.vendor.poetry.local_config or "plugins" in conda_lock.vendor.poetry.local_config:
         with (dist_info / "entry_points.txt").open("w", encoding="utf-8") as f:
             builder._write_entry_points(f)
 

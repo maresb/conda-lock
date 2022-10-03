@@ -8,7 +8,7 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
-from poetry.core.semver import Version
+from conda_lock.vendor.poetry_core.semver import Version
 
 from ._compat import PY35
 from ._compat import Path

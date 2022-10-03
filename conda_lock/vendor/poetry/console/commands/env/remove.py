@@ -13,7 +13,7 @@ class EnvRemoveCommand(Command):
     ]
 
     def handle(self):
-        from poetry.utils.env import EnvManager
+        from conda_lock.vendor.poetry.utils.env import EnvManager
 
         manager = EnvManager(self.poetry)
         venv = manager.remove(self.argument("python"))

@@ -4,9 +4,9 @@ from typing import Dict
 from typing import Optional
 from typing import Union
 
-from poetry.core.semver import VersionRange
-from poetry.core.semver import parse_constraint
-from poetry.core.version.markers import parse_marker
+from conda_lock.vendor.poetry_core.semver import VersionRange
+from conda_lock.vendor.poetry_core.semver import parse_constraint
+from conda_lock.vendor.poetry_core.version.markers import parse_marker
 
 
 if TYPE_CHECKING:

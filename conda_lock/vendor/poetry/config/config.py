@@ -9,9 +9,9 @@ from typing import Callable
 from typing import Dict
 from typing import Optional
 
-from poetry.locations import CACHE_DIR
-from poetry.utils._compat import Path
-from poetry.utils._compat import basestring
+from conda_lock.vendor.poetry.locations import CACHE_DIR
+from conda_lock.vendor.poetry.utils._compat import Path
+from conda_lock.vendor.poetry.utils._compat import basestring
 
 from .config_source import ConfigSource
 from .dict_config_source import DictConfigSource
@@ -77,7 +77,7 @@ class Config(object):
         return self
 
     def merge(self, config):  # type: (Dict[str, Any]) -> None
-        from poetry.utils.helpers import merge_dicts
+        from conda_lock.vendor.poetry.utils.helpers import merge_dicts
 
         merge_dicts(self._config, config)
 

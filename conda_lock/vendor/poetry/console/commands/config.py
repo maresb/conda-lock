@@ -4,9 +4,9 @@ import re
 from cleo import argument
 from cleo import option
 
-from poetry.core.pyproject import PyProjectException
-from poetry.core.toml.file import TOMLFile
-from poetry.factory import Factory
+from conda_lock.vendor.poetry_core.pyproject import PyProjectException
+from conda_lock.vendor.poetry_core.toml.file import TOMLFile
+from conda_lock.vendor.poetry.factory import Factory
 
 from .command import Command
 
@@ -41,10 +41,10 @@ To remove a repository (repo is a short alias for repositories):
 
     @property
     def unique_config_values(self):
-        from poetry.config.config import boolean_normalizer
-        from poetry.config.config import boolean_validator
-        from poetry.locations import CACHE_DIR
-        from poetry.utils._compat import Path
+        from conda_lock.vendor.poetry.config.config import boolean_normalizer
+        from conda_lock.vendor.poetry.config.config import boolean_validator
+        from conda_lock.vendor.poetry.locations import CACHE_DIR
+        from conda_lock.vendor.poetry.utils._compat import Path
 
         unique_config_values = {
             "cache-dir": (
@@ -70,10 +70,10 @@ To remove a repository (repo is a short alias for repositories):
         return unique_config_values
 
     def handle(self):
-        from poetry.config.file_config_source import FileConfigSource
-        from poetry.locations import CONFIG_DIR
-        from poetry.utils._compat import Path
-        from poetry.utils._compat import basestring
+        from conda_lock.vendor.poetry.config.file_config_source import FileConfigSource
+        from conda_lock.vendor.poetry.locations import CONFIG_DIR
+        from conda_lock.vendor.poetry.utils._compat import Path
+        from conda_lock.vendor.poetry.utils._compat import basestring
 
         config = Factory.create_config(self.io)
         config_file = TOMLFile(Path(CONFIG_DIR) / "config.toml")
@@ -186,7 +186,7 @@ To remove a repository (repo is a short alias for repositories):
         # handle auth
         m = re.match(r"^(http-basic|pypi-token)\.(.+)", self.argument("key"))
         if m:
-            from poetry.utils.password_manager import PasswordManager
+            from conda_lock.vendor.poetry.utils.password_manager import PasswordManager
 
             password_manager = PasswordManager(config)
             if self.option("unset"):
@@ -262,7 +262,7 @@ To remove a repository (repo is a short alias for repositories):
         return 0
 
     def _list_configuration(self, config, raw, k=""):
-        from poetry.utils._compat import basestring
+        from conda_lock.vendor.poetry.utils._compat import basestring
 
         orig_k = k
         for key, value in sorted(config.items()):

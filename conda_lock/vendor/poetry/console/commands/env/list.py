@@ -11,7 +11,7 @@ class EnvListCommand(Command):
     options = [option("full-path", None, "Output the full paths of the virtualenvs.")]
 
     def handle(self):
-        from poetry.utils.env import EnvManager
+        from conda_lock.vendor.poetry.utils.env import EnvManager
 
         manager = EnvManager(self.poetry)
         current_env = manager.get()

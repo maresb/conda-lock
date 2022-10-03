@@ -1,6 +1,6 @@
 from cleo import option
 
-from poetry.utils._compat import Path
+from conda_lock.vendor.poetry.utils._compat import Path
 
 from .command import Command
 
@@ -41,7 +41,7 @@ the config command.
     loggers = ["poetry.masonry.publishing.publisher"]
 
     def handle(self):
-        from poetry.publishing.publisher import Publisher
+        from conda_lock.vendor.poetry.publishing.publisher import Publisher
 
         publisher = Publisher(self.poetry, self.io)
 

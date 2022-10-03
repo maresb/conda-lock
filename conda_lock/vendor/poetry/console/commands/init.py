@@ -13,11 +13,11 @@ from typing import Union
 from cleo import option
 from tomlkit import inline_table
 
-from poetry.core.pyproject import PyProjectException
-from poetry.core.pyproject.toml import PyProjectTOML
-from poetry.utils._compat import OrderedDict
-from poetry.utils._compat import Path
-from poetry.utils._compat import urlparse
+from conda_lock.vendor.poetry_core.pyproject import PyProjectException
+from conda_lock.vendor.poetry_core.pyproject.toml import PyProjectTOML
+from conda_lock.vendor.poetry.utils._compat import OrderedDict
+from conda_lock.vendor.poetry.utils._compat import Path
+from conda_lock.vendor.poetry.utils._compat import urlparse
 
 from .command import Command
 from .env_command import EnvCommand
@@ -63,10 +63,10 @@ The <c1>init</c1> command creates a basic <comment>pyproject.toml</> file in the
         self._pool = None
 
     def handle(self):
-        from poetry.core.vcs.git import GitConfig
-        from poetry.layouts import layout
-        from poetry.utils._compat import Path
-        from poetry.utils.env import SystemEnv
+        from conda_lock.vendor.poetry_core.vcs.git import GitConfig
+        from conda_lock.vendor.poetry.layouts import layout
+        from conda_lock.vendor.poetry.utils._compat import Path
+        from conda_lock.vendor.poetry.utils.env import SystemEnv
 
         pyproject = PyProjectTOML(Path.cwd() / "pyproject.toml")
 
@@ -355,7 +355,7 @@ The <c1>init</c1> command creates a basic <comment>pyproject.toml</> file in the
     def _find_best_version_for_package(
         self, name, required_version=None, allow_prereleases=False, source=None
     ):  # type: (...) -> Tuple[str, str]
-        from poetry.version.version_selector import VersionSelector
+        from conda_lock.vendor.poetry.version.version_selector import VersionSelector
 
         selector = VersionSelector(self._get_pool())
         package = selector.find_best_candidate(
@@ -373,7 +373,7 @@ The <c1>init</c1> command creates a basic <comment>pyproject.toml</> file in the
     def _parse_requirements(
         self, requirements
     ):  # type: (List[str]) -> List[Dict[str, str]]
-        from poetry.puzzle.provider import Provider
+        from conda_lock.vendor.poetry.puzzle.provider import Provider
 
         result = []
 
@@ -394,8 +394,8 @@ The <c1>init</c1> command creates a basic <comment>pyproject.toml</> file in the
             if url_parsed.scheme and url_parsed.netloc:
                 # Url
                 if url_parsed.scheme in ["git+https", "git+ssh"]:
-                    from poetry.core.vcs.git import Git
-                    from poetry.core.vcs.git import ParsedUrl
+                    from conda_lock.vendor.poetry_core.vcs.git import Git
+                    from conda_lock.vendor.poetry_core.vcs.git import ParsedUrl
 
                     parsed = ParsedUrl.parse(requirement)
                     url = Git.normalize_url(requirement)
@@ -508,7 +508,7 @@ The <c1>init</c1> command creates a basic <comment>pyproject.toml</> file in the
         return requires
 
     def _validate_author(self, author, default):
-        from poetry.core.packages.package import AUTHOR_REGEX
+        from conda_lock.vendor.poetry_core.packages.package import AUTHOR_REGEX
 
         author = author or default
 
@@ -525,7 +525,7 @@ The <c1>init</c1> command creates a basic <comment>pyproject.toml</> file in the
         return author
 
     def _validate_license(self, license):
-        from poetry.core.spdx import license_by_id
+        from conda_lock.vendor.poetry_core.spdx import license_by_id
 
         if license:
             license_by_id(license)
@@ -533,8 +533,8 @@ The <c1>init</c1> command creates a basic <comment>pyproject.toml</> file in the
         return license
 
     def _get_pool(self):
-        from poetry.repositories import Pool
-        from poetry.repositories.pypi_repository import PyPiRepository
+        from conda_lock.vendor.poetry.repositories import Pool
+        from conda_lock.vendor.poetry.repositories.pypi_repository import PyPiRepository
 
         if isinstance(self, EnvCommand):
             return self.poetry.pool

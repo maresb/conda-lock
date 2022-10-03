@@ -11,7 +11,7 @@ class SearchCommand(Command):
     arguments = [argument("tokens", "The tokens to search for.", multiple=True)]
 
     def handle(self):
-        from poetry.repositories.pypi_repository import PyPiRepository
+        from conda_lock.vendor.poetry.repositories.pypi_repository import PyPiRepository
 
         results = PyPiRepository().search(self.argument("tokens"))
 

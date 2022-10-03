@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING
 
-from poetry.core.utils.helpers import canonicalize_name
-from poetry.core.utils.helpers import normalize_version
-from poetry.core.version.helpers import format_python_constraint
+from conda_lock.vendor.poetry_core.utils.helpers import canonicalize_name
+from conda_lock.vendor.poetry_core.utils.helpers import normalize_version
+from conda_lock.vendor.poetry_core.version.helpers import format_python_constraint
 
 
 if TYPE_CHECKING:
-    from poetry.core.packages import Package  # noqa
+    from conda_lock.vendor.poetry_core.packages import Package  # noqa
 
 
 class Metadata:

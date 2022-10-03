@@ -22,20 +22,20 @@ from tomlkit import item
 from tomlkit import table
 from tomlkit.exceptions import TOMLKitError
 
-import poetry.repositories
+import conda_lock.vendor.poetry.repositories
 
-from poetry.core.packages import dependency_from_pep_508
-from poetry.core.packages.dependency import Dependency
-from poetry.core.packages.package import Package
-from poetry.core.semver import parse_constraint
-from poetry.core.semver.version import Version
-from poetry.core.toml.file import TOMLFile
-from poetry.core.version.markers import parse_marker
-from poetry.core.version.requirements import InvalidRequirement
-from poetry.packages import DependencyPackage
-from poetry.utils._compat import OrderedDict
-from poetry.utils._compat import Path
-from poetry.utils.extras import get_extra_package_names
+from conda_lock.vendor.poetry_core.packages import dependency_from_pep_508
+from conda_lock.vendor.poetry_core.packages.dependency import Dependency
+from conda_lock.vendor.poetry_core.packages.package import Package
+from conda_lock.vendor.poetry_core.semver import parse_constraint
+from conda_lock.vendor.poetry_core.semver.version import Version
+from conda_lock.vendor.poetry_core.toml.file import TOMLFile
+from conda_lock.vendor.poetry_core.version.markers import parse_marker
+from conda_lock.vendor.poetry_core.version.requirements import InvalidRequirement
+from conda_lock.vendor.poetry.packages import DependencyPackage
+from conda_lock.vendor.poetry.utils._compat import OrderedDict
+from conda_lock.vendor.poetry.utils._compat import Path
+from conda_lock.vendor.poetry.utils.extras import get_extra_package_names
 
 
 logger = logging.getLogger(__name__)
@@ -87,17 +87,17 @@ class Locker(object):
 
     def locked_repository(
         self, with_dev_reqs=False
-    ):  # type: (bool) -> poetry.repositories.Repository
+    ):  # type: (bool) -> conda_lock.vendor.poetry.repositories.Repository
         """
         Searches and returns a repository of locked packages.
         """
-        from poetry.factory import Factory
+        from conda_lock.vendor.poetry.factory import Factory
 
         if not self.is_locked():
-            return poetry.repositories.Repository()
+            return conda_lock.vendor.poetry.repositories.Repository()
 
         lock_data = self.lock_data
-        packages = poetry.repositories.Repository()
+        packages = conda_lock.vendor.poetry.repositories.Repository()
 
         if with_dev_reqs:
             locked_packages = lock_data["package"]

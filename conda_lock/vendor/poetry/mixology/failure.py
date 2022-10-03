@@ -2,7 +2,7 @@ from typing import Dict
 from typing import List
 from typing import Tuple
 
-from poetry.core.semver import parse_constraint
+from conda_lock.vendor.poetry_core.semver import parse_constraint
 
 from .incompatibility import Incompatibility
 from .incompatibility_cause import ConflictCause

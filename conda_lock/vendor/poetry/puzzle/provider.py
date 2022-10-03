@@ -11,33 +11,33 @@ from typing import Optional
 
 from clikit.ui.components import ProgressIndicator
 
-from poetry.core.packages import Dependency
-from poetry.core.packages import DirectoryDependency
-from poetry.core.packages import FileDependency
-from poetry.core.packages import Package
-from poetry.core.packages import URLDependency
-from poetry.core.packages import VCSDependency
-from poetry.core.packages.utils.utils import get_python_constraint_from_marker
-from poetry.core.semver.version import Version
-from poetry.core.vcs.git import Git
-from poetry.core.version.markers import MarkerUnion
-from poetry.inspection.info import PackageInfo
-from poetry.inspection.info import PackageInfoError
-from poetry.mixology.incompatibility import Incompatibility
-from poetry.mixology.incompatibility_cause import DependencyCause
-from poetry.mixology.incompatibility_cause import PythonCause
-from poetry.mixology.term import Term
-from poetry.packages import DependencyPackage
-from poetry.packages.package_collection import PackageCollection
-from poetry.puzzle.exceptions import OverrideNeeded
-from poetry.repositories import Pool
-from poetry.utils._compat import OrderedDict
-from poetry.utils._compat import Path
-from poetry.utils._compat import urlparse
-from poetry.utils.env import Env
-from poetry.utils.helpers import download_file
-from poetry.utils.helpers import safe_rmtree
-from poetry.utils.helpers import temporary_directory
+from conda_lock.vendor.poetry_core.packages import Dependency
+from conda_lock.vendor.poetry_core.packages import DirectoryDependency
+from conda_lock.vendor.poetry_core.packages import FileDependency
+from conda_lock.vendor.poetry_core.packages import Package
+from conda_lock.vendor.poetry_core.packages import URLDependency
+from conda_lock.vendor.poetry_core.packages import VCSDependency
+from conda_lock.vendor.poetry_core.packages.utils.utils import get_python_constraint_from_marker
+from conda_lock.vendor.poetry_core.semver.version import Version
+from conda_lock.vendor.poetry_core.vcs.git import Git
+from conda_lock.vendor.poetry_core.version.markers import MarkerUnion
+from conda_lock.vendor.poetry.inspection.info import PackageInfo
+from conda_lock.vendor.poetry.inspection.info import PackageInfoError
+from conda_lock.vendor.poetry.mixology.incompatibility import Incompatibility
+from conda_lock.vendor.poetry.mixology.incompatibility_cause import DependencyCause
+from conda_lock.vendor.poetry.mixology.incompatibility_cause import PythonCause
+from conda_lock.vendor.poetry.mixology.term import Term
+from conda_lock.vendor.poetry.packages import DependencyPackage
+from conda_lock.vendor.poetry.packages.package_collection import PackageCollection
+from conda_lock.vendor.poetry.puzzle.exceptions import OverrideNeeded
+from conda_lock.vendor.poetry.repositories import Pool
+from conda_lock.vendor.poetry.utils._compat import OrderedDict
+from conda_lock.vendor.poetry.utils._compat import Path
+from conda_lock.vendor.poetry.utils._compat import urlparse
+from conda_lock.vendor.poetry.utils.env import Env
+from conda_lock.vendor.poetry.utils.helpers import download_file
+from conda_lock.vendor.poetry.utils.helpers import safe_rmtree
+from conda_lock.vendor.poetry.utils.helpers import temporary_directory
 
 
 logger = logging.getLogger(__name__)

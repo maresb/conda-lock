@@ -16,9 +16,9 @@ from gzip import GzipFile
 from cleo import argument
 from cleo import option
 
-from poetry.core.packages import Dependency
-from poetry.utils._compat import PY2
-from poetry.utils._compat import Path
+from conda_lock.vendor.poetry_core.packages import Dependency
+from conda_lock.vendor.poetry.utils._compat import PY2
+from conda_lock.vendor.poetry.utils._compat import Path
 
 from ..command import Command
 
@@ -45,7 +45,7 @@ sys.path.insert(0, lib)
 sys.path.insert(0, current_vendors)
 
 if __name__ == "__main__":
-    from poetry.console import main
+    from conda_lock.vendor.poetry.console import main
     main()
 """
 
@@ -69,7 +69,7 @@ class SelfUpdateCommand(Command):
 
     @property
     def home(self):
-        from poetry.utils._compat import Path
+        from conda_lock.vendor.poetry.utils._compat import Path
 
         return Path(os.environ.get("POETRY_HOME", "~/.poetry")).expanduser()
 
@@ -90,7 +90,7 @@ class SelfUpdateCommand(Command):
         if self._data_dir is not None:
             return self._data_dir
 
-        from poetry.locations import data_dir
+        from conda_lock.vendor.poetry.locations import data_dir
 
         self._data_dir = data_dir()
 
@@ -101,7 +101,7 @@ class SelfUpdateCommand(Command):
         if self._data_dir is not None:
             return self._data_dir
 
-        from poetry.utils._compat import WINDOWS
+        from conda_lock.vendor.poetry.utils._compat import WINDOWS
 
         if os.getenv("POETRY_HOME"):
             return Path(os.getenv("POETRY_HOME"), "bin").expanduser()
@@ -122,8 +122,8 @@ class SelfUpdateCommand(Command):
         if self._pool is not None:
             return self._pool
 
-        from poetry.repositories.pool import Pool
-        from poetry.repositories.pypi_repository import PyPiRepository
+        from conda_lock.vendor.poetry.repositories.pool import Pool
+        from conda_lock.vendor.poetry.repositories.pypi_repository import PyPiRepository
 
         pool = Pool()
         pool.add_repository(PyPiRepository(fallback=False))
@@ -133,9 +133,9 @@ class SelfUpdateCommand(Command):
         return self._pool
 
     def handle(self):
-        from poetry.__version__ import __version__
-        from poetry.core.semver import Version
-        from poetry.utils.env import EnvManager
+        from conda_lock.vendor.poetry.__version__ import __version__
+        from conda_lock.vendor.poetry_core.semver import Version
+        from conda_lock.vendor.poetry.utils.env import EnvManager
 
         new_update_method = False
         try:
@@ -245,7 +245,7 @@ class SelfUpdateCommand(Command):
         )
 
     def _update(self, version):
-        from poetry.utils.helpers import temporary_directory
+        from conda_lock.vendor.poetry.utils.helpers import temporary_directory
 
         release_name = self._get_release_name(version)
 
@@ -315,13 +315,13 @@ class SelfUpdateCommand(Command):
                 gz.close()
 
     def _update_with_new_method(self, version):
-        from poetry.config.config import Config
-        from poetry.core.packages.dependency import Dependency
-        from poetry.core.packages.project_package import ProjectPackage
-        from poetry.installation.installer import Installer
-        from poetry.packages.locker import NullLocker
-        from poetry.repositories.installed_repository import InstalledRepository
-        from poetry.utils.env import EnvManager
+        from conda_lock.vendor.poetry.config.config import Config
+        from conda_lock.vendor.poetry_core.packages.dependency import Dependency
+        from conda_lock.vendor.poetry_core.packages.project_package import ProjectPackage
+        from conda_lock.vendor.poetry.installation.installer import Installer
+        from conda_lock.vendor.poetry.packages.locker import NullLocker
+        from conda_lock.vendor.poetry.repositories.installed_repository import InstalledRepository
+        from conda_lock.vendor.poetry.utils.env import EnvManager
 
         env = EnvManager.get_system_env(naive=True)
         installed = InstalledRepository.load(env)
@@ -343,7 +343,7 @@ class SelfUpdateCommand(Command):
         installer.run()
 
     def _make_bin(self):
-        from poetry.utils._compat import WINDOWS
+        from conda_lock.vendor.poetry.utils._compat import WINDOWS
 
         self.line("")
         self.line("Updating the <c1>poetry</c1> script")
@@ -380,7 +380,7 @@ class SelfUpdateCommand(Command):
         return subprocess.check_output(list(args), stderr=subprocess.STDOUT)
 
     def _check_recommended_installation(self):
-        from poetry.utils._compat import Path
+        from conda_lock.vendor.poetry.utils._compat import Path
 
         current = Path(__file__)
         try:
@@ -399,7 +399,7 @@ class SelfUpdateCommand(Command):
         return "poetry-{}-{}".format(version, platform)
 
     def _bin_path(self, base_path, bin):
-        from poetry.utils._compat import WINDOWS
+        from conda_lock.vendor.poetry.utils._compat import WINDOWS
 
         if WINDOWS:
             return (base_path / "Scripts" / bin).with_suffix(".exe")
@@ -407,7 +407,7 @@ class SelfUpdateCommand(Command):
         return base_path / "bin" / bin
 
     def make_bin(self):
-        from poetry.utils._compat import WINDOWS
+        from conda_lock.vendor.poetry.utils._compat import WINDOWS
 
         self.bin.mkdir(0o755, parents=True, exist_ok=True)
 
@@ -439,7 +439,7 @@ class SelfUpdateCommand(Command):
         """
         Decides which python executable we'll embed in the launcher script.
         """
-        from poetry.utils._compat import WINDOWS
+        from conda_lock.vendor.poetry.utils._compat import WINDOWS
 
         allowed_executables = ["python", "python3"]
         if WINDOWS:

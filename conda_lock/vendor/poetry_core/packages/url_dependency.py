@@ -3,7 +3,7 @@ from typing import FrozenSet
 from typing import List
 from typing import Union
 
-from poetry.core.utils._compat import urlparse
+from conda_lock.vendor.poetry_core.utils._compat import urlparse
 
 from .dependency import Dependency
 

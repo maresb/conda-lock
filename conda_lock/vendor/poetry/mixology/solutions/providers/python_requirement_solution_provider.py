@@ -8,7 +8,7 @@ from crashtest.contracts.solution import Solution
 
 class PythonRequirementSolutionProvider(HasSolutionsForException):
     def can_solve(self, exception):  # type: (Exception) -> bool
-        from poetry.puzzle.exceptions import SolverProblemError
+        from conda_lock.vendor.poetry.puzzle.exceptions import SolverProblemError
 
         if not isinstance(exception, SolverProblemError):
             return False

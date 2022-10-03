@@ -9,19 +9,19 @@ from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import wait
 from subprocess import CalledProcessError
 
-from poetry.core.packages.file_dependency import FileDependency
-from poetry.core.packages.utils.link import Link
-from poetry.core.packages.utils.utils import url_to_path
-from poetry.core.pyproject.toml import PyProjectTOML
-from poetry.io.null_io import NullIO
-from poetry.utils._compat import PY2
-from poetry.utils._compat import WINDOWS
-from poetry.utils._compat import OrderedDict
-from poetry.utils._compat import Path
-from poetry.utils._compat import cpu_count
-from poetry.utils._compat import decode
-from poetry.utils.env import EnvCommandError
-from poetry.utils.helpers import safe_rmtree
+from conda_lock.vendor.poetry_core.packages.file_dependency import FileDependency
+from conda_lock.vendor.poetry_core.packages.utils.link import Link
+from conda_lock.vendor.poetry_core.packages.utils.utils import url_to_path
+from conda_lock.vendor.poetry_core.pyproject.toml import PyProjectTOML
+from conda_lock.vendor.poetry.io.null_io import NullIO
+from conda_lock.vendor.poetry.utils._compat import PY2
+from conda_lock.vendor.poetry.utils._compat import WINDOWS
+from conda_lock.vendor.poetry.utils._compat import OrderedDict
+from conda_lock.vendor.poetry.utils._compat import Path
+from conda_lock.vendor.poetry.utils._compat import cpu_count
+from conda_lock.vendor.poetry.utils._compat import decode
+from conda_lock.vendor.poetry.utils.env import EnvCommandError
+from conda_lock.vendor.poetry.utils.helpers import safe_rmtree
 
 from .authenticator import Authenticator
 from .chef import Chef
@@ -486,7 +486,7 @@ class Executor(object):
         return archive
 
     def _install_directory(self, operation):
-        from poetry.factory import Factory
+        from conda_lock.vendor.poetry.factory import Factory
 
         package = operation.package
         operation_message = self.get_operation_message(operation)
@@ -521,7 +521,7 @@ class Executor(object):
 
             if package_poetry is not None:
                 if package.develop and not package_poetry.package.build_script:
-                    from poetry.masonry.builders.editable import EditableBuilder
+                    from conda_lock.vendor.poetry.masonry.builders.editable import EditableBuilder
 
                     # This is a Poetry package in editable mode
                     # we can use the EditableBuilder without going through pip
@@ -531,7 +531,7 @@ class Executor(object):
 
                     return 0
                 elif legacy_pip or package_poetry.package.build_script:
-                    from poetry.core.masonry.builders.sdist import SdistBuilder
+                    from conda_lock.vendor.poetry_core.masonry.builders.sdist import SdistBuilder
 
                     # We need to rely on creating a temporary setup.py
                     # file since the version of pip does not support
@@ -555,7 +555,7 @@ class Executor(object):
         return self.run_pip(*args)
 
     def _install_git(self, operation):
-        from poetry.core.vcs import Git
+        from conda_lock.vendor.poetry_core.vcs import Git
 
         package = operation.package
         operation_message = self.get_operation_message(operation)

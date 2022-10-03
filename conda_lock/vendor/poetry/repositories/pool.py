@@ -9,7 +9,7 @@ from .repository import Repository
 
 
 if TYPE_CHECKING:
-    from poetry.core.packages import Package
+    from conda_lock.vendor.poetry_core.packages import Package
 
 
 class Pool(BaseRepository):

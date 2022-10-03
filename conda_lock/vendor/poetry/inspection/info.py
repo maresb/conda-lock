@@ -12,20 +12,20 @@ from typing import Union
 
 import pkginfo
 
-from poetry.core.factory import Factory
-from poetry.core.packages import Package
-from poetry.core.packages import ProjectPackage
-from poetry.core.packages import dependency_from_pep_508
-from poetry.core.pyproject.toml import PyProjectTOML
-from poetry.core.utils._compat import PY35
-from poetry.core.utils._compat import Path
-from poetry.core.utils.helpers import parse_requires
-from poetry.core.utils.helpers import temporary_directory
-from poetry.core.version.markers import InvalidMarker
-from poetry.utils.env import EnvCommandError
-from poetry.utils.env import EnvManager
-from poetry.utils.env import VirtualEnv
-from poetry.utils.setup_reader import SetupReader
+from conda_lock.vendor.poetry_core.factory import Factory
+from conda_lock.vendor.poetry_core.packages import Package
+from conda_lock.vendor.poetry_core.packages import ProjectPackage
+from conda_lock.vendor.poetry_core.packages import dependency_from_pep_508
+from conda_lock.vendor.poetry_core.pyproject.toml import PyProjectTOML
+from conda_lock.vendor.poetry_core.utils._compat import PY35
+from conda_lock.vendor.poetry_core.utils._compat import Path
+from conda_lock.vendor.poetry_core.utils.helpers import parse_requires
+from conda_lock.vendor.poetry_core.utils.helpers import temporary_directory
+from conda_lock.vendor.poetry_core.version.markers import InvalidMarker
+from conda_lock.vendor.poetry.utils.env import EnvCommandError
+from conda_lock.vendor.poetry.utils.env import EnvManager
+from conda_lock.vendor.poetry.utils.env import VirtualEnv
+from conda_lock.vendor.poetry.utils.setup_reader import SetupReader
 
 
 logger = logging.getLogger(__name__)

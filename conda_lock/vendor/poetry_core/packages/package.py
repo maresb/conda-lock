@@ -9,12 +9,12 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from poetry.core.semver import Version
-from poetry.core.semver import parse_constraint
-from poetry.core.spdx import License
-from poetry.core.spdx import license_by_id
-from poetry.core.version.markers import AnyMarker
-from poetry.core.version.markers import parse_marker
+from conda_lock.vendor.poetry_core.semver import Version
+from conda_lock.vendor.poetry_core.semver import parse_constraint
+from conda_lock.vendor.poetry_core.spdx import License
+from conda_lock.vendor.poetry_core.spdx import license_by_id
+from conda_lock.vendor.poetry_core.version.markers import AnyMarker
+from conda_lock.vendor.poetry_core.version.markers import parse_marker
 
 # Do not move to the TYPE_CHECKING only section, because Dependency get's imported
 # by poetry/packages/locker.py from here
@@ -24,8 +24,8 @@ from .utils.utils import create_nested_marker
 
 
 if TYPE_CHECKING:
-    from poetry.core.semver import VersionTypes  # noqa
-    from poetry.core.version.markers import BaseMarker  # noqa
+    from conda_lock.vendor.poetry_core.semver import VersionTypes  # noqa
+    from conda_lock.vendor.poetry_core.version.markers import BaseMarker  # noqa
 
     from .directory_dependency import DirectoryDependency
     from .file_dependency import FileDependency
@@ -324,7 +324,7 @@ class Package(PackageSpecification):
     def to_dependency(
         self,
     ):  # type: () -> Union[Dependency, "DirectoryDependency", "FileDependency", "URLDependency", "VCSDependency"]
-        from poetry.core.utils._compat import Path
+        from conda_lock.vendor.poetry_core.utils._compat import Path
 
         from .dependency import Dependency
         from .directory_dependency import DirectoryDependency

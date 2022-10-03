@@ -35,12 +35,12 @@ lists all packages available."""
     def handle(self):
         from clikit.utils.terminal import Terminal
 
-        from poetry.io.null_io import NullIO
-        from poetry.puzzle.solver import Solver
-        from poetry.repositories.installed_repository import InstalledRepository
-        from poetry.repositories.pool import Pool
-        from poetry.repositories.repository import Repository
-        from poetry.utils.helpers import get_package_version_display_string
+        from conda_lock.vendor.poetry.io.null_io import NullIO
+        from conda_lock.vendor.poetry.puzzle.solver import Solver
+        from conda_lock.vendor.poetry.repositories.installed_repository import InstalledRepository
+        from conda_lock.vendor.poetry.repositories.pool import Pool
+        from conda_lock.vendor.poetry.repositories.repository import Repository
+        from conda_lock.vendor.poetry.utils.helpers import get_package_version_display_string
 
         package = self.argument("package")
 
@@ -365,8 +365,8 @@ lists all packages available."""
     def find_latest_package(self, package, include_dev):
         from clikit.io import NullIO
 
-        from poetry.puzzle.provider import Provider
-        from poetry.version.version_selector import VersionSelector
+        from conda_lock.vendor.poetry.puzzle.provider import Provider
+        from conda_lock.vendor.poetry.version.version_selector import VersionSelector
 
         # find the latest version allowed in this pool
         if package.source_type in ("git", "file", "directory"):
@@ -391,7 +391,7 @@ lists all packages available."""
         return selector.find_best_candidate(name, ">={}".format(package.pretty_version))
 
     def get_update_status(self, latest, package):
-        from poetry.core.semver import parse_constraint
+        from conda_lock.vendor.poetry_core.semver import parse_constraint
 
         if latest.full_pretty_version == package.full_pretty_version:
             return "up-to-date"

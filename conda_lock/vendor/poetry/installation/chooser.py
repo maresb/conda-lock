@@ -5,11 +5,11 @@ from typing import Tuple
 
 from packaging.tags import Tag
 
-from poetry.core.packages.package import Package
-from poetry.core.packages.utils.link import Link
-from poetry.repositories.pool import Pool
-from poetry.utils.env import Env
-from poetry.utils.patterns import wheel_file_re
+from conda_lock.vendor.poetry_core.packages.package import Package
+from conda_lock.vendor.poetry_core.packages.utils.link import Link
+from conda_lock.vendor.poetry.repositories.pool import Pool
+from conda_lock.vendor.poetry.utils.env import Env
+from conda_lock.vendor.poetry.utils.patterns import wheel_file_re
 
 
 class InvalidWheelName(Exception):
@@ -111,7 +111,7 @@ class Chooser:
 
         if links and not selected_links:
             raise RuntimeError(
-                "Retrieved digest for link {}({}) not in poetry.lock metadata {}".format(
+                "Retrieved digest for link {}({}) not in conda_lock.vendor.poetry.lock metadata {}".format(
                     link.filename, h, hashes
                 )
             )

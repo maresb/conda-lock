@@ -1,4 +1,4 @@
-from cleo.io.io_mixin import IOMixin
+from conda_lock.vendor.cleo.io.io_mixin import IOMixin
 from clikit.io import NullIO as BaseNullIO
 
 

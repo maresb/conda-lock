@@ -70,7 +70,7 @@ patch, minor, major, prepatch, preminor, premajor, prerelease.
                 )
 
     def increment_version(self, version, rule):
-        from poetry.core.semver import Version
+        from conda_lock.vendor.poetry_core.semver import Version
 
         try:
             version = Version.parse(version)

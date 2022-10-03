@@ -1,8 +1,8 @@
 import os
 import subprocess
 
-from poetry.core.utils._compat import Path
-from poetry.core.utils._compat import decode
+from conda_lock.vendor.poetry_core.utils._compat import Path
+from conda_lock.vendor.poetry_core.utils._compat import decode
 
 from .git import Git
 

@@ -6,8 +6,8 @@ from typing import FrozenSet
 from typing import List
 from typing import Union
 
-from poetry.core.packages.utils.utils import path_to_url
-from poetry.core.utils._compat import Path
+from conda_lock.vendor.poetry_core.packages.utils.utils import path_to_url
+from conda_lock.vendor.poetry_core.utils._compat import Path
 
 from .dependency import Dependency
 

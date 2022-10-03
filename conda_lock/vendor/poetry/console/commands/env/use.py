@@ -11,7 +11,7 @@ class EnvUseCommand(Command):
     arguments = [argument("python", "The python executable to use.")]
 
     def handle(self):
-        from poetry.utils.env import EnvManager
+        from conda_lock.vendor.poetry.utils.env import EnvManager
 
         manager = EnvManager(self.poetry)
 

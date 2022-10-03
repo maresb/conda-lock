@@ -2,7 +2,7 @@ import sys
 
 from cleo import Application as BaseApplication
 
-from poetry.__version__ import __version__
+from conda_lock.vendor.poetry.__version__ import __version__
 
 from .commands.about import AboutCommand
 from .commands.add import AddCommand
@@ -60,8 +60,8 @@ class Application(BaseApplication):
 
     @property
     def poetry(self):
-        from poetry.factory import Factory
-        from poetry.utils._compat import Path
+        from conda_lock.vendor.poetry.factory import Factory
+        from conda_lock.vendor.poetry.utils._compat import Path
 
         if self._poetry is not None:
             return self._poetry

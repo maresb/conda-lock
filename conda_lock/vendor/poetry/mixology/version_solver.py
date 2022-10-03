@@ -7,11 +7,11 @@ from typing import Dict
 from typing import List
 from typing import Union
 
-from poetry.core.packages import Dependency
-from poetry.core.packages import Package
-from poetry.core.packages import ProjectPackage
-from poetry.core.semver import Version
-from poetry.core.semver import VersionRange
+from conda_lock.vendor.poetry_core.packages import Dependency
+from conda_lock.vendor.poetry_core.packages import Package
+from conda_lock.vendor.poetry_core.packages import ProjectPackage
+from conda_lock.vendor.poetry_core.semver import Version
+from conda_lock.vendor.poetry_core.semver import VersionRange
 
 from .failure import SolveFailure
 from .incompatibility import Incompatibility
@@ -26,7 +26,7 @@ from .term import Term
 
 
 if TYPE_CHECKING:
-    from poetry.puzzle.provider import Provider
+    from conda_lock.vendor.poetry.puzzle.provider import Provider
 
 
 _conflict = object()
