@@ -22,11 +22,21 @@ SOFTWARE.
 
 ---
 
-Conda-lock incorporates the following libraries into its distributed code:
+Conda-lock incorporates the following libraries, sometimes with modification, into its distributed code:
 
-* conda, license as BSD-3-Clause
+* conda, licensed as BSD-3-Clause
   * auxlib, licensed as ISC
   * boltons, licensed as BSD-3-Clause
   * pytoolz, licensed as BSD-3-Clause
   * tqdm, licensed as MIT
   * urllib3, licensed as MIT
+* cleo v0.8.1, licensed as MIT, Copyright (c) 2013 Sébastien Eustace.
+* poetry v1.1.15, licensed as MIT, Copyright (c) 2018 Sébastien Eustace.
+* poetry-core v1.0.8, licensed as MIT, Copyright (c) 2020 Sébastien Eustace.
+  * attrs v20.3.0, licensed as MIT, Copyright (c) 2015 Hynek Schlawack.
+  * jsonschema v3.2.0, licensed as MIT, Copyright (c) 2012 Julian Berman.
+  * lark-parser v0.9.0, licensed as MIT, Copyright (c) 2017 Erez Shinan.
+  * packaging v20.9, licensed as Apache-2.0 or BSD-2-Clause, Copyright (c) Donald Stufft and individual contributors.
+  * pyparsing v2.4.7, licensed as MIT, Copyright (c) 2003-2019  Paul T. McGuire.
+  * pyrsistent v0.16.1, licensed as MIT, Copyright (c) 2019 Tobias Gustafsson.
+  * tomlkit v0.7.0, licensed as MIT, Copyright (c) 2018 Sébastien Eustace.
