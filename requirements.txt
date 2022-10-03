@@ -7,15 +7,15 @@ pyyaml >= 5.1
 ruamel.yaml
 toml
 typing-extensions
-cachecontrol[filecache] >=0.12.9,<0.13.0  # poetry
-cachy >=0.3.0,<0.4.0  # poetry
-clikit >=0.6.2,<0.7.0  # cleo, poetry
-crashtest >=0.3.0,<0.4.0  # poetry
-html5lib >=1.0,<2.0  # poetry
-importlib-metadata >=1.7.0,<2.0.0; python_version <= 3.7  # poetry, poetry-core
+cachecontrol[filecache] >=0.12.9  # poetry
+cachy >=0.3.0  # poetry
+clikit >=0.6.2  # cleo, poetry
+crashtest >=0.3.0  # poetry
+html5lib >=1.0  # poetry
+importlib-metadata >=1.7.0; python_version <= 3.7  # poetry, poetry-core
 keyring >=21.2.0  # poetry
-packaging >=20.4,<21.0  # poetry
-pkginfo >=1.4,<2.0  # poetry
-requests >=2.18,<3.0  # poetry, conda-lock
-tomlkit >=0.7.0,<1.0.0  # poetry
-virtualenv >=20.0.26,<21.0.0  # poetry
+packaging >=20.4  # poetry
+pkginfo >=1.4  # poetry
+requests >=2.18  # poetry, conda-lock
+tomlkit >=0.7.0  # poetry
+virtualenv >=20.0.26  # poetry
