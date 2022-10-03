@@ -15,10 +15,7 @@ html5lib >=1.0,<2.0  # poetry
 importlib-metadata >=1.7.0,<2.0.0; python_version <= 3.7  # poetry, poetry-core
 keyring >=21.2.0  # poetry
 packaging >=20.4,<21.0  # poetry
-pexpect >=4.7.0,<5.0.0  # poetry
 pkginfo >=1.4,<2.0  # poetry
 requests >=2.18,<3.0  # poetry, conda-lock
-requests-toolbelt >=0.9.1,<0.10.0  # poetry
-shellingham >=1.1,<2.0  # poetry
 tomlkit >=0.7.0,<1.0.0  # poetry
 virtualenv >=20.0.26,<21.0.0  # poetry
