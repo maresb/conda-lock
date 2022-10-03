@@ -1,10 +1,15 @@
-exclude: ^conda_lock/vendor/.*$
+exclude: |
+    (?x)^(
+        conda_lock/vendor/conda/.*|
+        conda_lock/_vendor/.*
+    )$
 
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.1.0
   hooks:
     - id: trailing-whitespace
+      exclude: "^.*\\.patch$"
     - id: check-ast
 
 - repo: https://github.com/psf/black
