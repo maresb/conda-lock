@@ -79,16 +79,12 @@ def add_vendored_requirements() -> None:
 def vendor_dependencies() -> None:
     # Use the vendoring package to vendor the dependencies
     # https://pypi.org/project/vendoring/
-    from vendoring.configuration import load_configuration
-    from vendoring.tasks.cleanup import cleanup_existing_vendored
-    from vendoring.tasks.stubs import generate_stubs
-    from vendoring.tasks.vendor import vendor_libraries
+    subprocess.check_output(["vendoring", "sync"], cwd=get_repo_root())
 
-    os.chdir(get_repo_root())
-    config = load_configuration(get_repo_root())
-    cleanup_existing_vendored(config)
-    libraries = vendor_libraries(config)
-    generate_stubs(config, libraries)
+
+@m.add_stage("4.1", "Delete botched license files")
+def delete_botched_license_files() -> None:
+    ...
 
 
 @m.add_stage(5, "Add root LICENSE files for main Poetry packages")
