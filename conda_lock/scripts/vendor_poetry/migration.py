@@ -25,63 +25,6 @@ m = Migration("Vendor poetry")
 directly_vendored_dependencies = get_directly_vendored_dependencies()
 
 
-@m.add_stage(1, "Add root LICENSE files for main Poetry packages")
-def add_poetry_root_licenses() -> None:
-    """Add the root licenses for Poetry, Poetry Core, and Cleo.
-
-    Copy them to "vendor/licenses/packagename/LICENSE".
-    They are all MIT licenses.
-    This does not deal with the vendored dependencies of Poetry Core.
-    """
-    for dep_data in directly_vendored_dependencies.values():
-        license = dep_data._root_license
-        assert license.is_mit
-        destination_dir = get_repo_root() / "vendoring" / "licenses" / dep_data.name
-        destination_dir.mkdir(parents=True, exist_ok=True)
-        (destination_dir / "LICENSE").write_text(license.text)
-
-
-@m.add_stage(2, "Describe vendored dependencies in conda-lock LICENSE")
-def collect_poetry_core_vendored_dependencies() -> None:
-    """Collect info about poetry-core's vendored dependencies.
-
-    Also show that there aren't any vendored dependencies in poetry.
-
-    (We only need to vendor a single file from cleo, so its vendored
-    dependencies are not relevant.)
-    """
-    # The only vendored dependencies should exist in poetry-core.
-    for dep_name, dep in directly_vendored_dependencies.items():
-        dep.discovered_licenses = [dep._root_license]
-        if dep_name == "poetry-core":
-            continue
-        discovered_vendored_dependencies = dep.search_vendored_dependencies()
-        assert len(discovered_vendored_dependencies) == 0
-
-    poetry_core = directly_vendored_dependencies["poetry-core"]
-    discovered_vendored_dependencies = poetry_core.search_vendored_dependencies()
-
-    conda_lock_license_file = get_repo_root() / "LICENSE"
-    conda_lock_license = conda_lock_license_file.read_text()
-    conda_lock_license = conda_lock_license.replace("license as", "licensed as")
-    conda_lock_license = conda_lock_license.replace(
-        "Conda-lock incorporates the following libraries into",
-        "Conda-lock incorporates the following libraries, "
-        "sometimes with modification, into",
-    )
-    conda_lock_license += "\n".join(
-        [f"* {dep.describe()}" for dep in directly_vendored_dependencies.values()]
-    )
-    conda_lock_license += "\n"
-    # Print subdependencies of poetry-core at the next level of indentation.
-    assert list(directly_vendored_dependencies.keys())[-1] == "poetry-core"
-    conda_lock_license += "\n".join(
-        [f"  * {dep.describe()}" for dep in discovered_vendored_dependencies.values()]
-    )
-    conda_lock_license += "\n"
-    conda_lock_license_file.write_text(conda_lock_license)
-
-
 @m.add_stage(3, "Add vendored dependency requirements to conda-lock")
 def add_vendored_requirements() -> None:
     # The list of requirements which we should add
@@ -146,6 +89,63 @@ def vendor_dependencies() -> None:
     cleanup_existing_vendored(config)
     libraries = vendor_libraries(config)
     generate_stubs(config, libraries)
+
+
+@m.add_stage(5, "Add root LICENSE files for main Poetry packages")
+def add_poetry_root_licenses() -> None:
+    """Add the root licenses for Poetry, Poetry Core, and Cleo.
+
+    Copy them to "vendor/licenses/packagename/LICENSE".
+    They are all MIT licenses.
+    This does not deal with the vendored dependencies of Poetry Core.
+    """
+    for dep_data in directly_vendored_dependencies.values():
+        license = dep_data._root_license
+        assert license.is_mit
+        destination_dir = get_repo_root() / "vendoring" / "licenses" / dep_data.name
+        destination_dir.mkdir(parents=True, exist_ok=True)
+        (destination_dir / "LICENSE").write_text(license.text)
+
+
+@m.add_stage(6, "Describe vendored dependencies in conda-lock LICENSE")
+def collect_poetry_core_vendored_dependencies() -> None:
+    """Collect info about poetry-core's vendored dependencies.
+
+    Also show that there aren't any vendored dependencies in poetry.
+
+    (We only need to vendor a single file from cleo, so its vendored
+    dependencies are not relevant.)
+    """
+    # The only vendored dependencies should exist in poetry-core.
+    for dep_name, dep in directly_vendored_dependencies.items():
+        dep.discovered_licenses = [dep._root_license]
+        if dep_name == "poetry-core":
+            continue
+        discovered_vendored_dependencies = dep.search_vendored_dependencies()
+        assert len(discovered_vendored_dependencies) == 0
+
+    poetry_core = directly_vendored_dependencies["poetry-core"]
+    discovered_vendored_dependencies = poetry_core.search_vendored_dependencies()
+
+    conda_lock_license_file = get_repo_root() / "LICENSE"
+    conda_lock_license = conda_lock_license_file.read_text()
+    conda_lock_license = conda_lock_license.replace("license as", "licensed as")
+    conda_lock_license = conda_lock_license.replace(
+        "Conda-lock incorporates the following libraries into",
+        "Conda-lock incorporates the following libraries, "
+        "sometimes with modification, into",
+    )
+    conda_lock_license += "\n".join(
+        [f"* {dep.describe()}" for dep in directly_vendored_dependencies.values()]
+    )
+    conda_lock_license += "\n"
+    # Print subdependencies of poetry-core at the next level of indentation.
+    assert list(directly_vendored_dependencies.keys())[-1] == "poetry-core"
+    conda_lock_license += "\n".join(
+        [f"  * {dep.describe()}" for dep in discovered_vendored_dependencies.values()]
+    )
+    conda_lock_license += "\n"
+    conda_lock_license_file.write_text(conda_lock_license)
 
 
 @m.add_stage(7, "Update pypi_solver.py to use vendored Poetry imports")
