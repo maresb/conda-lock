@@ -74,6 +74,7 @@ class DependencyData(BaseModel):
 
     @classmethod
     def from_line(cls, line: str) -> DependencyData:
+        """Read a requirement from a line in vendor.txt"""
         main_and_sha256 = line.split("--hash=sha256:", 1)
         main = main_and_sha256[0]
         if len(main_and_sha256) == 2:
