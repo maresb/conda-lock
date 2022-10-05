@@ -125,7 +125,7 @@ class DependencyData(BaseModel):
     def _root_license(self) -> License:
         root_license_name = f"{self.name}-{self.version}/LICENSE"
         license_tarinfo = self._tarfile_obj.getmember(root_license_name)
-        license_text = tarinfo_to_str(self._tarfile_obj, license_tarinfo)
+        license_text = self.tarinfo_to_str(license_tarinfo)
         return License(text=license_text)
 
     def search_vendored_dependencies(self) -> dict[str, DependencyData]:
@@ -264,13 +264,6 @@ def get_mit_body() -> str:
     start = first_block.find("Permission is hereby granted")
     mit_body = first_block[start:].replace("\n", " ").replace("  ", " ").strip()
     return mit_body
-
-
-def tarinfo_to_str(tarfile_obj: tarfile.TarFile, tarinfo: tarfile.TarInfo) -> str:
-    file_handle = tarfile_obj.extractfile(tarinfo)
-    assert file_handle is not None
-    text = file_handle.read().decode()
-    return text
 
 
 class Requirement(BaseModel):
