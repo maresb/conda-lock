@@ -71,6 +71,7 @@ class DependencyData(BaseModel):
     version: str | None = None
     sha256: str | None = None
     discovered_licenses: list[License] = []
+    directly_vendored: bool
 
     @classmethod
     def from_line(cls, line: str) -> DependencyData:
@@ -87,7 +88,7 @@ class DependencyData(BaseModel):
             version = name_and_version[1].strip()
         else:
             version = None
-        return cls(name=name, version=version, sha256=sha256)
+        return cls(name=name, version=version, sha256=sha256, directly_vendored=True)
 
     @property
     def _sdist_obj(self) -> pkginfo.SDist:
@@ -206,6 +207,7 @@ class DependencyData(BaseModel):
                 name=package_name,
                 version=vendored_versions[package_name],
                 discovered_licenses=vendored_licenses[package_name],
+                directly_vendored=False,
             )
             for package_name in vendored_versions
         }
