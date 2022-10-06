@@ -125,12 +125,6 @@ def collect_poetry_core_vendored_dependencies() -> None:
 
     conda_lock_license_file = get_repo_root() / "LICENSE"
     conda_lock_license = conda_lock_license_file.read_text()
-    conda_lock_license = conda_lock_license.replace("license as", "licensed as")
-    conda_lock_license = conda_lock_license.replace(
-        "Conda-lock incorporates the following libraries into",
-        "Conda-lock incorporates the following libraries, "
-        "sometimes with modification, into",
-    )
     conda_lock_license += "\n".join(
         [f"* {dep.describe()}" for dep in directly_vendored_dependencies.values()]
     )
