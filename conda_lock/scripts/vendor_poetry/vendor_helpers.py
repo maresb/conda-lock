@@ -51,6 +51,7 @@ def get_directly_vendored_dependencies() -> dict[str, DependencyData]:
 
 class License(BaseModel):
     text: str
+    destination_file: Path | None = None
 
     @property
     def is_mit(self) -> bool:
@@ -166,6 +167,7 @@ class DependencyData(BaseModel):
                 vendor_txt_str = self.tarinfo_to_str(m)
             # Find vendored licenses
             if "license" in m.name.lower() or "copying" in m.name.lower():
+                destination_file = get_vendor_root() / Path(*path_parts[1:])
                 if len(path_parts) == 2:
                     # Top-level license.
                     continue
@@ -176,7 +178,7 @@ class DependencyData(BaseModel):
                 assert "_vendor" in path_parts
                 package_name = path_parts[path_parts.index("_vendor") + 1].split(".")[0]
                 license_text = self.tarinfo_to_str(m)
-                license = License(text=license_text)
+                license = License(text=license_text, destination_file=destination_file)
                 vendored_licenses[package_name].append(license)
         assert vendor_txt_str is not None
 
