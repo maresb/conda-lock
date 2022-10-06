@@ -82,9 +82,13 @@ def vendor_dependencies() -> None:
     subprocess.check_output(["vendoring", "sync"], cwd=get_repo_root())
 
 
-@m.add_stage("4.1", "Delete botched license files")
+@m.add_stage("4.1", "Delete botched license file copies")
 def delete_botched_license_files() -> None:
-    ...
+    vr = get_vendor_root()
+    for license_file in chain(
+        vr.glob("poetry-core.*LICENSE*"), vr.glob("poetry-core.*COPYING*")
+    ):
+        license_file.unlink()
 
 
 @m.add_stage(5, "Add root LICENSE files for main Poetry packages")
