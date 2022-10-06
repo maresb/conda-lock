@@ -159,22 +159,22 @@ class DependencyData(BaseModel):
         vendored_licenses: dict[str, list[License]] = defaultdict(list)
         vendor_txt_str: str | None = None
         for m in self._tarfile_obj.getmembers():
+            path_parts = Path(m.name).parts
             # Find vendor.txt
-            if m.name.endswith("/vendor.txt"):
+            if path_parts[-1] == "vendor.txt":
                 assert vendor_txt_str is None
                 vendor_txt_str = self.tarinfo_to_str(m)
             # Find vendored licenses
             if "license" in m.name.lower() or "copying" in m.name.lower():
-                if m.name.count("/") == 1:
+                if len(path_parts) == 2:
                     # Top-level license.
                     continue
                 if m.name.endswith("/spdx/data/licenses.json"):
                     continue
                 if m.name.endswith("/spdx/license.py"):
                     continue
-                assert "/_vendor/" in m.name
-                _, after = m.name.split("/_vendor/")
-                package_name = after.split("/")[0].split(".")[0]
+                assert "_vendor" in path_parts
+                package_name = path_parts[path_parts.index("_vendor") + 1].split(".")[0]
                 license_text = self.tarinfo_to_str(m)
                 license = License(text=license_text)
                 vendored_licenses[package_name].append(license)
