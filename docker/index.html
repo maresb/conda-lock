@@ -15,7 +15,7 @@
         <link rel="next" href="../cli/gen/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.11">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.12">
     
     
       
@@ -540,7 +540,7 @@ docker container.  This avoids the case where the <code>conda install xyz</code>
 <p>To get this to work nicely generate the platform specific lock run something
 like this in your shell</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Update the lockfile</span>
-conda<span class="w"> </span>lock<span class="w"> </span>--format<span class="w"> </span>explicit<span class="w"> </span>--platform<span class="w"> </span>linux-64
+conda-lock<span class="w"> </span>--kind<span class="w"> </span>explicit<span class="w"> </span>--platform<span class="w"> </span>linux-64
 <span class="c1"># build the image</span>
 docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>myimagename:mytag<span class="w"> </span>.
 </code></pre></div>
@@ -641,7 +641,7 @@ the <code>--copy</code> flag from <code>conda-lock install</code></p>
     <script id="__config" type="application/json">{"base": "..", "features": ["content.tabs.link", "header.autohide", "navigation.indexes", "navigation.instant", "navigation.expand"], "search": "../assets/javascripts/workers/search.db81ec45.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.6df46069.min.js"></script>
+      <script src="../assets/javascripts/bundle.4b2c34cd.min.js"></script>
       
     
   </body>
