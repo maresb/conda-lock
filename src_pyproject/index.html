@@ -783,7 +783,7 @@ dependency.</p>
 </div>
 </div>
 </div>
-<p>These can be referened as follows</p>
+<p>These can be referenced as follows</p>
 <div class="highlight"><pre><span></span><code>conda-lock<span class="w"> </span>--extra<span class="w"> </span>mysql<span class="w"> </span>--extra<span class="w"> </span>pgsql<span class="w"> </span>-f<span class="w"> </span>pyproject.toml
 </code></pre></div>
 <p>When generating lockfiles that make use of extras it is recommended to make use of <code>--filename-template</code> covered <a href="#file-naming">here</a>.</p>
@@ -797,7 +797,7 @@ to happen at the solve stage use the flag <code>--filter-extras</code></p>
 </div>
 <h2 id="poetry-specific-supported-features">Poetry specific supported features</h2>
 <h3 id="dependency-groups">Dependency groups</h3>
-<p>conda-lock can map (dependency groups)[<a href="https://python-poetry.org/docs/master/managing-dependencies/#dependency-groups">https://python-poetry.org/docs/master/managing-dependencies/#dependency-groups</a>] to
+<p>conda-lock can map <a href="https://python-poetry.org/docs/master/managing-dependencies/#dependency-groups">dependency groups</a> to
 categories similar to how extras are handled.</p>
 <div class="highlight"><span class="filename">pyproject.toml</span><pre><span></span><code><span class="k">[tool.poetry.group.docs.dependencies]</span>
 <span class="n">mkdocs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
