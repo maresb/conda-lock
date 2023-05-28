@@ -18,6 +18,7 @@ jobs:
     env:
       PYTHONUNBUFFERED: "1"
       FORCE_COLOR: "1"
+      MMRUN: "b"
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
