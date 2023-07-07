@@ -15,7 +15,7 @@
         <link rel="next" href="../docker/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.15">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
     
     
       
@@ -590,24 +590,35 @@ behavior as for token based channel urls.</p>
 <h2 id="what-gets-stored">What gets stored</h2>
 <p>Since we can generally assume that these substitutions are both volatile <em>and</em> secret <code>conda-lock</code> will not store
 the raw version of a url in the unified lockfile.</p>
-<p>If it encounters a channel url that looks as if it contains a credential portion it will search the currently
-available environment variables for a match with that variable.  In the case of a match that portion of the url
-will be replaced with a environment variable.</p>
-<details class="example">
-<summary>Example output in unified lockfile</summary>
+<p>If it encounters a channel url that looks as if it contains a credential portion (see below) it will search the currently
+available environment variables for a match with that variable.</p>
+<p><code>conda-lock</code> will identify the following environment variables as containing credentials only if they have these <em>suffixes</em>:</p>
+<ul>
+<li>User names: <code>["USERNAME", "USER"]</code>.</li>
+<li>Passwords: <code>["PASSWORD", "PASS", "TOKEN", "KEY"]</code>.</li>
+<li>Tokens: <code>["TOKEN", "CRED", "PASSWORD", "PASS", "KEY"]</code>.</li>
+</ul>
+<p>In the case of a match that portion of the url will be replaced with an environment variable.</p>
+<p>For example using this configuration in your <code>environment.yml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">channels</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://host.tld/t/$QUETZ_API_KEY/channel_name</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">conda-forge</span>
+</code></pre></div>
+<p>Will result in this lock file:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">metadata</span><span class="p">:</span>
-<span class="nt">channels</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://host.tld/t/$QUETZ_API_KEY/channel_name</span>
-<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">used_env_vars</span><span class="p p-Indicator">:</span>
+<span class="w">  </span><span class="nt">channels</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://host.tld/t/$QUETZ_API_KEY/channel_name</span>
+<span class="w">    </span><span class="nt">used_env_vars</span><span class="p">:</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">QUETZ_API_KEY</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">conda-forge</span>
+<span class="w">    </span><span class="nt">used_env_vars</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
 <span class="nt">package</span><span class="p">:</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">platform</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">linux-64</span>
-<span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://host.tld/t/$QUETZ_API_KEY/channel_name/linux-64/libsomethingprivate-22.02.00.tar.bz2</span>
-<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">22.02.00</span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://host.tld/t/$QUETZ_API_KEY/channel_name/linux-64/libsomethingprivate-22.02.00.tar.bz2</span>
+<span class="w">  </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">22.02.00</span>
 </code></pre></div>
-</details>
-<p>The rendered lockfiles will contain substituted environment variables, so if you are making use of <code>conda-lock</code>
-in conjunction with git these should <em>NOT</em> be checked into version control.</p>
+<p>Note however that the rendered lockfiles (<code>--kind explicit</code>) will contain substituted environment variables, so if you are making use of <code>conda-lock</code>
+in conjunction with git these should <strong>NOT</strong> be checked into version control.</p>
 
 
 
@@ -662,10 +673,10 @@ in conjunction with git these should <em>NOT</em> be checked into version contro
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.tabs.link", "header.autohide", "navigation.indexes", "navigation.instant", "navigation.expand"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.tabs.link", "header.autohide", "navigation.indexes", "navigation.instant", "navigation.expand"], "search": "../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.b4d07000.min.js"></script>
+      <script src="../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>
