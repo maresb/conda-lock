@@ -17,7 +17,7 @@ from conda_lock.scripts.vendor_poetry.vendor_helpers import (
 )
 
 
-m = Migration("Vendor poetry")
+m = Migration("Upgrade vendored Poetry to 1.5.1")
 
 directly_vendored_dependencies = get_directly_vendored_dependencies()
 
@@ -52,24 +52,36 @@ def add_vendored_requirements() -> None:
         if k not in directly_vendored_dependencies
     }
 
-    # Update the requirements.txt file
+    # Update the dependencies
+    pyproject_toml = get_repo_root() / "pyproject.toml"
+    pyproject_toml_text = pyproject_toml.read_text()
 
-    requirements_txt_file = get_repo_root() / "requirements.txt"
-    requirements_txt = requirements_txt_file.read_text()
+    BEGIN_LINE = "    # BEGIN VENDORED POETRY DEPENDENCIES\n"
+    END_LINE = "    # END VENDORED POETRY DEPENDENCIES\n"
 
-    # Remove some requirements which are redundant
-    for line in ["poetry <1.2", "requests >=2"]:
-        requirements_txt = requirements_txt.replace(line + "\n", "")
+    before, rest = pyproject_toml_text.split(BEGIN_LINE, maxsplit=1)
+    deps, after = rest.split(END_LINE, maxsplit=1)
+    dep_lines = [line.strip() for line in deps.splitlines()]
+    dep_list = []
+    for line in dep_lines:
+        if line == "" or line.startswith("#"):
+            continue
+        assert line.startswith('"') and line.endswith('",'), f"Malformed req: {line}"
+        dep_list.append(line.strip('",'))
+
     filtered_requirements["requests"].sources.append("conda-lock")
+    filtered_requirements["tomli"].sources.append("conda-lock")
+    filtered_requirements["filelock"].sources.append("conda-lock")
 
+    dependency_lines = ""
     for requirement in filtered_requirements.values():
         # Construct the pair of lines to append to requirements.txt.
         # e.g. ('# poetry, poetry-core:\n'
         #       'importlib-metadata >=1.7.0,<2.0.0; python_version <= 3.7')
-        requirement_line = requirement.as_requirements_txt_line()
-        requirements_txt += requirement_line + "\n"
+        dependency_lines += requirement.as_dependencies_lines() + "\n"
 
-    requirements_txt_file.write_text(requirements_txt)
+    new_pyproject_toml = f"{before}{BEGIN_LINE}{dependency_lines}{END_LINE}{after}"
+    pyproject_toml.write_text(new_pyproject_toml)
 
 
 @m.add_stage(2, "Update pypi_solver.py to use vendored Poetry imports")

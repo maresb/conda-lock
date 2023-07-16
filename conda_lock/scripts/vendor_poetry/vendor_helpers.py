@@ -39,13 +39,14 @@ def get_directly_vendored_dependencies() -> dict[str, DependencyData]:
     directly_vendored_dependencies: dict[str, DependencyData] = {}
     for line in get_vendor_txt().splitlines():
         line = line.strip()
-        if not ("poetry" in line or "cleo" in line):
-            continue
         if line.startswith("#"):
             continue
         if line == "":
             continue
         dep = DependencyData.from_line(line)
+        if dep.name == "conda":
+            # This is a bit too complicated. Let's do it separately for now.
+            continue
         directly_vendored_dependencies[dep.name] = dep
     return directly_vendored_dependencies
 
@@ -77,13 +78,23 @@ class DependencyData(BaseModel):
     @classmethod
     def from_line(cls, line: str) -> DependencyData:
         """Read a requirement from a line in vendor.txt"""
-        name_and_version = line.split("==", 1)
-        name = name_and_version[0].strip()
-        if len(name_and_version) == 2:
-            version = name_and_version[1].strip()
+        if line.startswith("git+"):
+            if not line.startswith("git+https://github.com/conda/conda.git@"):
+                raise NotImplementedError("git+ dependency not recognized")
+            version = line.split("@", 1)[1]
+            return cls(
+                name="conda",
+                version=version,
+                directly_vendored=True,
+            )
         else:
-            version = None
-        return cls(name=name, version=version, directly_vendored=True)
+            name_and_version = line.split("==", 1)
+            name = name_and_version[0].strip()
+            if len(name_and_version) == 2:
+                version = name_and_version[1].strip()
+            else:
+                version = None
+            return cls(name=name, version=version, directly_vendored=True)
 
     @property
     def _sdist_obj(self) -> pkginfo.SDist:
@@ -99,10 +110,16 @@ class DependencyData(BaseModel):
     def _tarfile_obj(self) -> tarfile.TarFile:
         if self.version is None:
             raise RuntimeError(f"Cannot get tarfile for {self.name} without version.")
-        url = (
-            f"https://pypi.io/packages/source/{self.name[0]}/{self.name}"
-            f"/{self.name}-{self.version}.tar.gz"
-        )
+        if self.name == "conda":
+            url = (
+                f"https://github.com/conda/conda/archive/refs/"
+                f"tags/{self.version}.tar.gz"
+            )
+        else:
+            url = (
+                f"https://pypi.io/packages/source/{self.name[0]}/{self.name}"
+                f"/{self.name.replace('-', '_')}-{self.version}.tar.gz"
+            )
         response = requests.get(url, allow_redirects=True)
         response.raise_for_status()
         tarfile_bytes = response.content
@@ -315,13 +332,16 @@ class Requirement(BaseModel):
     python_requirements: str | None = None
     sources: list[str]
 
-    def as_requirements_txt_line(self) -> str:
+    def as_dependencies_lines(self) -> str:
         requirement_line = f"{self.name}"
         if self.version_requirements is not None:
             requirement_line += f" {self.version_requirements}"
         if self.python_requirements is not None:
             requirement_line += f"; {self.python_requirements}"
-        requirement_line = "# " + ", ".join(self.sources) + ":\n" + requirement_line
+        requirement_line = requirement_line.replace('"', "'")
+        requirement_line = (
+            "        # " + ", ".join(self.sources) + f':\n        "{requirement_line}",'
+        )
         return requirement_line
 
 
@@ -351,7 +371,7 @@ def req_to_req_obj(req: str, dep: DependencyData) -> Requirement | None:
             python_requirements = version_and_python[1]
     if version_requirements is not None:
         # '>=0.12.9,<0.13.0'
-        version_requirements = version_requirements.strip("()")
+        version_requirements = version_requirements.strip("() ")
         if version_requirements == "":
             version_requirements = None
     if python_requirements is None:
@@ -380,13 +400,20 @@ def req_to_req_obj(req: str, dep: DependencyData) -> Requirement | None:
 
         # All the potentially relevant python versions which satisfy the
         # python_version constraints
+        class StringEqualsAll(str):
+            def __eq__(self, other: object) -> bool:
+                return True
+
         relevant_python_versions = [
             python_version
             for python_version in potentially_relevant_python_versions
             if eval(
                 python_requirements,
                 {"__builtins__": {}},
-                {"python_version": python_version},
+                {
+                    "python_version": python_version,
+                    "sys_platform": StringEqualsAll("sys_platform"),
+                },
             )
         ]
 
@@ -434,11 +461,13 @@ def merge_requirements(
             for req in relevant_requirements
             if req.name == req_name and req.version_requirements is not None
         )
-        # Simplify by hand a few special cases
-        if merged_specifiers == ">=0.6.0,<0.7.0,>=0.6.2,<0.7.0":
-            merged_specifiers = ">=0.6.2,<0.7.0"
-        elif merged_specifiers == ">=1.6.0,<2.0.0,>=1.7.0,<2.0.0":
-            merged_specifiers = ">=1.7.0,<2.0.0"
+        # Eliminate duplicates and sort
+        merged_specifiers = ",".join(
+            sorted(
+                set(merged_specifiers.split(",")),
+                key=lambda x: x.strip("<>="),
+            )
+        )
 
         # Get the set of distinct Python version requirements.
         python_requirements_set = {
