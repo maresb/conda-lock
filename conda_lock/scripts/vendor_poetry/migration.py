@@ -84,29 +84,6 @@ def add_vendored_requirements() -> None:
     pyproject_toml.write_text(new_pyproject_toml)
 
 
-@m.add_stage(2, "Update pypi_solver.py to use vendored Poetry imports")
-def modify_vendored_imports() -> None:
-    for src_file in [get_repo_root() / "conda_lock" / "pypi_solver.py"]:
-        src = src_file.read_text()
-        # This is the main logic for updating
-        for old, new in [
-            ("poetry", f"{get_vendor_namespace()}.poetry"),
-        ]:
-            src = src.replace(f"import {old}", f"import {new}")
-            src = src.replace(f"from {old}", f"from {new}")
-        src_file.write_text(src)
-    print("Run pre-commit to fix formatting. (Expected to show failing stages.)")
-    subprocess.run(
-        [
-            "pre-commit",
-            "run",
-            "--files",
-            get_repo_root() / "conda_lock" / "pypi_solver.py",
-        ]
-    )
-    print("Pre-commit complete. Code should be fixed now.")
-
-
 @m.add_stage(3, "Remove pexpect, requests_toolbelt, and shellingham as dependencies")
 def remove_unnecessary_dependencies() -> None:
     to_remove = ["pexpect", "requests-toolbelt", "shellingham"]
@@ -127,22 +104,6 @@ def remove_unnecessary_dependencies() -> None:
         new_requirements_txt += line + "\n"
     (get_repo_root() / "requirements.txt").write_text(new_requirements_txt)
     (get_vendor_root() / "poetry" / "requirements.txt").unlink()
-
-
-@m.add_stage(4, "Remove upper bounds on poetry dependencies")
-def remove_upper_bounds() -> None:
-    conda_lock_requirements_txt = (get_repo_root() / "requirements.txt").read_text()
-    new_requirements = ""
-    for line1, line2 in zip(
-        conda_lock_requirements_txt.splitlines(),
-        conda_lock_requirements_txt.splitlines()[1:],
-    ):
-        if ",<" in line2 and line1.startswith("# ") and "poetry" in line1:
-            line2 = re.sub(r",<[0-9.]+", "", line2)
-        if new_requirements == "":
-            new_requirements = line1 + "\n"
-        new_requirements += line2 + "\n"
-    (get_repo_root() / "requirements.txt").write_text(new_requirements)
 
 
 @m.add_stage(5, "Use 'vendoring sync' to vendor dependencies")
