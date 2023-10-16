@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.8">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.6">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.046329b4.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.35e1ed30.min.css">
       
       
 
@@ -227,14 +227,16 @@
       
     
     
+    
+    
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
-        
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
+          
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
@@ -362,6 +364,13 @@
           <li class="md-nav__item">
   <a href="#pure-pip-dependencies" class="md-nav__link">
     pure pip dependencies
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lock-only-conda-lock-dependencies" class="md-nav__link">
+    Lock only conda-lock dependencies
   </a>
   
 </li>
@@ -545,9 +554,10 @@
       
     
     
+    
+    
     <li class="md-nav__item md-nav__item--nested">
       
-        
         
         
         
@@ -555,6 +565,7 @@
         
         <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
         
+          
           <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
             
   
@@ -664,6 +675,13 @@
           <li class="md-nav__item">
   <a href="#pure-pip-dependencies" class="md-nav__link">
     pure pip dependencies
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lock-only-conda-lock-dependencies" class="md-nav__link">
+    Lock only conda-lock dependencies
   </a>
   
 </li>
@@ -832,6 +850,11 @@ be treated as a <code>pip</code> dependency, e.g.:</p>
 <p>In all cases, the dependencies of <code>pip</code>-installable packages will also be
 installed with <code>pip</code>, unless they were already requested by a <code>conda</code>
 dependency.</p>
+<h3 id="lock-only-conda-lock-dependencies">Lock only conda-lock dependencies</h3>
+<p>To lock only dependencies specified under <code>[tool.conda-lock]</code> (i.e. skipping all dependencies specified elsewhere), explicitly provide <code>skip-non-conda-lock = true</code> in <code>[tool.conda-lock]</code> section, e.g.:
+<div class="highlight"><pre><span></span><code><span class="k">[tool.conda-lock]</span>
+<span class="n">skip-non-conda-lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+</code></pre></div></p>
 <h3 id="extras">Extras</h3>
 <p>If your pyproject.toml file contains optional dependencies/extras these can be referred to by using the <code>--extras</code> flag</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">poetry</label><label for="__tabbed_2_2">pep621 (flit, pdm)</label></div>
@@ -971,10 +994,11 @@ the following sections to the <code>pyproject.toml</code></p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["content.tabs.link", "header.autohide", "navigation.indexes", "navigation.instant", "navigation.expand"], "search": "../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.tabs.link", "header.autohide", "navigation.indexes", "navigation.instant", "navigation.expand"], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.dff1b7c8.min.js"></script>
+      <script src="../assets/javascripts/bundle.aecac24b.min.js"></script>
       
     
   </body>
