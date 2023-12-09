@@ -117,15 +117,17 @@ class Lockfile(StrictModel):
                     # eg a pip package that depends on a conda package (the conda package will not be in this list)
                     dep = packages.get(package_name)
                     if dep is None:
+                        # raise RuntimeError("Dep is none!!!")
                         continue
                     if dep.manager != manager:
+                        raise RuntimeError("Manager is wrong!!!")
                         continue
                     # skip virtual packages
-                    if dep.manager == "conda" and dep.name.startswith("__"):
-                        continue
+                    # if dep.manager == "conda" and dep.name.startswith("__"):
+                    #     continue
 
                     final_package.append(dep)
-
+        assert len(final_package) == len(package)
         return final_package
 
     def to_v1(self) -> LockfileV1:

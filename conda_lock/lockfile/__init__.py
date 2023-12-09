@@ -159,6 +159,7 @@ def write_conda_lock_file(
     metadata_choices: Optional[Collection[MetadataOption]],
     include_help_text: bool = True,
 ) -> None:
+    content.toposort_inplace()
     content.alphasort_inplace()
     content.filter_virtual_packages_inplace()
     with path.open("w") as f:
