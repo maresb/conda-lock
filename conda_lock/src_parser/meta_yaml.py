@@ -66,7 +66,7 @@ class UndefinedNeverFail(jinja2.Undefined):
     __float__ = lambda self: self._return_value(0.0)  # type: ignore  # noqa: E731
     __nonzero__ = lambda self: self._return_value(False)  # noqa: E731
 
-    def _return_undefined(self, result_name: str) -> "UndefinedNeverFail":  # type: ignore
+    def _return_undefined(self, result_name: str) -> "UndefinedNeverFail":
         # Record that this undefined variable was actually used.
         UndefinedNeverFail.all_undefined_names.append(self._undefined_name)
         return UndefinedNeverFail(
