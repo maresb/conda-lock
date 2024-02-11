@@ -56,7 +56,8 @@ class UndefinedNeverFail(jinja2.Undefined):
         try:
             return object.__getattr__(self, k)  # type: ignore
         except AttributeError:
-            return self._return_undefined(self._undefined_name + "." + k)  # type: ignore
+            assert self._undefined_name is not None
+            return self._return_undefined(self._undefined_name + "." + k)
 
     # Unlike the methods above, Python requires that these
     # few methods must always return the correct type
