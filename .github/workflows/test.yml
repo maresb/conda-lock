@@ -55,6 +55,7 @@ jobs:
       - name: run-test
         shell: bash -eo pipefail -l {0}
         run: |
+          mkdir -p tests/durations
           cp pyproject.toml "${RUNNER_TEMP}/"
           cp -a tests "${RUNNER_TEMP}/"
           pushd "${RUNNER_TEMP}"
