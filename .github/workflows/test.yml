@@ -19,66 +19,12 @@ env:
   MICROMAMBA_VERSION: 'latest'
 
 jobs:
-  test-windows:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ windows-latest ]
-        python-version: ["3.12"]
-    env:
-      PYTHONUNBUFFERED: "1"
-      FORCE_COLOR: "1"
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
-
-      - name: Install Conda environment with Micromamba
-        uses: mamba-org/setup-micromamba@v1
-        with:
-          micromamba-version: ${{ env.MICROMAMBA_VERSION }}
-          environment-file: environments/dev-environment.yaml
-          init-shell: powershell
-          create-args: >-
-            python=${{ matrix.python-version }}
-
-      - name: install conda-lock
-        run: |
-          pip install pytest-split
-          pip install -e . --force-reinstall
-
-      - name: run-test
-        run: |
-          echo "%RUNNER_TEMP%"
-          echo %RUNNER_TEMP%
-          echo "%RUNNER_TEMP%\\tests"
-          echo %GITHUB_WORKSPACE%
-          echo ${{ github.workspace }}
-          dir "${{ github.workspace }}\tests\durations"
-          echo copy pyproject.toml
-          copy pyproject.toml "%RUNNER_TEMP%"
-          echo copy tests
-          Xcopy /E /I tests "%RUNNER_TEMP%\\tests"
-          echo pushd
-          pushd "${RUNNER_TEMP}"
-          echo set TMPDIR
-          set TMPDIR="%RUNNER_TEMP%"
-          dir
-          pytest --cov=conda_lock --cov-branch --cov-report=xml --cov-report=term --store-durations --durations-path "${{ github.workspace }}\tests\durations\${{ matrix.os }}-py${{ matrix.python-version }}.json" tests
-          copy coverage.xml %GITHUB_WORKSPACE%
-      - uses: codecov/codecov-action@v4
-
-      - name: Store test durations
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-durations-${{ matrix.os }}-py${{ matrix.python-version }}
-          path: tests\durations\${{ matrix.os }}-py${{ matrix.python-version }}.json
-
   test:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, macos-latest ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
         python-version: [ "3.8", "3.12" ]
     defaults:
       run:
