@@ -47,8 +47,8 @@ jobs:
         shell: bash -eo pipefail -l {0}
         run: |
           which pip
-          pip install pytest-split
-          pip install -e . --force-reinstall
+          pip install -e . --no-deps
+          pip check
 
       - name: run-test
         shell: bash -eo pipefail -l {0}
