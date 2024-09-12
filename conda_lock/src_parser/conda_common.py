@@ -5,7 +5,9 @@ from conda_lock._vendor.conda.models.match_spec import MatchSpec
 from conda_lock.models.lock_spec import VersionedDependency
 
 
-def conda_spec_to_versioned_dep(spec: str, category: str) -> VersionedDependency:
+def conda_spec_to_versioned_dep(
+    spec: str, *, platform: str, category: str
+) -> VersionedDependency:
     """Convert a string form conda spec into a versioned dependency for a given category.
 
     This is used by the environment.yaml and meta.yaml specification parser
@@ -29,4 +31,5 @@ def conda_spec_to_versioned_dep(spec: str, category: str) -> VersionedDependency
         extras=[],
         build=ms.get("build"),
         conda_channel=channel_str,
+        platform=platform,
     )

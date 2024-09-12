@@ -52,7 +52,9 @@ def _parse_environment_file_for_platform(
 
     dependencies: List[Dependency] = []
     for spec in specs:
-        dependencies.append(conda_spec_to_versioned_dep(spec, category))
+        dependencies.append(
+            conda_spec_to_versioned_dep(spec, platform=platform, category=category)
+        )
 
     for mapping_spec in mapping_specs:
         pip = mapping_spec.get("pip")

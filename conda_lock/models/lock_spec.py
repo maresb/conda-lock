@@ -20,6 +20,7 @@ class _BaseDependency(StrictModel):
     category: str = "main"
     extras: List[str] = []
     markers: Optional[str] = None
+    platform: str
 
     @validator("extras")
     def sorted_extras(cls, v: List[str]) -> List[str]:

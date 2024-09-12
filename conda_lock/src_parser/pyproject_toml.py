@@ -354,7 +354,7 @@ def specification_with_dependencies(
     ).items():
         if isinstance(depattrs, str):
             dependencies.append(
-                conda_spec_to_versioned_dep(f"{depname} {depattrs}", "main")
+                conda_spec_to_versioned_dep(f"{depname} {depattrs}", category="main")
             )
         elif isinstance(depattrs, collections.abc.Mapping):
             if depattrs.get("source", None) == "pypi":
