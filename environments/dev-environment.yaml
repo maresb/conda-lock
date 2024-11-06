@@ -32,7 +32,8 @@ dependencies:
 - requests-mock
 - ruff
 - tomli
-- twine
+# <https://github.com/conda-forge/conda-forge-repodata-patches-feedstock/pull/898>
+- twine !=1.13
 - types-click
 - types-filelock
 - types-requests
