@@ -15,11 +15,11 @@
 version: 1
 metadata:
   content_hash:
-    linux-64: 3491c8edfa34ab8d640a37f4ee1b941a7c75ee17a01ab235afcef6d08798863b
-    osx-64: 87e74fac34d5f2568c97d13b4ddfc6538faa98db8aef6bcec228694e9cbd8107
-    osx-arm64: bfcbdd4f3c94c665b0d2fbd70d3e7f9f9a4ed78964cc9856c6a81987246fbdeb
-    win-64: 6bc46b740971bf3c106dcbe0ae7f10ec186bbd94288a6a1da357bbb68284c1e2
-    linux-aarch64: d9a3392690cc01f26b6f88563ebba17e3d2521300717c0057ec382403fb47be7
+    linux-64: 6be1698c09e20996dd7dccc76e99b1063be09a0d0236062506249ddc625a4a43
+    osx-64: 2dc7842d50d47b4218f9688023d4caf992d779d9a34efa8fcb78506431ea307b
+    osx-arm64: 88ebec3c3be00d3deb921c39c240f0c2f5abac4036de5fa05a224035e24aa7ac
+    win-64: 11c7dbbdfc72c2794a0dc70c87e7432e1e7ce8446b0bae3f65eb68609bf20579
+    linux-aarch64: d437da368525431b07362b10c7cf2cd0b466652eae317dc4362afc8500d8a93d
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -3670,80 +3670,80 @@ package:
   category: dev
   optional: true
 - name: libcurl
-  version: 8.10.1
+  version: 8.11.0
   manager: conda
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
     krb5: '>=1.21.3,<1.22.0a0'
     libgcc: '>=13'
-    libnghttp2: '>=1.58.0,<2.0a0'
+    libnghttp2: '>=1.64.0,<2.0a0'
     libssh2: '>=1.11.0,<2.0a0'
     libzlib: '>=1.3.1,<2.0a0'
     openssl: '>=3.3.2,<4.0a0'
     zstd: '>=1.5.6,<1.6.0a0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libcurl-8.10.1-hbbe4b11_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/libcurl-8.11.0-hbbe4b11_0.conda
   hash:
-    md5: 6e801c50a40301f6978c53976917b277
-    sha256: 54e6114dfce566c3a22ad3b7b309657e3600cdb668398e95f1301360d5d52c99
+    md5: 610aa8fffc286c4d5784256fc6dd3bc6
+    sha256: ff59f5f33ad3cafc85ce64514e6d7e4bba9f229a6051dc26dffacb9680f1930e
   category: dev
   optional: true
 - name: libcurl
-  version: 8.10.1
+  version: 8.11.0
   manager: conda
   platform: linux-aarch64
   dependencies:
     krb5: '>=1.21.3,<1.22.0a0'
     libgcc: '>=13'
-    libnghttp2: '>=1.58.0,<2.0a0'
+    libnghttp2: '>=1.64.0,<2.0a0'
     libssh2: '>=1.11.0,<2.0a0'
     libzlib: '>=1.3.1,<2.0a0'
     openssl: '>=3.3.2,<4.0a0'
     zstd: '>=1.5.6,<1.6.0a0'
-  url: https://conda.anaconda.org/conda-forge/linux-aarch64/libcurl-8.10.1-h3ec0cbf_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-aarch64/libcurl-8.11.0-h3ec0cbf_0.conda
   hash:
-    md5: f43539295c4e0cd15202d41bc72b8a26
-    sha256: 7c4983001c727f713b4448280ed4803d301087c184cd2819ba0b788ca62b73d1
+    md5: 124b069484210d870c2bf690c9f0666e
+    sha256: 5abdd619874132899c9adf959c5ce06cb16c8b12caf91703baa6ea612f3d7e6b
   category: dev
   optional: true
 - name: libcurl
-  version: 8.10.1
+  version: 8.11.0
   manager: conda
   platform: osx-64
   dependencies:
     __osx: '>=10.13'
     krb5: '>=1.21.3,<1.22.0a0'
-    libnghttp2: '>=1.58.0,<2.0a0'
+    libnghttp2: '>=1.64.0,<2.0a0'
     libssh2: '>=1.11.0,<2.0a0'
     libzlib: '>=1.3.1,<2.0a0'
     openssl: '>=3.3.2,<4.0a0'
     zstd: '>=1.5.6,<1.6.0a0'
-  url: https://conda.anaconda.org/conda-forge/osx-64/libcurl-8.10.1-h58e7537_0.conda
+  url: https://conda.anaconda.org/conda-forge/osx-64/libcurl-8.11.0-hd8fc636_0.conda
   hash:
-    md5: 6c8669d8228a2bbd0283911cc6d6726e
-    sha256: 662fe145459ed58dee882e525588d1da4dcc4cbd10cfca0725d1fc3840461798
+    md5: 35e2a5e12fc62a0179fde116e9b69698
+    sha256: f3dc0ce24c9ded8d82a85a00c526206ac71ff613da1973ea243d57d39ea1c7d5
   category: dev
   optional: true
 - name: libcurl
-  version: 8.10.1
+  version: 8.11.0
   manager: conda
   platform: osx-arm64
   dependencies:
     __osx: '>=11.0'
     krb5: '>=1.21.3,<1.22.0a0'
-    libnghttp2: '>=1.58.0,<2.0a0'
+    libnghttp2: '>=1.64.0,<2.0a0'
     libssh2: '>=1.11.0,<2.0a0'
     libzlib: '>=1.3.1,<2.0a0'
     openssl: '>=3.3.2,<4.0a0'
     zstd: '>=1.5.6,<1.6.0a0'
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/libcurl-8.10.1-h13a7ad3_0.conda
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/libcurl-8.11.0-he83c8a2_0.conda
   hash:
-    md5: d84030d0863ffe7dea00b9a807fee961
-    sha256: 983a977c5627f975a930542c8aabb46089ec6ea72f28d9c4d3ee8eafaf2fc25a
+    md5: b781cc008788d52982ee84c5ebb8996a
+    sha256: d3c15bd0f1af42bf8304b81509bc9d1dac539b223be44c0acf522c155a865b9e
   category: dev
   optional: true
 - name: libcurl
-  version: 8.10.1
+  version: 8.11.0
   manager: conda
   platform: win-64
   dependencies:
@@ -3753,10 +3753,10 @@ package:
     ucrt: '>=10.0.20348.0'
     vc: '>=14.2,<15'
     vc14_runtime: '>=14.29.30139'
-  url: https://conda.anaconda.org/conda-forge/win-64/libcurl-8.10.1-h1ee3ff0_0.conda
+  url: https://conda.anaconda.org/conda-forge/win-64/libcurl-8.11.0-h1ee3ff0_0.conda
   hash:
-    md5: 7ead800e22ff7b4bccb73e42a8f7a0f4
-    sha256: dfbac497c4fee74f67391f9c4a40cab559468b7d04ff9fad4b404a26b5e1d5b8
+    md5: 343b29dd9decdc942236c1b90f654d4a
+    sha256: 9df9abf7c7576fa3ac70fe00cdad6639fc6f392e89ab23c3f940adc306589261
   category: dev
   optional: true
 - name: libcxx
@@ -5671,23 +5671,23 @@ package:
   manager: conda
   platform: linux-64
   dependencies:
-    babel: ~=2.10
-    colorama: ~=0.4
-    jinja2: ~=3.0
-    markdown: ~=3.2
-    mkdocs: ~=1.6
-    mkdocs-material-extensions: ~=1.3
-    paginate: ~=0.5
-    pygments: ~=2.16
-    pymdown-extensions: ~=10.2
-    python: '>=3.8'
+    babel: '>=2.10,<3.dev0'
+    colorama: '>=0.4,<1.dev0'
+    jinja2: '>=3.0,<4.dev0'
+    markdown: '>=3.2,<4.dev0'
+    mkdocs: '>=1.6,<2.dev0'
+    mkdocs-material-extensions: '>=1.3,<2.dev0'
+    paginate: '>=0.5,<1.dev0'
+    pygments: '>=2.16,<3.dev0'
+    pymdown-extensions: '>=10.2,<11.dev0'
+    python: '>=3.9'
     pyyaml: ''
     regex: '>=2022.4'
-    requests: ~=2.26
-  url: https://conda.anaconda.org/conda-forge/noarch/mkdocs-material-9.5.44-pyhd8ed1ab_0.conda
+    requests: '>=2.26,<3.dev0'
+  url: https://conda.anaconda.org/conda-forge/noarch/mkdocs-material-9.5.44-pyhff2d567_1.conda
   hash:
-    md5: 2e87280d66554faa6dafbcee97130c47
-    sha256: e332955ce095b5a3bcdee3895fef0be4d95b974fafc122d7031a8fc5c761981f
+    md5: 287a81937e56318dce0a4d992a40f719
+    sha256: d291f2ac93aea7d6f692f0e8e7064c2f90eaf5556cb27260d1792324531ccb56
   category: dev
   optional: true
 - name: mkdocs-material
@@ -5695,23 +5695,23 @@ package:
   manager: conda
   platform: linux-aarch64
   dependencies:
-    babel: ~=2.10
-    colorama: ~=0.4
-    jinja2: ~=3.0
-    markdown: ~=3.2
-    mkdocs: ~=1.6
-    mkdocs-material-extensions: ~=1.3
-    paginate: ~=0.5
-    pygments: ~=2.16
-    pymdown-extensions: ~=10.2
-    python: '>=3.8'
+    babel: '>=2.10,<3.dev0'
+    colorama: '>=0.4,<1.dev0'
+    jinja2: '>=3.0,<4.dev0'
+    markdown: '>=3.2,<4.dev0'
+    mkdocs: '>=1.6,<2.dev0'
+    mkdocs-material-extensions: '>=1.3,<2.dev0'
+    paginate: '>=0.5,<1.dev0'
+    pygments: '>=2.16,<3.dev0'
+    pymdown-extensions: '>=10.2,<11.dev0'
+    python: '>=3.9'
     pyyaml: ''
     regex: '>=2022.4'
-    requests: ~=2.26
-  url: https://conda.anaconda.org/conda-forge/noarch/mkdocs-material-9.5.44-pyhd8ed1ab_0.conda
+    requests: '>=2.26,<3.dev0'
+  url: https://conda.anaconda.org/conda-forge/noarch/mkdocs-material-9.5.44-pyhff2d567_1.conda
   hash:
-    md5: 2e87280d66554faa6dafbcee97130c47
-    sha256: e332955ce095b5a3bcdee3895fef0be4d95b974fafc122d7031a8fc5c761981f
+    md5: 287a81937e56318dce0a4d992a40f719
+    sha256: d291f2ac93aea7d6f692f0e8e7064c2f90eaf5556cb27260d1792324531ccb56
   category: dev
   optional: true
 - name: mkdocs-material
@@ -5719,23 +5719,23 @@ package:
   manager: conda
   platform: osx-64
   dependencies:
-    babel: ~=2.10
-    colorama: ~=0.4
-    jinja2: ~=3.0
-    markdown: ~=3.2
-    mkdocs: ~=1.6
-    mkdocs-material-extensions: ~=1.3
-    paginate: ~=0.5
-    pygments: ~=2.16
-    pymdown-extensions: ~=10.2
-    python: '>=3.8'
+    babel: '>=2.10,<3.dev0'
+    colorama: '>=0.4,<1.dev0'
+    jinja2: '>=3.0,<4.dev0'
+    markdown: '>=3.2,<4.dev0'
+    mkdocs: '>=1.6,<2.dev0'
+    mkdocs-material-extensions: '>=1.3,<2.dev0'
+    paginate: '>=0.5,<1.dev0'
+    pygments: '>=2.16,<3.dev0'
+    pymdown-extensions: '>=10.2,<11.dev0'
+    python: '>=3.9'
     pyyaml: ''
     regex: '>=2022.4'
-    requests: ~=2.26
-  url: https://conda.anaconda.org/conda-forge/noarch/mkdocs-material-9.5.44-pyhd8ed1ab_0.conda
+    requests: '>=2.26,<3.dev0'
+  url: https://conda.anaconda.org/conda-forge/noarch/mkdocs-material-9.5.44-pyhff2d567_1.conda
   hash:
-    md5: 2e87280d66554faa6dafbcee97130c47
-    sha256: e332955ce095b5a3bcdee3895fef0be4d95b974fafc122d7031a8fc5c761981f
+    md5: 287a81937e56318dce0a4d992a40f719
+    sha256: d291f2ac93aea7d6f692f0e8e7064c2f90eaf5556cb27260d1792324531ccb56
   category: dev
   optional: true
 - name: mkdocs-material
@@ -5743,23 +5743,23 @@ package:
   manager: conda
   platform: osx-arm64
   dependencies:
-    babel: ~=2.10
-    colorama: ~=0.4
-    jinja2: ~=3.0
-    markdown: ~=3.2
-    mkdocs: ~=1.6
-    mkdocs-material-extensions: ~=1.3
-    paginate: ~=0.5
-    pygments: ~=2.16
-    pymdown-extensions: ~=10.2
-    python: '>=3.8'
+    babel: '>=2.10,<3.dev0'
+    colorama: '>=0.4,<1.dev0'
+    jinja2: '>=3.0,<4.dev0'
+    markdown: '>=3.2,<4.dev0'
+    mkdocs: '>=1.6,<2.dev0'
+    mkdocs-material-extensions: '>=1.3,<2.dev0'
+    paginate: '>=0.5,<1.dev0'
+    pygments: '>=2.16,<3.dev0'
+    pymdown-extensions: '>=10.2,<11.dev0'
+    python: '>=3.9'
     pyyaml: ''
     regex: '>=2022.4'
-    requests: ~=2.26
-  url: https://conda.anaconda.org/conda-forge/noarch/mkdocs-material-9.5.44-pyhd8ed1ab_0.conda
+    requests: '>=2.26,<3.dev0'
+  url: https://conda.anaconda.org/conda-forge/noarch/mkdocs-material-9.5.44-pyhff2d567_1.conda
   hash:
-    md5: 2e87280d66554faa6dafbcee97130c47
-    sha256: e332955ce095b5a3bcdee3895fef0be4d95b974fafc122d7031a8fc5c761981f
+    md5: 287a81937e56318dce0a4d992a40f719
+    sha256: d291f2ac93aea7d6f692f0e8e7064c2f90eaf5556cb27260d1792324531ccb56
   category: dev
   optional: true
 - name: mkdocs-material
@@ -5767,23 +5767,23 @@ package:
   manager: conda
   platform: win-64
   dependencies:
-    babel: ~=2.10
-    colorama: ~=0.4
-    jinja2: ~=3.0
-    markdown: ~=3.2
-    mkdocs: ~=1.6
-    mkdocs-material-extensions: ~=1.3
-    paginate: ~=0.5
-    pygments: ~=2.16
-    pymdown-extensions: ~=10.2
-    python: '>=3.8'
+    babel: '>=2.10,<3.dev0'
+    colorama: '>=0.4,<1.dev0'
+    jinja2: '>=3.0,<4.dev0'
+    markdown: '>=3.2,<4.dev0'
+    mkdocs: '>=1.6,<2.dev0'
+    mkdocs-material-extensions: '>=1.3,<2.dev0'
+    paginate: '>=0.5,<1.dev0'
+    pygments: '>=2.16,<3.dev0'
+    pymdown-extensions: '>=10.2,<11.dev0'
+    python: '>=3.9'
     pyyaml: ''
     regex: '>=2022.4'
-    requests: ~=2.26
-  url: https://conda.anaconda.org/conda-forge/noarch/mkdocs-material-9.5.44-pyhd8ed1ab_0.conda
+    requests: '>=2.26,<3.dev0'
+  url: https://conda.anaconda.org/conda-forge/noarch/mkdocs-material-9.5.44-pyhff2d567_1.conda
   hash:
-    md5: 2e87280d66554faa6dafbcee97130c47
-    sha256: e332955ce095b5a3bcdee3895fef0be4d95b974fafc122d7031a8fc5c761981f
+    md5: 287a81937e56318dce0a4d992a40f719
+    sha256: d291f2ac93aea7d6f692f0e8e7064c2f90eaf5556cb27260d1792324531ccb56
   category: dev
   optional: true
 - name: mkdocs-material-extensions
@@ -10399,88 +10399,88 @@ package:
   category: main
   optional: false
 - name: twine
-  version: 1.13.0
+  version: 1.11.0
   manager: conda
   platform: linux-64
   dependencies:
-    pkginfo: '>=1.4.2'
+    pkginfo: '>=1.0'
     python: ''
-    requests: '>=2.5.0,!=2.15,!=2.16'
-    requests-toolbelt: '>=0.8.0,!=0.9.0'
+    requests: '>=2.5.0'
+    requests-toolbelt: '>=0.5.1'
     setuptools: '>=0.7.0'
-    tqdm: '>=4.14'
-  url: https://conda.anaconda.org/conda-forge/noarch/twine-1.13.0-py_0.tar.bz2
+    tqdm: ''
+  url: https://conda.anaconda.org/conda-forge/noarch/twine-1.11.0-py_1.tar.bz2
   hash:
-    md5: d07aef26d2c098b23cd0f55186c4c179
-    sha256: 83c54b1dd5b75542ec10bc3bc03ce14591e7570cfb7efd78a6f5f77cc553b696
+    md5: 9d276c93b9631b740e9119a1193558a9
+    sha256: f621bbd3c90e0003510174040ade57529a876b352d32fef15794083617843916
   category: dev
   optional: true
 - name: twine
-  version: 1.13.0
+  version: 1.11.0
   manager: conda
   platform: linux-aarch64
   dependencies:
-    pkginfo: '>=1.4.2'
+    pkginfo: '>=1.0'
     python: ''
-    requests: '>=2.5.0,!=2.15,!=2.16'
-    requests-toolbelt: '>=0.8.0,!=0.9.0'
+    requests: '>=2.5.0'
+    requests-toolbelt: '>=0.5.1'
     setuptools: '>=0.7.0'
-    tqdm: '>=4.14'
-  url: https://conda.anaconda.org/conda-forge/noarch/twine-1.13.0-py_0.tar.bz2
+    tqdm: ''
+  url: https://conda.anaconda.org/conda-forge/noarch/twine-1.11.0-py_1.tar.bz2
   hash:
-    md5: d07aef26d2c098b23cd0f55186c4c179
-    sha256: 83c54b1dd5b75542ec10bc3bc03ce14591e7570cfb7efd78a6f5f77cc553b696
+    md5: 9d276c93b9631b740e9119a1193558a9
+    sha256: f621bbd3c90e0003510174040ade57529a876b352d32fef15794083617843916
   category: dev
   optional: true
 - name: twine
-  version: 1.13.0
+  version: 1.11.0
   manager: conda
   platform: osx-64
   dependencies:
-    pkginfo: '>=1.4.2'
+    pkginfo: '>=1.0'
     python: ''
-    requests: '>=2.5.0,!=2.15,!=2.16'
-    requests-toolbelt: '>=0.8.0,!=0.9.0'
+    requests: '>=2.5.0'
+    requests-toolbelt: '>=0.5.1'
     setuptools: '>=0.7.0'
-    tqdm: '>=4.14'
-  url: https://conda.anaconda.org/conda-forge/noarch/twine-1.13.0-py_0.tar.bz2
+    tqdm: ''
+  url: https://conda.anaconda.org/conda-forge/noarch/twine-1.11.0-py_1.tar.bz2
   hash:
-    md5: d07aef26d2c098b23cd0f55186c4c179
-    sha256: 83c54b1dd5b75542ec10bc3bc03ce14591e7570cfb7efd78a6f5f77cc553b696
+    md5: 9d276c93b9631b740e9119a1193558a9
+    sha256: f621bbd3c90e0003510174040ade57529a876b352d32fef15794083617843916
   category: dev
   optional: true
 - name: twine
-  version: 1.13.0
+  version: 1.11.0
   manager: conda
   platform: osx-arm64
   dependencies:
-    pkginfo: '>=1.4.2'
+    pkginfo: '>=1.0'
     python: ''
-    requests: '>=2.5.0,!=2.15,!=2.16'
-    requests-toolbelt: '>=0.8.0,!=0.9.0'
+    requests: '>=2.5.0'
+    requests-toolbelt: '>=0.5.1'
     setuptools: '>=0.7.0'
-    tqdm: '>=4.14'
-  url: https://conda.anaconda.org/conda-forge/noarch/twine-1.13.0-py_0.tar.bz2
+    tqdm: ''
+  url: https://conda.anaconda.org/conda-forge/noarch/twine-1.11.0-py_1.tar.bz2
   hash:
-    md5: d07aef26d2c098b23cd0f55186c4c179
-    sha256: 83c54b1dd5b75542ec10bc3bc03ce14591e7570cfb7efd78a6f5f77cc553b696
+    md5: 9d276c93b9631b740e9119a1193558a9
+    sha256: f621bbd3c90e0003510174040ade57529a876b352d32fef15794083617843916
   category: dev
   optional: true
 - name: twine
-  version: 1.13.0
+  version: 1.11.0
   manager: conda
   platform: win-64
   dependencies:
-    pkginfo: '>=1.4.2'
+    pkginfo: '>=1.0'
     python: ''
-    requests: '>=2.5.0,!=2.15,!=2.16'
-    requests-toolbelt: '>=0.8.0,!=0.9.0'
+    requests: '>=2.5.0'
+    requests-toolbelt: '>=0.5.1'
     setuptools: '>=0.7.0'
-    tqdm: '>=4.14'
-  url: https://conda.anaconda.org/conda-forge/noarch/twine-1.13.0-py_0.tar.bz2
+    tqdm: ''
+  url: https://conda.anaconda.org/conda-forge/noarch/twine-1.11.0-py_1.tar.bz2
   hash:
-    md5: d07aef26d2c098b23cd0f55186c4c179
-    sha256: 83c54b1dd5b75542ec10bc3bc03ce14591e7570cfb7efd78a6f5f77cc553b696
+    md5: 9d276c93b9631b740e9119a1193558a9
+    sha256: f621bbd3c90e0003510174040ade57529a876b352d32fef15794083617843916
   category: dev
   optional: true
 - name: types-click
