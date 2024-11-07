@@ -15,7 +15,7 @@ dependencies:
 - flaky
 - freezegun
 - gitpython
-- mamba <2
+- mamba
 - mkdocs
 - mkdocs-click
 - mkdocs-material
@@ -25,7 +25,6 @@ dependencies:
 - pre-commit
 - pytest
 - pytest-cov
-- pytest-split
 - pytest-timeout
 - pytest-xdist
 - python-build
@@ -34,6 +33,7 @@ dependencies:
 - tomli
 - twine
 - types-click
+- types-click-default-group
 - types-filelock
 - types-requests
 - types-toml
@@ -42,4 +42,4 @@ dependencies:
 - types-setuptools
 - wheel
 - pip:
-  - types-click-default-group
+  - pytest-split
