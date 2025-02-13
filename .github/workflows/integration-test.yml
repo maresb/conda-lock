@@ -57,16 +57,17 @@ jobs:
         run: |
           which conda
           conda info
-          conda create -n asdf --dry-run --json --override-channels --channel conda-forge 'pip *' | head
-          conda create -n asdf --dry-run --json --channel conda-forge zlib
-          conda-lock --log-level=DEBUG --mamba -f tests/gdal/environment.yml -p $CONDA_PLATFORM
-          conda-lock render -p $CONDA_PLATFORM
-          conda-lock render -p $CONDA_PLATFORM --kind=env
-          cat conda-$CONDA_PLATFORM.lock
-          cat conda-$CONDA_PLATFORM.lock.yml
-          cat conda-lock.yml
+          echo A
+          conda create -n asdf --dry-run --json --channel conda-forge libgomp
+          echo B
+          conda create -n asdf --dry-run --json --channel conda-forge libgomp > libgomp.json
+          echo C
+          cat libgomp.json
+          echo D
+          conda create -n asdf --dry-run --json --channel defaults libgomp
+          echo E
           mkdir lockfiles
-          mv conda-$CONDA_PLATFORM.lock conda-$CONDA_PLATFORM.lock.yml conda-lock.yml lockfiles
+          cp libgomp.json lockfiles/
       - name: Upload lockfiles
         uses: actions/upload-artifact@v4
         with:
