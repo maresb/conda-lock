@@ -16,8 +16,6 @@ jobs:
   conda-bad-json:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Python
-        uses: actions/setup-python@v5
       - name: run-test
         run: |
           which conda
