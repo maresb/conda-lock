@@ -55,6 +55,9 @@ jobs:
           pipx install -e .
       - name: run-test
         run: |
+          which conda
+          conda info
+          conda create -n asdf --dry-run --json --override-channels --channel conda-forge --channel defaults 'python >=3.8,<3.9' gdal 'pip *'
           conda-lock --log-level=DEBUG --mamba -f tests/gdal/environment.yml -p $CONDA_PLATFORM
           conda-lock render -p $CONDA_PLATFORM
           conda-lock render -p $CONDA_PLATFORM --kind=env
