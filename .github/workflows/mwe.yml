@@ -1,0 +1,44 @@
+# Do a whole lock, render, and install cycle
+name: integration-test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash -elx {0}
+
+jobs:
+  conda-bad-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+      - name: run-test
+        run: |
+          which conda
+          $(which conda) info
+          conda info
+          echo A
+          conda create -n asdf --dry-run --json --channel conda-forge libgomp
+          echo B
+          conda create -n asdf --dry-run --json --channel conda-forge libgomp > libgomp.json
+          echo C
+          cat libgomp.json
+          echo D
+          conda create -n asdf --dry-run --json --channel defaults libgomp
+          echo E
+          mkdir lockfiles
+          mv libgomp.json lockfiles/
+      - name: Upload lockfiles
+        uses: actions/upload-artifact@v4
+        with:
+          name: conda-create-json
+          path: lockfiles
+      - name: parse
+        run: |
+          python -c "import json; json.loads(open('lockfiles/libgomp.json').read())"
