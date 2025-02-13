@@ -29,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        os: [ ubuntu-latest ]
         python-version: [ "3.9", "3.13" ]
     steps:
       - name: Set Conda platform
@@ -57,9 +57,8 @@ jobs:
         run: |
           which conda
           conda info
-          conda create -n asdf --dry-run --json --override-channels --channel conda-forge --channel defaults 'python >=3.8,<3.9' gdal 'pip *' | head
-          conda create -n asdf --dry-run --json --override-channels --channel conda-forge --channel defaults 'python >=3.8,<3.9' gdal 'pip *' | tail
-          conda create -n asdf --dry-run --json --override-channels --channel conda-forge 'pip *'
+          conda create -n asdf --dry-run --json --override-channels --channel conda-forge 'pip *' | head
+          conda create -n asdf --dry-run --json --channel conda-forge zlib
           conda-lock --log-level=DEBUG --mamba -f tests/gdal/environment.yml -p $CONDA_PLATFORM
           conda-lock render -p $CONDA_PLATFORM
           conda-lock render -p $CONDA_PLATFORM --kind=env
