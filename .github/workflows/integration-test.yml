@@ -6,56 +6,22 @@ on:
   push:
     branches:
       - main
-
-concurrency:
-  # Concurrency group that uses the workflow name and PR number if available
-  # or commit SHA as a fallback. If a new build is triggered under that
-  # concurrency group while a previous build is running it will be canceled.
-  # Repeated pushes to a PR will cancel all previous builds, while multiple
-  # merges to main will not cancel.
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
-  cancel-in-progress: true
-
-env:
-  MICROMAMBA_VERSION: '2.0.6.rc1-0'
+  workflow_dispatch:
 
 defaults:
   run:
     shell: bash -elx {0}
 
 jobs:
-  lock-gdal:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ ubuntu-latest ]
-        python-version: [ "3.9", "3.13" ]
+  conda-bad-json:
+    runs-on: ubuntu-latest
     steps:
-      - name: Set Conda platform
-        run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            echo "CONDA_PLATFORM=linux-64" >> $GITHUB_ENV
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            echo "CONDA_PLATFORM=osx-arm64" >> $GITHUB_ENV
-          elif [ "$RUNNER_OS" == "Windows" ]; then
-            echo "CONDA_PLATFORM=win-64" >> $GITHUB_ENV
-          fi
-      - name: Verify Conda platform
-        run: echo "Conda platform is $CONDA_PLATFORM"
-
-      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
       - name: Set up Python
         uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: install conda-lock
-        run: |
-          pip install pipx
-          pipx install -e .
       - name: run-test
         run: |
           which conda
+          $(which conda) info
           conda info
           echo A
           conda create -n asdf --dry-run --json --channel conda-forge libgomp
@@ -67,127 +33,12 @@ jobs:
           conda create -n asdf --dry-run --json --channel defaults libgomp
           echo E
           mkdir lockfiles
-          cp libgomp.json lockfiles/
+          mv libgomp.json lockfiles/
       - name: Upload lockfiles
         uses: actions/upload-artifact@v4
         with:
-          name: conda-lock-${{ matrix.os }}-${{ matrix.python-version }}
+          name: conda-create-json
           path: lockfiles
-  install-gdal-with-micromamba:
-    runs-on: ${{ matrix.os }}
-    needs: lock-gdal
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
-        python-version: [ "3.9" ]
-    steps:
-      - name: Set Conda platform
+      - name: parse
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            echo "CONDA_PLATFORM=linux-64" >> $GITHUB_ENV
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            echo "CONDA_PLATFORM=osx-arm64" >> $GITHUB_ENV
-          elif [ "$RUNNER_OS" == "Windows" ]; then
-            echo "CONDA_PLATFORM=win-64" >> $GITHUB_ENV
-          fi
-      - name: Verify Conda platform
-        run: echo "Conda platform is $CONDA_PLATFORM"
-      - name: Install Conda environment with Micromamba
-        uses: mamba-org/setup-micromamba@v2
-        with:
-          micromamba-url: https://github.com/mamba-org/micromamba-releases/releases/download/${{ env.MICROMAMBA_VERSION }}/micromamba-${{ env.CONDA_PLATFORM }}
-          init-shell: bash
-      - name: Download lockfiles
-        uses: actions/download-artifact@v4
-        with:
-          name: conda-lock-${{ matrix.os }}-${{ matrix.python-version }}
-          path: lockfiles
-      - name: Install GDAL with Micromamba
-        run: |
-          micromamba create -y -n gdal-test-mm-lock -f lockfiles/conda-lock.yml
-          micromamba create -y -n gdal-test-mm-explicit -f lockfiles/conda-*.lock
-          micromamba create -y -n gdal-test-mm-env -f lockfiles/conda-*.lock.yml
-
-          micromamba run -n gdal-test-mm-lock gdalinfo --version
-          micromamba run -n gdal-test-mm-explicit gdalinfo --version
-          micromamba run -n gdal-test-mm-env gdalinfo --version
-
-          micromamba run -n gdal-test-mm-lock python -c 'import toolz; print(toolz.__version__)'
-          # Micromamba won't install pip dependencies from explicit lockfiles, so skip this test
-          micromamba run -n gdal-test-mm-env python -c 'import toolz; print(toolz.__version__)'
-  install-gdal-with-conda-lock:
-    runs-on: ${{ matrix.os }}
-    needs: lock-gdal
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
-        python-version: [ "3.9", "3.13" ]
-    steps:
-      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-activate-base: true
-          python-version: ${{ matrix.python-version }}
-      - name: install conda-lock
-        run: |
-          pip install pipx
-          pipx install -e .
-      - name: Download lockfiles
-        uses: actions/download-artifact@v4
-        with:
-          name: conda-lock-${{ matrix.os }}-${{ matrix.python-version }}
-          path: lockfiles
-      - name: Install GDAL with conda-lock
-        run: |
-          conda-lock install --log-level=DEBUG -n gdal-test-cl-lock lockfiles/conda-lock.yml
-          conda-lock install --log-level=DEBUG -n gdal-test-cl-explicit lockfiles/conda-*.lock
-          conda-lock install --log-level=DEBUG -n gdal-test-cl-env lockfiles/conda-*.lock.yml
-
-          conda list -n gdal-test-cl-lock
-          conda run -n gdal-test-cl-lock gdalinfo --version
-
-          conda list -n gdal-test-cl-explicit
-          conda run -n gdal-test-cl-explicit gdalinfo --version
-
-          conda list -n gdal-test-cl-env
-          conda run -n gdal-test-cl-env gdalinfo --version
-
-          conda run -n gdal-test-cl-lock python -c 'import toolz; print(toolz.__version__)'
-          conda run -n gdal-test-cl-explicit python -c 'import toolz; print(toolz.__version__)'
-          conda run -n gdal-test-cl-env python -c 'import toolz; print(toolz.__version__)'
-
-  install-gdal-with-conda:
-    runs-on: ${{ matrix.os }}
-    needs: lock-gdal
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
-        python-version: [ "3.9" ]
-    steps:
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-activate-base: true
-          python-version: ${{ matrix.python-version }}
-      - name: Download lockfiles
-        uses: actions/download-artifact@v4
-        with:
-          name: conda-lock-${{ matrix.os }}-${{ matrix.python-version }}
-          path: lockfiles
-      - name: Install GDAL with conda
-        run: |
-          # conda doesn't recognize the unified lockfile format conda-lock.yml, so skip it.
-
-          # conda requires explicit lockfiles have a .txt extension
-          mv lockfiles/conda-*.lock lockfiles/explicit.txt
-
-          conda create -n gdal-test-c-explicit -c conda-forge --file lockfiles/explicit.txt
-          conda env create -n gdal-test-c-env --file lockfiles/conda-*.lock.yml
-
-          conda run -n gdal-test-c-explicit gdalinfo --version
-          conda run -n gdal-test-c-env gdalinfo --version
-
-          # conda doesn't install pip dependencies from explicit lockfiles, so skip this test
-          conda run -n gdal-test-c-env python -c 'import toolz; print(toolz.__version__)'
+          python -c "import json; json.loads(open('lockfiles/libgomp.json').read())"
