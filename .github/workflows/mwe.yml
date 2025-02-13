@@ -19,6 +19,7 @@ jobs:
       - name: run-test
         run: |
           which conda
+          conda update -n base --all
           $(which conda) info
           conda info
           echo A
