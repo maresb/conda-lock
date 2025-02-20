@@ -50,7 +50,7 @@ class FakePackage(BaseModel):
 class FakeRepoData(BaseModel):
     base_path: pathlib.Path
     packages_by_subdir: Dict[FakePackage, Set[str]] = Field(
-        default_factory=lambda: defaultdict(set)
+        default_factory=lambda: defaultdict(set)  # type: ignore
     )
     all_subdirs: Set[str] = {
         "noarch",

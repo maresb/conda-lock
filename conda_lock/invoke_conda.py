@@ -106,7 +106,7 @@ def _invoke_conda(
         common_args.extend(shlex.split(conda_flags))
 
     cmd = [str(arg) for arg in [conda, *command_args, *common_args, *post_args]]
-
+    logging.debug(f"Running conda command: {shlex.join(cmd)}")
     with subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
