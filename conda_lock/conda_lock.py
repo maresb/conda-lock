@@ -622,13 +622,23 @@ def handle_dev_dependencies_deprecation(
         and deprecated_dev_dependencies != new_dev_dependencies
         and dev_dependencies_deprecation_info is not None
     ):
-        if deprecated_dev_dependencies and not new_dev_dependencies:
-            if dev_dependencies_deprecation_info.dev_dependencies is None:
+        if new_dev_dependencies and not deprecated_dev_dependencies:
+            if dev_dependencies_deprecation_info.dev_dependencies is False:
                 _error_msg = (
-                    "There are no dev dependencies present, but the 'dev-dependencies' "
-                    "template variable defaulted to 'true'."
+                    "There are dev dependencies present, despite having "
+                    "specified --no-dev-dependencies. Consequently, the "
+                    "{dev-dependencies} template variable has been set to 'false'. "
+                    "The value of {dev-dependencies} will change to 'true' in a "
+                    "future version of conda-lock."
                 )
-                ...
+            else:
+                _error_msg = (
+                    "There is a discrepancy between the current behavior and the "
+                    "deprecated behavior. The current case is unexpected. Please "
+                    "report this as a bug to ..."
+                )
+        else:
+            raise click.UsageError("x")
     return deprecated_dev_dependencies
 
 
