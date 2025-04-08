@@ -304,6 +304,7 @@ class Lockfile(StrictModel):
 
     def dict_for_output(self) -> Dict[str, Any]:
         """Convert the lockfile to a dictionary that can be written to a file."""
+        self.metadata.platforms = sorted(self.metadata.platforms)
         return {
             "version": Lockfile.version,
             "metadata": json.loads(
