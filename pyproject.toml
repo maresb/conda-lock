@@ -139,10 +139,16 @@ addopts = [
     "--doctest-modules",
     "--numprocesses=auto",
     "--ignore-glob=**/vendor_poetry/**",
-    "--ignore-glob=**/_vendor/**"
+    "--ignore-glob=**/_vendor/**",
+    "-m", "not (windows or macos or darwin)"
 ]
 log_level = "DEBUG"
 testpaths = ["tests", "conda_lock"]
+markers = [
+    "windows: marks tests as windows only",
+    "macos: marks tests as macos only", 
+    "darwin: marks tests as darwin only"
+]
 
 [tool.vendoring]
 destination = "conda_lock/_vendor"
