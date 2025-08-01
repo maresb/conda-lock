@@ -1258,6 +1258,7 @@ def msys2_environment(tmp_path: Path):
     return env
 
 
+@pytest.mark.windows
 def test_msys2_channel_included_in_defaults_on_windows(
     monkeypatch: pytest.MonkeyPatch, msys2_environment: Path, conda_exe: str
 ):
@@ -2908,6 +2909,7 @@ def test_fake_conda_env(conda_exe: str, conda_lock_yaml: Path):
             assert platform == path.parent.name
 
 
+@pytest.mark.macos
 def test_forced_platform(
     conda_exe: str,
     tmp_path: Path,
