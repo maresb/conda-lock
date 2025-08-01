@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 """
-Minimal Reproducer for Transitive Dependency Dropping Bug in conda-lock
+Minimal Reproducer for conda-lock Bug Investigation
 
-This script demonstrates the bug where transitive dependencies are dropped from
-the lockfile, causing installation failures.
+This script analyzes a conda-lock environment to check for missing transitive dependencies.
+Note: This specific case does not reproduce the actual bug we discovered.
 
-The bug manifests when:
-1. A pip package (like jupyter) has transitive dependencies (like ipython)
-2. The transitive dependencies are not included in the 'planned' packages
-3. apply_categories skips category assignment for missing dependencies
-4. The final lockfile is missing the transitive dependencies
+The real bug we found is about missing category metadata for transitive dependencies,
+not missing packages. This was revealed in the test_solve_arch_transitive_deps test
+where ipython had empty categories (set()) instead of {'main'}.
 
 Usage:
     python minimal_reproducer.py
