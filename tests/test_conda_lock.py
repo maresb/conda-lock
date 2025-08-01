@@ -3084,7 +3084,7 @@ def test_lookup(
     monkeypatch.chdir(cwd)
     lookup_filename = str((cwd / lookup_source).absolute())
     with capsys.disabled():
-        runner = CliRunner(mix_stderr=False)
+        runner = CliRunner()
         result: CliResult = runner.invoke(
             main,
             ["lock", "--pypi_to_conda_lookup_file", lookup_filename],
@@ -3164,7 +3164,7 @@ def test_cli_version(capsys: "pytest.CaptureFixture[str]"):
     """It should correctly report its version."""
 
     with capsys.disabled():
-        runner = CliRunner(mix_stderr=False)
+        runner = CliRunner()
         result = runner.invoke(
             main,
             [
