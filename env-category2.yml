@@ -51,4 +51,3 @@ dependencies:
   - libgfortran
   - libgfortran5
   - libquadmath
-  - ld_impl_linux-64

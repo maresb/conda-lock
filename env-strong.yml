@@ -1,0 +1,23 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - numpy
+  - scipy
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - jupyter
+  - ipykernel
+  - nb_conda_kernels
+  - dask
+  - distributed
+  - bokeh
+  - holoviews
+  - hvplot
+  - requests
+  - urllib3
+  - certifi
+  - chardet
+  - idna

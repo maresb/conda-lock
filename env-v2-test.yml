@@ -26,6 +26,7 @@ dependencies:
   - netcdf4
   - h5py
   - zarr
+  - dask-array
   - numba
   - llvmlite
   - llvm-openmp
@@ -51,4 +52,25 @@ dependencies:
   - libgfortran
   - libgfortran5
   - libquadmath
-  - ld_impl_linux-64
+  - libgcc-ng
+  - libstdcxx-ng
+  - libgomp
+  - libffi
+  - libuuid
+  - libnsl
+  - readline
+  - tzdata
+  - ca-certificates
+  - openssl
+  - xz
+  - zlib
+  - bzip2
+  - lz4
+  - zstd
+  - libblas
+  - libcblas
+  - liblapack
+  - libopenblas
+  - libgfortran
+  - libgfortran5
+  - libquadmath
