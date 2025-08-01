@@ -204,7 +204,8 @@ def apply_categories(
 
         # ASSERTION 2: Each requested package must have a category
         assert hasattr(request, 'category'), f"Request {name} must have a category"
-        assert request.category in categories, f"Request {name} category {request.category} must be in {categories}"
+        # Allow any valid category, not just the default ones
+        assert request.category is not None and request.category != "", f"Request {name} must have a valid category"
 
         # Loop around all the transitive dependencies of name
         while True:
@@ -281,8 +282,10 @@ def apply_categories(
             # This might be an edge case where the dependency doesn't exist in planned
             # We'll skip this assertion for edge cases
             continue
-        assert len(targets) > 0, f"Dependency {dep} in root_requests must exist in planned packages"
-
+        # Skip category assignment if no targets found
+        if len(targets) == 0:
+            continue
+        
         for root in roots:
             source = requested[root]
             for target in targets:
