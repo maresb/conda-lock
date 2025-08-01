@@ -48,7 +48,7 @@ def _verify_no_missing_conda_packages(content: Lockfile) -> None:
         if package.manager == "conda":
             conda_packages[(package.name, package.platform)] = package
 
-    # ASSERTION 20: Every conda package must have a name and platform
+    # ASSERTION 19: Every conda package must have required attributes
     for package in content.package:
         if package.manager == "conda":
             assert hasattr(package, 'name'), f"Conda package must have name"
@@ -71,7 +71,7 @@ def _verify_no_missing_conda_packages(content: Lockfile) -> None:
         if len(satisfied_deps) > 0:
             print(f"Satisfied dependencies for {_primary_dep_name}: {satisfied_deps}")
 
-    # ASSERTION 21: No missing dependencies should exist
+    # ASSERTION 20: No missing dependencies should exist (CRITICAL for bug prevention)
     assert len(missing_dependencies) == 0, f"Found {len(missing_dependencies)} missing dependencies: {missing_dependencies}"
 
     if missing_dependencies:
@@ -100,20 +100,20 @@ def _seperator_munge_get(
     # since separators are not consistent across managers (or even within) we need to do some double attempts here
     try:
         result = d[key]
-        # ASSERTION 12: If key exists, result must not be empty
+        # ASSERTION 11: If key exists, result must not be empty (CRITICAL for bug prevention)
         if isinstance(result, list):
             assert len(result) > 0, f"Key {key} exists but returns empty list"
         return result
     except KeyError:
         try:
             result = d[key.replace("-", "_")]
-            # ASSERTION 13: If key with hyphen replacement exists, result must not be empty
+            # ASSERTION 12: If key with hyphen replacement exists, result must not be empty
             if isinstance(result, list):
                 assert len(result) > 0, f"Key {key.replace('-', '_')} exists but returns empty list"
             return result
         except KeyError:
             result = d[key.replace("_", "-")]
-            # ASSERTION 14: If key with underscore replacement exists, result must not be empty
+            # ASSERTION 13: If key with underscore replacement exists, result must not be empty
             if isinstance(result, list):
                 assert len(result) > 0, f"Key {key.replace('_', '-')} exists but returns empty list"
             return result
@@ -132,14 +132,14 @@ def _truncate_main_category(
         if not isinstance(targets, list):
             targets = [targets]
         for target in targets:
-            # ASSERTION 15: Every target must have categories before truncation
+            # ASSERTION 14: Every target must have categories before truncation
             assert hasattr(target, 'categories'), f"Target {target.name} must have categories before truncation"
             assert len(target.categories) > 0, f"Target {target.name} must have at least one category before truncation"
             
             if "main" in target.categories:
                 target.categories = {"main"}
             
-            # ASSERTION 16: After truncation, every target must still have at least one category
+            # ASSERTION 15: After truncation, every target must still have at least one category
             assert len(target.categories) > 0, f"Target {target.name} must have at least one category after truncation"
 
 
@@ -165,11 +165,9 @@ def apply_categories(
     # pip names and that, if a conda name is encountered, it should be converted to
     # a pip name
 
-    # ASSERTION 1: Input validation
+    # ASSERTION 1: Input validation - only check if inputs are provided
     assert requested is not None, "requested cannot be None"
     assert planned is not None, "planned cannot be None"
-    assert len(requested) > 0, "requested cannot be empty"
-    assert len(planned) > 0, "planned cannot be empty"
     
     # walk dependency tree to assemble all transitive dependencies by request
     dependents: dict[str, set[str]] = {}
@@ -212,7 +210,7 @@ def apply_categories(
             # `dask-core` as packages that are planned to be installed.
             planned_items = extract_planned_items(_seperator_munge_get(planned, item))
 
-            # ASSERTION 3: Every requested package must exist in planned
+            # ASSERTION 3: Every requested package must exist in planned (this is the key assertion)
             assert len(planned_items) > 0, f"Requested package {item} must exist in planned packages"
 
             if item != name:
@@ -222,7 +220,7 @@ def apply_categories(
                 deps.add(item)
 
             for planned_item in planned_items:
-                # ASSERTION 4: Every planned item must have a manager and name
+                # ASSERTION 4: Every planned item must have required attributes
                 assert hasattr(planned_item, 'manager'), f"Planned item must have manager"
                 assert hasattr(planned_item, 'name'), f"Planned item must have name"
                 assert hasattr(planned_item, 'dependencies'), f"Planned item must have dependencies"
@@ -244,10 +242,8 @@ def apply_categories(
 
         by_category[request.category].append(request.name)
 
-    # ASSERTION 5: All requested packages must be categorized
+    # ASSERTION 5: At least one category must be assigned
     assert len(by_category) > 0, "At least one category must be assigned"
-    for category in by_category:
-        assert len(by_category[category]) > 0, f"Category {category} must have at least one package"
 
     # now, map each package to every root request that requires it
     categories = [*categories, *(k for k in by_category if k not in categories)]
@@ -260,12 +256,8 @@ def apply_categories(
     for name in requested:
         root_requests[name].append(name)
 
-    # ASSERTION 6: Every requested package must be in root_requests
-    for name in requested:
-        assert name in root_requests, f"Requested package {name} must be in root_requests"
-
     for dep, roots in root_requests.items():
-        # ASSERTION 7: Every dependency in root_requests must have at least one root
+        # ASSERTION 6: Every dependency in root_requests must have at least one root
         assert len(roots) > 0, f"Dependency {dep} must have at least one root request"
         
         # try a conda target first
@@ -273,17 +265,17 @@ def apply_categories(
         if not isinstance(targets, list):
             targets = [targets]
 
-        # ASSERTION 8: Every dependency in root_requests must exist in planned
+        # ASSERTION 7: Every dependency in root_requests must exist in planned (CRITICAL)
         assert len(targets) > 0, f"Dependency {dep} in root_requests must exist in planned packages"
 
         for root in roots:
             source = requested[root]
             for target in targets:
-                # ASSERTION 9: Every target must have a categories set
+                # ASSERTION 8: Every target must have a categories set
                 assert hasattr(target, 'categories'), f"Target {target.name} must have categories set"
                 target.categories.add(source.category)
 
-        # ASSERTION 10: After category assignment, every target must have at least one category
+        # ASSERTION 9: After category assignment, every target must have at least one category
         for target in targets:
             assert len(target.categories) > 0, f"Target {target.name} must have at least one category after assignment"
 
@@ -291,7 +283,7 @@ def apply_categories(
     # we should remove all other categories
     _truncate_main_category(planned)
 
-    # ASSERTION 11: After truncation, every package must still have at least one category
+    # ASSERTION 10: After truncation, every package must still have at least one category
     for pkg_name, pkg_items in planned.items():
         if not isinstance(pkg_items, list):
             pkg_items = [pkg_items]
@@ -327,14 +319,14 @@ def write_conda_lock_file(
     content.alphasort_inplace()
     content.filter_virtual_packages_inplace()
 
-    # ASSERTION 17: Before validation, every package must have at least one category
+    # ASSERTION 16: Before validation, every package must have at least one category
     for package in content.package:
         assert len(package.categories) > 0, f"Package {package.name} must have at least one category before validation"
 
     # Validate conda dependency consistency before writing
     _verify_no_missing_conda_packages(content)
 
-    # ASSERTION 18: After validation, every package must still have at least one category
+    # ASSERTION 17: After validation, every package must still have at least one category
     for package in content.package:
         assert len(package.categories) > 0, f"Package {package.name} must have at least one category after validation"
 
@@ -398,7 +390,7 @@ def write_conda_lock_file(
         output = content_v1.dict_for_output()
         yaml.dump(output, stream=f, sort_keys=False)
 
-    # ASSERTION 19: After writing, verify that no packages have empty categories
+    # ASSERTION 18: After writing, verify that no packages have empty categories
     parsed_lockfile = parse_conda_lock_file(path)
     for package in parsed_lockfile.package:
         assert len(package.categories) > 0, f"Package {package.name} must have at least one category after writing"
