@@ -1,8 +1,0 @@
-name: test
-channels:
-  - conda-forge
-dependencies:
-  - python=3.9
-  - urllib3
-  - certifi
-  - requests  # might bring in different versions of its deps

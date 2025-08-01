@@ -1,7 +1,0 @@
-name: test
-channels:
-  - conda-forge
-dependencies:
-  - python=3.9
-  - urllib3  # was a transitive dep of requests, now direct
-  - certifi  # was a transitive dep of requests, now direct

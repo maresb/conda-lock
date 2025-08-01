@@ -1,8 +1,0 @@
-name: test
-channels:
-  - conda-forge
-dependencies:
-  - python=3.9
-  - urllib3  # was transitive dep of requests, now direct
-  - certifi  # was transitive dep of requests, now direct
-  # Note: chardet and idna are no longer needed but might remain in lockfile
