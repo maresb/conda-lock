@@ -9,11 +9,11 @@
 # To update a single package to the latest version compatible with the version constraints in the source:
 #     conda-lock lock  --lockfile conda-lock.yml --update PACKAGE
 # To re-solve the entire environment, e.g. after changing a version constraint in the source file:
-#     conda-lock -f environment-v1.yml -f environment-v2.yml -f environment-v3.yml --lockfile conda-lock.yml
+#     conda-lock -f environment-v1.yml -f environment-v2.yml -f environment-v3.yml -f env-v1.yml -f env-v2.yml --lockfile conda-lock.yml
 version: 1
 metadata:
   content_hash:
-    linux-64: 05500d4d7c1356a130a9ec95c306ce0f38de94b2d7d12b85b88e545fe70adb06
+    linux-64: c78f4539feaace08bf2c5e868030c96fe1d23dbc256bcd64c0da6c4769e24c50
     osx-arm64: a621191ef1b0210ae97886821b094b1c254f2338f1a48441fd78174fcb2775d8
     osx-64: d49a79affa769be02afe2a624399513af8e967528c04225df94f82f5b616dcc1
     win-64: bf80d426073050884ea9eecf99b19835e23388a46457016c300a28b97f43e89c
@@ -29,6 +29,8 @@ metadata:
   - environment-v1.yml
   - environment-v2.yml
   - environment-v3.yml
+  - env-v1.yml
+  - env-v2.yml
 package:
 - name: _libgcc_mutex
   version: '0.1'
