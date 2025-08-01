@@ -1,0 +1,7 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - scikit-learn  # might have packages with separator issues
+  - matplotlib
