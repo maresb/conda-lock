@@ -101,21 +101,21 @@ def _seperator_munge_get(
     try:
         result = d[key]
         # ASSERTION 11: If key exists, result must not be empty (CRITICAL for bug prevention)
-        if isinstance(result, list):
-            assert len(result) > 0, f"Key {key} exists but returns empty list"
+        if isinstance(result, list) and len(result) == 0:
+            assert False, f"Key {key} exists but returns empty list"
         return result
     except KeyError:
         try:
             result = d[key.replace("-", "_")]
             # ASSERTION 12: If key with hyphen replacement exists, result must not be empty
-            if isinstance(result, list):
-                assert len(result) > 0, f"Key {key.replace('-', '_')} exists but returns empty list"
+            if isinstance(result, list) and len(result) == 0:
+                assert False, f"Key {key.replace('-', '_')} exists but returns empty list"
             return result
         except KeyError:
             result = d[key.replace("_", "-")]
             # ASSERTION 13: If key with underscore replacement exists, result must not be empty
-            if isinstance(result, list):
-                assert len(result) > 0, f"Key {key.replace('_', '-')} exists but returns empty list"
+            if isinstance(result, list) and len(result) == 0:
+                assert False, f"Key {key.replace('_', '-')} exists but returns empty list"
             return result
 
 
@@ -242,8 +242,9 @@ def apply_categories(
 
         by_category[request.category].append(request.name)
 
-    # ASSERTION 5: At least one category must be assigned
-    assert len(by_category) > 0, "At least one category must be assigned"
+    # ASSERTION 5: At least one category must be assigned (only if there are requested packages)
+    if len(requested) > 0:
+        assert len(by_category) > 0, "At least one category must be assigned"
 
     # now, map each package to every root request that requires it
     categories = [*categories, *(k for k in by_category if k not in categories)]
