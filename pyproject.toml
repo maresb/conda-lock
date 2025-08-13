@@ -139,7 +139,7 @@ addopts = [
     "--doctest-modules",
     "--numprocesses=auto",
     "--ignore-glob=**/vendor_poetry/**",
-    "--ignore-glob=**/_vendor/**"
+    "--ignore-glob=**/_vendor/**",
 ]
 log_level = "DEBUG"
 testpaths = ["tests", "conda_lock"]

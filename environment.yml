@@ -1,0 +1,8 @@
+name: bug-reproducer
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10.9
+  - pip=24.2
+  - pip:
+    - jupyter==1.1.1
