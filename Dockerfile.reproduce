@@ -1,0 +1,23 @@
+ARG VERSION="2.3.1"
+
+FROM mambaorg/micromamba:${VERSION}
+
+# Create the problematic lockfile
+RUN echo @EXPLICIT > bad-repodata.lock
+RUN echo https://conda.anaconda.org/conda-forge/noarch/ipykernel-6.30.1-pyh82676e8_0.conda#b0cc25825ce9212b8bee37829abad4d6 >> bad-repodata.lock
+
+# Install the package using the lockfile
+RUN micromamba install -y -f bad-repodata.lock
+
+# Copy the repodata_record.json to the current directory for inspection
+RUN cp /opt/conda/pkgs/ipykernel-6.30.1-pyh82676e8_0/info/repodata_record.json .
+
+# Also copy the lockfile for reference
+RUN cp bad-repodata.lock .
+
+# Display the contents
+RUN echo "=== Lockfile contents ===" && cat bad-repodata.lock
+RUN echo "=== Repodata record contents ===" && cat repodata_record.json
+
+# Keep the container running so we can inspect it
+CMD ["tail", "-f", "/dev/null"]

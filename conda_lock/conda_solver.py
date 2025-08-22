@@ -32,6 +32,12 @@ from conda_lock.lockfile.v2prelim.models import HashModel, LockedDependency
 from conda_lock.models.channel import Channel, normalize_url_with_placeholders
 from conda_lock.models.dry_run_install import DryRunInstall, FetchAction, LinkAction
 from conda_lock.models.lock_spec import Dependency, VersionedDependency
+from conda_lock.metadata_validator import (
+    get_robust_metadata,
+    IncompleteMetadataError,
+    MetadataValidationError,
+    suggest_fix_for_incomplete_metadata,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -166,9 +172,13 @@ def solve_conda(
 
 
 def _get_repodata_record(
-    pkgs_dirs: list[pathlib.Path], dist_name: str
+    pkgs_dirs: list[pathlib.Path], dist_name: str, fallback_url: Optional[str] = None
 ) -> Optional[FetchAction]:
     """Get the repodata_record.json of a given distribution from the package cache.
+
+    This function now includes robust fallback handling for incomplete metadata
+    that can occur when mamba writes incomplete repodata_record.json files,
+    particularly when installing from explicit lockfiles.
 
     On rare occasion during the CI tests, conda fails to find a package in the
     package cache, perhaps because the package is still being processed? Waiting for
@@ -178,17 +188,33 @@ def _get_repodata_record(
     NUM_RETRIES = 10
     for retry in range(1, NUM_RETRIES + 1):
         for pkgs_dir in pkgs_dirs:
-            record = pkgs_dir / dist_name / "info" / "repodata_record.json"
-            if record.exists():
-                with open(record) as f:
-                    repodata: FetchAction = json.load(f)
-                return repodata
-        logger.warning(
-            f"Failed to find repodata_record.json for {dist_name}. "
-            f"Retrying in 0.1 seconds ({retry}/{NUM_RETRIES})"
-        )
-        time.sleep(0.1)
-    logger.warning(f"Failed to find repodata_record.json for {dist_name}. Giving up.")
+            try:
+                # Try to get robust metadata with fallback handling
+                metadata = get_robust_metadata(pkgs_dir, dist_name, fallback_url)
+                return metadata
+            except IncompleteMetadataError as e:
+                # Log the issue but continue trying other package directories
+                logger.warning(
+                    f"Found incomplete metadata for {dist_name} in {pkgs_dir}: {e.issues}"
+                )
+                continue
+            except MetadataValidationError as e:
+                # Log the error but continue trying other package directories
+                logger.debug(f"Metadata validation failed for {dist_name} in {pkgs_dir}: {e}")
+                continue
+            except Exception as e:
+                # Log unexpected errors but continue trying
+                logger.debug(f"Unexpected error getting metadata for {dist_name} in {pkgs_dir}: {e}")
+                continue
+        
+        if retry < NUM_RETRIES:
+            logger.warning(
+                f"Failed to find valid repodata_record.json for {dist_name}. "
+                f"Retrying in 0.1 seconds ({retry}/{NUM_RETRIES})"
+            )
+            time.sleep(0.1)
+    
+    logger.warning(f"Failed to find valid repodata_record.json for {dist_name}. Giving up.")
     return None
 
 
@@ -260,7 +286,13 @@ def _reconstruct_fetch_actions(
                 raise ValueError(f"Unknown filename format: {dist_name}")
         else:
             raise ValueError(f"Unable to extract the dist_name from {link_action}.")
-        repodata = _get_repodata_record(pkgs_dirs, dist_name)
+        
+        # Try to get a fallback URL from the link action
+        fallback_url = None
+        if "base_url" in link_action:
+            fallback_url = link_action["base_url"]
+        
+        repodata = _get_repodata_record(pkgs_dirs, dist_name, fallback_url)
         if link_pkg_name == "pyzmq":
             print(
                 f"In _reconstruct_fetch_actions for {link_pkg_name}, repodata: {repodata}"
