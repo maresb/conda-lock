@@ -47,9 +47,9 @@ dependencies = [
     # conda-lock dependencies
     "click >=8.0",
     "click-default-group",
-    # ensureconda v1.4.7 introduced locking for downloads which fixed
-    # frequent CI failures on Windows.
-    "ensureconda >=1.4.7",
+    # ensureconda v1.5.0 fixed issues with conda-standalone that were leading
+    # to CI failures.
+    "ensureconda >=1.5.0",
     "filelock",
     "gitpython >=3.1.30",
     "jinja2",
