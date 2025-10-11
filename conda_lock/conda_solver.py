@@ -254,7 +254,8 @@ def _reconstruct_fetch_actions(
     print(f"pkgs_dirs: {pkgs_dirs}")
     print(f"link_only_names: {sorted(link_only_names)}")
     print("=" * 80)
-    raise ValueError("Stop here")
+    if len(link_only_names) > 0:
+        raise ValueError("Stop here")
 
     for link_pkg_name in link_only_names:
         link_action = link_actions[link_pkg_name]
