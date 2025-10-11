@@ -243,6 +243,19 @@ def _reconstruct_fetch_actions(
     else:
         pkgs_dirs = []
 
+    print("=" * 80)
+    print("Reconstructing FETCH actions")
+    num_link_only = len(link_only_names)
+    num_fetch = len(dry_run_install["actions"]["FETCH"])
+    print(f"Number of LINK-only actions: {num_link_only}")
+    print(f"Number of FETCH actions: {num_fetch}")
+    print(f"conda: {conda}")
+    print(f"platform: {platform}")
+    print(f"pkgs_dirs: {pkgs_dirs}")
+    print(f"link_only_names: {sorted(link_only_names)}")
+    print("=" * 80)
+    raise ValueError("Stop here")
+
     for link_pkg_name in link_only_names:
         link_action = link_actions[link_pkg_name]
         if "dist_name" in link_action:
