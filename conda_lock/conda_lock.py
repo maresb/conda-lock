@@ -24,16 +24,17 @@ from urllib.parse import urlsplit
 
 import click
 import yaml
+import yaml.error
 
 from ensureconda.api import ensureconda
 from ensureconda.resolve import platform_subdir
 
+from conda_lock import tempdir_manager
 from conda_lock.click_helpers import OrderedGroup
 from conda_lock.common import (
     read_file,
     read_json,
     relative_path,
-    temporary_file_with_contents,
     warn,
     write_file,
 )
@@ -75,6 +76,7 @@ from conda_lock.models.lock_spec import LockSpecification
 from conda_lock.models.pip_repository import PipRepository
 from conda_lock.pypi_solver import solve_pypi
 from conda_lock.src_parser import make_lock_spec
+from conda_lock.tempdir_manager import temporary_file_with_contents
 from conda_lock.virtual_package import (
     FakeRepoData,
     default_virtual_package_repodata,
@@ -500,7 +502,7 @@ def make_lock_files(  # noqa: C901
 
 def do_render(
     lockfile: Lockfile,
-    kinds: Sequence[Literal["env"] | Literal["explicit"]],
+    kinds: Sequence[Literal["env", "explicit"]],
     include_dev_dependencies: bool = True,
     filename_template: str | None = None,
     extras: Set[str] | None = None,
@@ -1380,6 +1382,12 @@ CONTEXT_SETTINGS = {"show_default": True, "help_option_names": ["--help", "-h"]}
     type=click.Path(),
     help="YAML or JSON file(s) containing structured metadata to add to metadata section of the lockfile.",
 )
+@click.option(
+    "--preserve-temp-dirs",
+    is_flag=True,
+    default=False,
+    help="Preserve temporary directories and files created during the locking process for debugging purposes.",
+)
 @click.pass_context
 def lock(
     ctx: click.Context,
@@ -1405,6 +1413,7 @@ def lock(
     update: Sequence[str] | None = None,
     metadata_choices: Sequence[str] = (),
     metadata_yamls: Sequence[PathLike] = (),
+    preserve_temp_dirs: bool = False,
 ) -> None:
     """Generate fully reproducible lock files for conda environments.
 
@@ -1422,6 +1431,9 @@ def lock(
         timestamp: The approximate timestamp of the output file in ISO8601 basic format.
     """
     logging.basicConfig(level=log_level)
+
+    # Set the flag for deleting temporary paths (files/dirs)
+    tempdir_manager.state.delete_temp_paths = not preserve_temp_dirs
 
     # Set Pypi <--> Conda lookup file location
     mapping_url = (
@@ -1560,6 +1572,12 @@ DEFAULT_INSTALL_OPT_LOCK_FILE = pathlib.Path(DEFAULT_LOCKFILE_NAME)
     help="Force using the given platform when installing from the lockfile, instead of the native platform.",
     default=platform_subdir,
 )
+@click.option(
+    "--preserve-temp-dirs",
+    is_flag=True,
+    default=False,
+    help="Preserve temporary directories and files created during the installation process for debugging purposes.",
+)
 @click.argument("lock-file", default=DEFAULT_INSTALL_OPT_LOCK_FILE, type=click.Path())
 @click.pass_context
 def click_install(
@@ -1578,6 +1596,7 @@ def click_install(
     dev: bool,
     extras: list[str],
     force_platform: str,
+    preserve_temp_dirs: bool,
 ) -> None:
     # bail out if we do not encounter the lockfile
     lock_file = pathlib.Path(lock_file)
@@ -1587,6 +1606,10 @@ def click_install(
 
     """Perform a conda install"""
     logging.basicConfig(level=log_level)
+
+    # Set the flag for deleting temporary paths
+    tempdir_manager.state.delete_temp_paths = not preserve_temp_dirs
+
     install(
         conda=conda,
         mamba=mamba,
@@ -1781,7 +1804,7 @@ def render(
     "--kind",
     type=click.Choice(["pixi.toml", "raw"]),
     multiple=True,
-    help="Kind of lock specification to generate. Must be 'pixi.toml'.",
+    help="Kind of lock specification to generate. Must be 'pixi.toml' or 'raw'.",
 )
 @click.option(
     "--filename-template",
@@ -1930,7 +1953,7 @@ def render_lock_spec(  # noqa: C901
     editable: Sequence[str],
 ) -> None:
     """Combine source files into a single lock specification"""
-    kinds = set(kind)
+    kinds: Set[Literal["pixi.toml", "raw"]] = set(kind)  # ty: ignore[invalid-assignment]
     if len(kinds) == 0:
         raise ValueError("No kind specified. Add `--kind=pixi.toml` or `--kind=raw`.")
     if not kinds <= {"pixi.toml", "raw"}:

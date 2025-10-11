@@ -60,7 +60,7 @@ if TYPE_CHECKING:
 # in practice, see https://github.com/pypa/manylinux/blob/main/README.rst#docker-images.
 # NOTE:
 #   Keep the max in sync with the default value used in default-virtual-packages.yaml.
-MANYLINUX_TAGS = ["1", "2010", "2014", "_2_17", "_2_24", "_2_28"]
+MANYLINUX_TAGS = ["1", "2010", "2014", "_2_17", "_2_18", "_2_24", "_2_28"]
 
 # This needs to be updated periodically as new macOS versions are released.
 MACOS_VERSION = (13, 4)
@@ -241,7 +241,7 @@ def _compute_compatible_manylinux_tags(
     >>> _compute_compatible_manylinux_tags({}) == list(reversed(MANYLINUX_TAGS))
     True
     >>> _compute_compatible_manylinux_tags(platform_virtual_packages)
-    ['_2_24', '_2_17', '2014', '2010', '1']
+    ['_2_24', '_2_18', '_2_17', '2014', '2010', '1']
     """
     # We use MANYLINUX_TAGS but only go up to the latest supported version
     # as provided by __glibc if present
@@ -395,7 +395,7 @@ def get_requirements(
                 if fragment == "":
                     hash = HashModel()
                 elif len(hash_splits) == 2:
-                    hash = HashModel(**{hash_splits[0]: hash_splits[1]})
+                    hash = HashModel.model_validate({hash_splits[0]: hash_splits[1]})
                 else:
                     raise ValueError(f"Don't know what to do with {fragment}")
                 source = DependencySource(
@@ -404,7 +404,9 @@ def get_requirements(
             elif op.package.source_type == "git":
                 url = f"{op.package.source_type}+{op.package.source_url}@{op.package.source_resolved_reference}"
                 # TODO: FIXME git ls-remote
-                hash = HashModel(**{"sha256": op.package.source_resolved_reference})
+                hash = HashModel.model_validate(
+                    {"sha256": op.package.source_resolved_reference}
+                )
                 source = DependencySource(type="url", url=url)
             elif op.package.source_type in ("directory", "file"):
                 url = f"file://{op.package.source_url}"
@@ -465,7 +467,7 @@ def _get_stripped_url(link: Link) -> str:
     clean_netloc = f"{parsed_url.hostname}"
     if parsed_url.port is not None:
         clean_netloc = f"{clean_netloc}:{parsed_url.port}"
-    return urlunsplit(
+    return urlunsplit(  # ty: ignore[invalid-return-type]
         (
             parsed_url.scheme,
             clean_netloc,
@@ -483,7 +485,7 @@ def _compute_hash(link: Link, lock_spec_hash: str | None) -> HashModel:
     else:
         # A hash was provided in the lock spec, so that takes precedence
         algo, value = lock_spec_hash.split(":")
-        return HashModel(**{algo: value})
+        return HashModel.model_validate({algo: value})
 
 
 def solve_pypi(
@@ -581,7 +583,8 @@ def solve_pypi(
         input = ArgvInput()
         input.set_stream(sys.stdin)
         io = IO(input, StreamOutput(sys.stdout), StreamOutput(sys.stderr))
-        io.set_verbosity(Verbosity.VERY_VERBOSE)
+        VERY_VERBOSE: Verbosity = Verbosity.VERY_VERBOSE  # ty: ignore[invalid-assignment]  # pyright: ignore[reportAssignmentType]
+        io.set_verbosity(VERY_VERBOSE)
     else:
         io = NullIO()
     s = PoetrySolver(
@@ -689,4 +692,6 @@ def _strip_auth(url: str) -> str:
     # Remove everything before and including the last '@' character in the part
     # between 'scheme://' and the subsequent '/'.
     netloc = parts.netloc.split("@")[-1]
-    return urlunsplit((parts.scheme, netloc, parts.path, parts.query, parts.fragment))
+    return urlunsplit(  # ty: ignore[invalid-return-type]
+        (parts.scheme, netloc, parts.path, parts.query, parts.fragment)
+    )

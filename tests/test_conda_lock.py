@@ -1546,7 +1546,7 @@ def test_run_lock_with_update_filter_platform(
     conda_exe: str,
 ):
     """Test that when updating for one platform, other platforms are not updated."""
-    lockfile_path, pre_env, post_env = update_environment_filter_platform
+    lockfile_path, _pre_env, post_env = update_environment_filter_platform
     environment_dir = lockfile_path.parent
     monkeypatch.chdir(environment_dir)
 
@@ -2533,7 +2533,7 @@ def test_warn_on_explicit_lock_with_pip_deps(
     caplog,
 ):
     lock_content = parse_conda_lock_file(install_with_pip_deps_lockfile)
-    do_render(lock_content, kinds=[kind])
+    do_render(lock_content, kinds=(kind,))
     if kind == "explicit":
         assert PIP_WITH_EXPLICIT_LOCKFILE_WARNING in caplog.text
     else:

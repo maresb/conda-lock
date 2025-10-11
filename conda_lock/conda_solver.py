@@ -6,7 +6,6 @@ import shlex
 import shutil
 import subprocess
 import sys
-import tempfile
 import time
 
 from collections.abc import Iterable, Iterator, MutableSequence, Sequence
@@ -31,6 +30,7 @@ from conda_lock.lockfile.v2prelim.models import HashModel, LockedDependency
 from conda_lock.models.channel import Channel, normalize_url_with_placeholders
 from conda_lock.models.dry_run_install import DryRunInstall, FetchAction, LinkAction
 from conda_lock.models.lock_spec import Dependency, VersionedDependency
+from conda_lock.tempdir_manager import temporary_directory
 
 
 logger = logging.getLogger(__name__)
@@ -242,6 +242,20 @@ def _reconstruct_fetch_actions(
         pkgs_dirs = _get_pkgs_dirs(conda=conda, platform=platform)
     else:
         pkgs_dirs = []
+
+    print("=" * 80)
+    print("Reconstructing FETCH actions")
+    num_link_only = len(link_only_names)
+    num_fetch = len(dry_run_install["actions"]["FETCH"])
+    print(f"Number of LINK-only actions: {num_link_only}")
+    print(f"Number of FETCH actions: {num_fetch}")
+    print(f"conda: {conda}")
+    print(f"platform: {platform}")
+    print(f"pkgs_dirs: {pkgs_dirs}")
+    print(f"link_only_names: {sorted(link_only_names)}")
+    print("=" * 80)
+    if len(link_only_names) > 0:
+        raise ValueError("Stop here")
 
     for link_pkg_name in link_only_names:
         link_action = link_actions[link_pkg_name]
@@ -515,7 +529,7 @@ def fake_conda_environment(
         Target platform
 
     """
-    with tempfile.TemporaryDirectory() as prefix:
+    with temporary_directory(prefix="conda-lock-fake-env-") as prefix:
         conda_meta = pathlib.Path(prefix) / "conda-meta"
         conda_meta.mkdir()
         (conda_meta / "history").touch()
