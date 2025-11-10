@@ -35,7 +35,14 @@ def _seperator_munge_get(
         try:
             return d[key.replace("-", "_")]
         except KeyError:
-            return d[key.replace("_", "-")]
+            try:
+                return d[key.replace("_", "-")]
+            except KeyError:
+                # If the key doesn't exist even after trying separator variations,
+                # return an empty list. This handles the case where a dependency
+                # (e.g., 'pip') is referenced but not in the planned dictionary.
+                # See https://github.com/conda/conda-lock/issues/843
+                return []
 
 
 def _truncate_main_category(
