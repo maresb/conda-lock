@@ -41,7 +41,9 @@ def _seperator_munge_get(
                 # If the key doesn't exist even after trying separator variations,
                 # return an empty list. This handles the case where a dependency
                 # (e.g., 'pip') is referenced but not in the planned dictionary.
-                # See https://github.com/conda/conda-lock/issues/843
+                # This occurs when CONDA_ADD_PIP_AS_PYTHON_DEPENDENCY=False (conda-lock's default),
+                # which prevents pip from being automatically installed even though Python's
+                # metadata lists it as a dependency. See https://github.com/conda/conda-lock/issues/843
                 return []
 
 
