@@ -27,15 +27,12 @@ class UnknownLockfileVersion(ValueError):
 
 def _seperator_munge_get(
     d: Mapping[str, list[LockedDependency] | LockedDependency], key: str
-) -> list[LockedDependency] | LockedDependency:
+  ) -> list[LockedDependency] | LockedDependency | None:
     # since separators are not consistent across managers (or even within) we need to do some double attempts here
-    try:
-        return d[key]
-    except KeyError:
-        try:
-            return d[key.replace("-", "_")]
-        except KeyError:
-            return d[key.replace("_", "-")]
+    for candidate in (key, key.replace("-", "_"), key.replace("_", "-")):
+        if candidate in d:
+            return d[candidate]
+    return None
 
 
 def _truncate_main_category(
@@ -82,8 +79,10 @@ def apply_categories(
     by_category = defaultdict(list)
 
     def extract_planned_items(
-        planned_items: list[LockedDependency] | LockedDependency,
+        planned_items: list[LockedDependency] | LockedDependency | None,
     ) -> list[LockedDependency]:
+        if planned_items is None:
+            return []
         if not isinstance(planned_items, list):
             return [planned_items]
 
@@ -152,6 +151,8 @@ def apply_categories(
     for dep, roots in root_requests.items():
         # try a conda target first
         targets = _seperator_munge_get(planned, dep)
+        if targets is None:
+            continue
         if not isinstance(targets, list):
             targets = [targets]
 
