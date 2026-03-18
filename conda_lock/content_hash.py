@@ -168,8 +168,6 @@ def _replace_glibc_version(
 
     Returns None if the platform has no glibc package or already matches.
     """
-    import copy
-
     repodata = virtual_package_repo.all_repodata
     if platform not in repodata:
         return None
@@ -186,8 +184,9 @@ def _replace_glibc_version(
     if current_version == target_version:
         return None
 
-    new_repo = copy.deepcopy(virtual_package_repo)
-    new_packages = new_repo.all_repodata[platform]["packages"]  # type: ignore[index]
+    new_repo = virtual_package_repo.model_copy(deep=True)
+    new_subdir = cast(SubdirMetadata, new_repo.all_repodata[platform])
+    new_packages = new_subdir["packages"]
     # Remove old key, add new one
     old_pkg = new_packages.pop(glibc_key)
     new_key = f"__glibc-{target_version}-0.tar.bz2"
