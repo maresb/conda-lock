@@ -248,6 +248,15 @@ Conda makes use of [virtual packages](https://conda.io/projects/conda/en/latest/
 runtime to gate dependency on system features.  Due to these not generally existing on your local execution platform conda-lock will inject
 them into the solution environment with a reasonable guess at what a default system configuration should be.
 
+Each virtual package version represents an assumed minimum system capability. The solver
+excludes any package that requires a newer version, so these act as upper bounds on which
+packages are considered. Conversely, they act as lower bounds on the systems where the
+resulting lockfile can be installed.
+
+There is a tradeoff: increasing a version widens the set of candidate packages but narrows
+the set of compatible target systems.  If a package you need is being filtered out, increase the
+relevant version.  If the lockfile is incompatible with your target system, decrease it.
+
 If you want to override which virtual packages are injected you can create a file like
 
 ```yaml
