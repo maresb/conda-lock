@@ -317,8 +317,9 @@ def virtual_package_repo_from_specification(
 
 
 if __name__ == "__main__":
-    logger.addHandler(logging.StreamHandler())
-    logger.setLevel(logging.DEBUG)
+    from conda_lock.conda_lock import _configure_logging
+
+    _configure_logging(logging.DEBUG)
     fil = (
         pathlib.Path(__file__).parent.parent
         / "tests"
