@@ -317,7 +317,8 @@ def virtual_package_repo_from_specification(
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logger.addHandler(logging.StreamHandler())
+    logger.setLevel(logging.DEBUG)
     fil = (
         pathlib.Path(__file__).parent.parent
         / "tests"

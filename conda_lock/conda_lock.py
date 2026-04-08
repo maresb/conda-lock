@@ -1230,6 +1230,22 @@ def main() -> None:
 
 TLogLevel: TypeAlias = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
+
+def _configure_logging(level: str | int) -> None:
+    """Configure the ``conda_lock`` logger without touching the root logger.
+
+    Using ``logging.basicConfig`` configures the root logger, which conflicts
+    with the conda plugin system (see conda/conda#15872).  Instead we attach a
+    ``StreamHandler`` to the ``conda_lock`` package logger so that only
+    conda-lock messages are affected.
+    """
+    root = logging.getLogger("conda_lock")
+    if not root.handlers:
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter(logging.BASIC_FORMAT, None, "%"))
+        root.addHandler(handler)
+    root.setLevel(level)
+
 CONTEXT_SETTINGS = {"show_default": True, "help_option_names": ["--help", "-h"]}
 
 
@@ -1430,7 +1446,7 @@ def lock(
         version: The version of conda-lock used to generate this lock file.
         timestamp: The approximate timestamp of the output file in ISO8601 basic format.
     """
-    logging.basicConfig(level=log_level)
+    _configure_logging(log_level)
 
     # Set the flag for deleting temporary paths (files/dirs)
     tempdir_manager.state.delete_temp_paths = not preserve_temp_dirs
@@ -1605,7 +1621,7 @@ def click_install(
         sys.exit(1)
 
     """Perform a conda install"""
-    logging.basicConfig(level=log_level)
+    _configure_logging(log_level)
 
     # Set the flag for deleting temporary paths
     tempdir_manager.state.delete_temp_paths = not preserve_temp_dirs
@@ -1729,7 +1745,7 @@ def render(
     platform: Sequence[str],
 ) -> None:
     """Render multi-platform lockfile into single-platform env or explicit file"""
-    logging.basicConfig(level=log_level)
+    _configure_logging(log_level)
 
     if pdb:
         sys.excepthook = _handle_exception_post_mortem
@@ -2035,7 +2051,7 @@ def render_lock_spec(  # noqa: C901
             )
         editables.append(EditableDependency(name=name, path=path))
 
-    logging.basicConfig(level=log_level)
+    _configure_logging(log_level)
 
     # Set Pypi <--> Conda lookup file location
     mapping_url = (
