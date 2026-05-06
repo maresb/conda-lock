@@ -1,0 +1,13 @@
+# Extracted archive contents are scratch output from re-running the
+# reproduction harness; never commit them.
+*-pkgs/
+
+# The pinned fixture data below is deliberately committed even though
+# the repo-root .gitignore excludes *.tar.gz, tests/**/*.lock, and
+# tests/**/*.yml. The negations keep plain `git add` working; without
+# them the fixtures must be force-added, and a rebase or re-add can
+# silently drop them from history.
+!*-pkgs.tar.gz
+!01-explicit.lock
+!lockfile-*.yml
+!lockfile-*-explicit.lock
