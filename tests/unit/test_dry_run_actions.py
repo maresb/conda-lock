@@ -416,6 +416,124 @@ def _sparse_link_action() -> dict:
     }
 
 
+def test_reconstruct_fetch_actions_warns_with_remediation_on_healed(
+    monkeypatch, tmp_path, caplog
+):
+    """``RepodataLookup(outcome="healed")`` -> WARNING with
+    ``mamba clean -a`` remediation text, FETCH appended, no
+    exception."""
+    from conda_lock.solver.repodata_cache import RepodataLookup
+
+    healed_record = {
+        "name": "libzlib",
+        "version": "1.3.2",
+        "url": "https://conda.anaconda.org/conda-forge/linux-64/libzlib-1.3.2-h25fd6f3_2.conda",
+        "md5": "d87ff7921124eccd67248aa483c23fec",
+        "sha256": "55044c403570f0dc26e6364de4dc5368e5f3fc7ff103e867c487e2b5ab2bcda9",
+        "depends": ["__glibc >=2.17,<3.0.a0"],
+        "subdir": "linux-64",
+        "channel": "conda-forge",
+        "fn": "libzlib-1.3.2-h25fd6f3_2.conda",
+    }
+    healed_from = (
+        tmp_path / "pkgs/.../libzlib-1.3.2-h25fd6f3_2/info/repodata_record.json"
+    )
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.get_pkgs_dirs",
+        lambda **_kwargs: [tmp_path / "pkgs"],
+    )
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.get_repodata_record",
+        lambda *_args, **_kwargs: RepodataLookup(
+            record=healed_record, outcome="healed", healed_from=healed_from
+        ),
+    )
+    dryrun = {"actions": {"LINK": [_sparse_link_action()], "FETCH": []}}
+    with caplog.at_level("WARNING", logger="conda_lock.solver.dry_run"):
+        reconstruct_fetch_actions_in_place("/dummy", "linux-64", dryrun)
+    fetched = dryrun["actions"]["FETCH"]
+    assert len(fetched) == 1
+    assert fetched[0]["depends"] == ["__glibc >=2.17,<3.0.a0"]
+    msgs = "\n".join(r.getMessage() for r in caplog.records)
+    assert "Healed corrupt repodata_record.json" in msgs
+    assert "mamba clean -a" in msgs
+    assert "896" in msgs
+
+
+def test_reconstruct_fetch_actions_raises_with_warning_on_unhealable_corrupt(
+    monkeypatch, tmp_path, caplog
+):
+    """``RepodataLookup(outcome="unhealable_corrupt")`` -> WARNING
+    naming the corruption signature plus
+    ``regenerate from sources`` remediation, then
+    ``FileNotFoundError`` so the lock attempt fails loudly rather
+    than producing a silently-incomplete plan."""
+    from conda_lock.solver.repodata_cache import RepodataLookup
+
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.get_pkgs_dirs",
+        lambda **_kwargs: [tmp_path / "pkgs"],
+    )
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.get_repodata_record",
+        lambda *_args, **_kwargs: RepodataLookup(
+            record=None,
+            outcome="unhealable_corrupt",
+            reason=(
+                "corrupt record at /pkgs/.../info/repodata_record.json "
+                "(mamba 2.1.1-2.5 signature) and info/index.json "
+                "missing -- cannot heal"
+            ),
+        ),
+    )
+    dryrun = {"actions": {"LINK": [_sparse_link_action()], "FETCH": []}}
+    with caplog.at_level("WARNING", logger="conda_lock.solver.dry_run"):
+        with pytest.raises(FileNotFoundError):
+            reconstruct_fetch_actions_in_place("/dummy", "linux-64", dryrun)
+    msgs = "\n".join(r.getMessage() for r in caplog.records)
+    # This is the orchestration boundary contract for
+    # ``unhealable_corrupt``. Pin every required substring
+    # individually -- weakening any of these to "or" with
+    # "mamba clean -a" would let the contract drift silently.
+    assert "mamba 2.1.1-2.5" in msgs
+    assert "info/index.json" in msgs
+    assert "Regenerate from sources" in msgs
+    assert "mamba clean -a" in msgs
+    assert "896" in msgs
+
+
+def test_reconstruct_fetch_actions_raises_with_warning_on_not_found(
+    monkeypatch, tmp_path, caplog
+):
+    """``RepodataLookup(outcome="not_found")`` -> WARNING with the
+    diagnostic ``reason``, then ``FileNotFoundError``. The reason
+    text comes from the cache layer's most-actionable rejection
+    description (e.g. ``identity mismatch ... sha256``), surfaced
+    verbatim through orchestration."""
+    from conda_lock.solver.repodata_cache import RepodataLookup
+
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.get_pkgs_dirs",
+        lambda **_kwargs: [tmp_path / "pkgs"],
+    )
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.get_repodata_record",
+        lambda *_args, **_kwargs: RepodataLookup(
+            record=None,
+            outcome="not_found",
+            reason="identity mismatch at /tmp/foo: sha256 mismatch",
+        ),
+    )
+    dryrun = {"actions": {"LINK": [_sparse_link_action()], "FETCH": []}}
+    with caplog.at_level("WARNING", logger="conda_lock.solver.dry_run"):
+        with pytest.raises(FileNotFoundError):
+            reconstruct_fetch_actions_in_place("/dummy", "linux-64", dryrun)
+    msgs = "\n".join(r.getMessage() for r in caplog.records)
+    assert "Failed to find repodata_record.json" in msgs
+    assert "identity mismatch" in msgs
+    assert "sha256" in msgs
+
+
 def test_reconstruct_fetch_actions_silent_on_found_outcome(
     monkeypatch, tmp_path, caplog
 ):
