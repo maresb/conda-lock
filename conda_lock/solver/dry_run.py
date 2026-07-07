@@ -6,13 +6,23 @@ that output into a uniform shape with one ``FETCH`` per planned
 package, regardless of whether the underlying solver returned
 rich-LINK actions (mamba 2.x / micromamba), sparse-LINK actions
 (conda, Python mamba 1.x), or already-complete FETCH actions.
+
+This module hosts two user-facing warnings that are policy, not
+cache I/O: the degraded-disk-fallback breadcrumb that
+``reconstruct_fetch_actions_in_place`` emits when the rich-LINK fast path
+is unavailable, and ``warn_on_pkgs_dirs_leak`` which surfaces a
+``CONDA_PKGS_DIRS`` leak from the user's condarc. Both belong here
+because both are the orchestration view of "the dryrun pipeline
+hit a degraded path"; the cache layer in
+``conda_lock.solver.repodata_cache`` only ever reports facts.
 """
 
 import logging
+import pathlib
 
 from typing import cast
 
-from conda_lock.invoke_conda import PathLike, get_pkgs_dirs
+from conda_lock.invoke_conda import PathLike, conda_pkgs_dir, get_pkgs_dirs
 from conda_lock.models.dry_run_install import DryRunInstall, FetchAction, LinkAction
 from conda_lock.solver.repodata_cache import (
     get_repodata_record,
@@ -21,6 +31,32 @@ from conda_lock.solver.repodata_cache import (
 
 
 logger = logging.getLogger(__name__)
+
+
+def warn_on_pkgs_dirs_leak(pkgs_dirs: list[pathlib.Path]) -> None:
+    """Detect extra pkgs_dirs leaking in from the user's ``.condarc``.
+
+    conda-lock sets ``CONDA_PKGS_DIRS`` to an isolated temp directory
+    in ``conda_env_override`` so the solver doesn't see whatever is
+    in the user's global cache. In practice, several mamba/conda
+    releases have *merged* the env-var with the condarc value rather
+    than replacing it, leaking corrupt or stale entries from the
+    user's cache into the solver's view (the third step in the
+    conda/conda-lock#896 chain). Warn so this is at least visible.
+    """
+    expected = pathlib.Path(conda_pkgs_dir()).resolve()
+    extras = [p for p in pkgs_dirs if p.resolve() != expected]
+    if extras:
+        logger.warning(
+            "Extra pkgs_dirs leaked from user config: %s. conda-lock asked "
+            "the solver to use only its isolated cache at %s, but the "
+            "solver also reported %s. Stale or corrupt entries (notably "
+            "from mamba 2.1.1-2.5 -- see conda/conda-lock#896) in the "
+            "leaked directories may produce a broken lockfile.",
+            extras,
+            expected,
+            extras,
+        )
 
 
 _FETCH_KEYS_FROM_LINK: tuple[str, ...] = (
@@ -140,7 +176,29 @@ def reconstruct_fetch_actions_in_place(
             deferred.append((link_pkg_name, link_action))
 
     if deferred:
+        # Visibility for the cache-dependent path. Mamba-family solvers
+        # emit full repodata in LINK, so with them disk fallback is only
+        # reached when a LINK was rejected (missing fields or the mamba
+        # 2.1.1-2.5 corruption signature). With conda and the Python
+        # mamba 1.x CLI, sparse LINKs make this the normal path. Either
+        # way the cache may contain stale or corrupt records; we leave a
+        # breadcrumb so a later silent-data bug isn't an archaeology
+        # project. See conda/conda-lock#896.
+        logger.warning(
+            "Reconstructing FETCH actions from the package cache for "
+            "%d package(s) on %s: %s. This path is normal for conda and "
+            "the Python mamba 1.x CLI, whose dryrun LINK actions don't "
+            "carry full repodata. With mamba 2.x/micromamba it is only "
+            "reached when a LINK action was rejected as incomplete or "
+            "as carrying the mamba 2.1.1-2.5 corruption signature -- "
+            "in that case check the package cache for corrupt entries "
+            "(see conda/conda-lock#896).",
+            len(deferred),
+            platform,
+            sorted(name for name, _ in deferred),
+        )
         pkgs_dirs = get_pkgs_dirs(conda=conda, platform=platform)
+        warn_on_pkgs_dirs_leak(pkgs_dirs)
     else:
         pkgs_dirs = []
 

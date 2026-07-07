@@ -21,9 +21,11 @@ from pathlib import Path
 
 import pytest
 
+from conda_lock.invoke_conda import conda_pkgs_dir
 from conda_lock.solver.dry_run import (
     link_action_as_fetch,
     reconstruct_fetch_actions_in_place,
+    warn_on_pkgs_dirs_leak,
 )
 from tests.support.fixtures import (
     CONDA_LINK_ACTION as _CONDA_LINK_ACTION,
@@ -334,6 +336,62 @@ def test_reconstruct_fetch_actions_disk_fallback_on_hierarchical_cache(
 # --- 3. Degraded-path warning -------------------------------------------
 
 
+def test_reconstruct_fetch_actions_warns_when_disk_fallback_is_used(
+    tmp_path, monkeypatch, caplog
+):
+    """A sparse LINK forces the disk fallback. Even when the lookup
+    succeeds, conda-lock emits a WARNING that this degraded path was
+    taken so a corrupt cache (or stale mamba) is at least visible."""
+    pkgs = tmp_path / "pkgs"
+    info_dir = (
+        pkgs
+        / "https/conda.anaconda.org/conda-forge/linux-64"
+        / "libzlib-1.3.2-h25fd6f3_2"
+        / "info"
+    )
+    info_dir.mkdir(parents=True)
+    (info_dir / "repodata_record.json").write_text(
+        json.dumps(
+            {
+                "name": "libzlib",
+                "version": "1.3.2",
+                "depends": ["__glibc >=2.17"],
+                "license": "Zlib",
+                "subdir": "linux-64",
+                "timestamp": 1774072609,
+                "url": _MAMBA_26_LINK_ACTION["url"],
+                "md5": _MAMBA_26_LINK_ACTION["md5"],
+                "sha256": _MAMBA_26_LINK_ACTION["sha256"],
+                "fn": "libzlib-1.3.2-h25fd6f3_2.conda",
+                "channel": "conda-forge",
+            }
+        )
+    )
+    sparse_link = {
+        "name": "libzlib",
+        "version": "1.3.2",
+        "platform": "linux-64",
+        "channel": "conda-forge",
+        "dist_name": "libzlib-1.3.2-h25fd6f3_2",
+        "fn": "libzlib-1.3.2-h25fd6f3_2.conda",
+        "url": _MAMBA_26_LINK_ACTION["url"],
+    }
+    dryrun = {"actions": {"LINK": [sparse_link], "FETCH": []}}
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.get_pkgs_dirs",
+        lambda **_kwargs: [pkgs],
+    )
+    with caplog.at_level("WARNING", logger="conda_lock.solver.dry_run"):
+        reconstruct_fetch_actions_in_place("/dummy", "linux-64", dryrun)
+    assert len(dryrun["actions"]["FETCH"]) == 1
+    msgs = "\n".join(r.getMessage() for r in caplog.records)
+    assert "Reconstructing FETCH actions from the package cache" in msgs
+    assert "libzlib" in msgs
+
+
+# ---------------------------------------------------------------------------
+# RepodataLookup -> warning translation (orchestration boundary)
+# ---------------------------------------------------------------------------
 #
 # The cache layer (``conda_lock.solver.repodata_cache``) is silent at
 # WARNING level by contract: it returns a structured ``RepodataLookup``
@@ -356,6 +414,72 @@ def _sparse_link_action() -> dict:
         "fn": "libzlib-1.3.2-h25fd6f3_2.conda",
         "version": "1.3.2",
     }
+
+
+def test_reconstruct_fetch_actions_silent_on_found_outcome(
+    monkeypatch, tmp_path, caplog
+):
+    """``RepodataLookup(outcome="found")`` -> no WARNING from the
+    orchestration layer. The disk-fallback degraded-path warning
+    fires earlier (whenever any LINK is sparse), but the per-package
+    fallback success itself is not warning-worthy."""
+    from conda_lock.solver.repodata_cache import RepodataLookup
+
+    found_record = {
+        "name": "libzlib",
+        "version": "1.3.2",
+        "url": "https://conda.anaconda.org/conda-forge/linux-64/libzlib-1.3.2-h25fd6f3_2.conda",
+        "md5": "d87ff7921124eccd67248aa483c23fec",
+        "sha256": "55044c403570f0dc26e6364de4dc5368e5f3fc7ff103e867c487e2b5ab2bcda9",
+        "depends": ["__glibc >=2.17,<3.0.a0"],
+        "subdir": "linux-64",
+        "channel": "conda-forge",
+        "fn": "libzlib-1.3.2-h25fd6f3_2.conda",
+    }
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.get_pkgs_dirs",
+        lambda **_kwargs: [tmp_path / "pkgs"],
+    )
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.get_repodata_record",
+        lambda *_args, **_kwargs: RepodataLookup(record=found_record, outcome="found"),
+    )
+    dryrun = {"actions": {"LINK": [_sparse_link_action()], "FETCH": []}}
+    with caplog.at_level("WARNING", logger="conda_lock.solver.dry_run"):
+        reconstruct_fetch_actions_in_place("/dummy", "linux-64", dryrun)
+    assert len(dryrun["actions"]["FETCH"]) == 1
+    # The only WARNING-level message permitted here is the
+    # generic degraded-disk-fallback breadcrumb, NOT a per-package
+    # success line.
+    msgs = "\n".join(r.getMessage() for r in caplog.records)
+    assert "Healed" not in msgs
+    assert "Failed to find" not in msgs
+    assert "info/index.json" not in msgs
+
+
+# ---------------------------------------------------------------------------
+# pkgs_dirs leak detection
+# ---------------------------------------------------------------------------
+
+
+def test_warn_on_pkgs_dirs_leak_emits_warning_for_extras(caplog):
+    """Anything beyond the conda-lock isolated cache dir is a leak."""
+    expected = Path(conda_pkgs_dir())
+    leaked = Path("/home/user/.condarc-leaked-cache")
+    with caplog.at_level("WARNING", logger="conda_lock.solver.dry_run"):
+        warn_on_pkgs_dirs_leak([expected, leaked])
+    msgs = "\n".join(r.getMessage() for r in caplog.records)
+    assert "Extra pkgs_dirs leaked from user config" in msgs
+    assert str(leaked) in msgs
+
+
+def test_warn_on_pkgs_dirs_leak_quiet_when_only_expected(caplog):
+    """No warning when the solver's pkgs_dirs is exactly our temp dir."""
+    expected = Path(conda_pkgs_dir())
+    with caplog.at_level("WARNING", logger="conda_lock.solver.dry_run"):
+        warn_on_pkgs_dirs_leak([expected])
+    leak_warnings = [r for r in caplog.records if "leaked" in r.getMessage()]
+    assert leak_warnings == []
 
 
 # ---------------------------------------------------------------------------
