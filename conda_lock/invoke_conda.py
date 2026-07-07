@@ -11,7 +11,11 @@ from collections.abc import Iterator, Sequence
 from logging import getLogger
 from typing import IO, Any, Literal, TypeAlias
 
-from ensureconda.api import determine_micromamba_version, ensureconda
+from ensureconda.api import (
+    determine_mamba_version,
+    determine_micromamba_version,
+    ensureconda,
+)
 from packaging.version import Version
 
 from conda_lock.models.channel import Channel
@@ -331,6 +335,29 @@ def is_micromamba(conda: PathLike) -> bool:
     return str(conda).endswith("micromamba") or str(conda).lower().endswith(
         "micromamba.exe"
     )
+
+
+def mamba_binary_version(conda: PathLike) -> Version | None:
+    """Best-effort version probe of a mamba/micromamba executable.
+
+    Returns ``None`` when the executable is not mamba-family (e.g.
+    conda) or when the probe fails for any reason. Callers use this
+    for advisory warnings only -- never for control flow that could
+    break a solve, which is why every failure mode maps to ``None``
+    rather than raising.
+
+    Parsing is delegated to ensureconda's ``determine_mamba_version``
+    (available since the pinned minimum, ensureconda 1.4.7), which
+    handles mamba 1.x ("mamba 1.5.12\\nconda 24.11.3") and falls back
+    to micromamba-style parsing for mamba 2.x / micromamba ("2.5.0").
+    """
+    exe_name = pathlib.Path(str(conda)).name.lower()
+    if "mamba" not in exe_name:
+        return None
+    try:
+        return determine_mamba_version(str(conda))
+    except Exception:  # noqa: BLE001 -- advisory probe; never break a solve
+        return None
 
 
 def extract_json_object(proc_stdout: str) -> str:

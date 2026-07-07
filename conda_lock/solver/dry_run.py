@@ -17,12 +17,20 @@ hit a degraded path"; the cache layer in
 ``conda_lock.solver.repodata_cache`` only ever reports facts.
 """
 
+import functools
 import logging
 import pathlib
 
 from typing import cast
 
-from conda_lock.invoke_conda import PathLike, conda_pkgs_dir, get_pkgs_dirs
+from packaging.version import Version
+
+from conda_lock.invoke_conda import (
+    PathLike,
+    conda_pkgs_dir,
+    get_pkgs_dirs,
+    mamba_binary_version,
+)
 from conda_lock.models.dry_run_install import DryRunInstall, FetchAction, LinkAction
 from conda_lock.solver.repodata_cache import (
     get_repodata_record,
@@ -31,6 +39,57 @@ from conda_lock.solver.repodata_cache import (
 
 
 logger = logging.getLogger(__name__)
+
+
+#: Mamba/micromamba versions in [2.1.1, 2.6.0) write URL-stub
+#: ``repodata_record.json`` files into the package cache on
+#: explicit-URL installs (mamba-org/mamba#4052, fixed by
+#: mamba-org/mamba#4110). See conda/conda-lock#896.
+_CORRUPT_CACHE_WRITER_MIN = Version("2.1.1")
+_CORRUPT_CACHE_WRITER_FIXED = Version("2.6.0")
+
+
+@functools.cache
+def warn_on_corrupt_cache_writing_solver(conda: str) -> None:
+    """Warn once per solver binary when it is a mamba 2.1.1-2.5.
+
+    Those versions write corrupt ``repodata_record.json`` stubs into
+    the package cache on explicit-URL installs (timestamp, license,
+    md5, and sha256 lost; depends also lost before 2.3.3), poisoning
+    later cache reads by conda-lock and other tools. conda-lock
+    detects and heals affected records where ``info/index.json`` is
+    available, but the cache keeps accumulating corruption for as
+    long as the solver is in that range, so the durable fix is an
+    upgrade -- hence an upfront advisory rather than waiting for the
+    heal machinery to fire.
+
+    Deliberately NOT a blanket pre-2.6 warning: versions below 2.1.1
+    write clean records, and their sparse-LINK/disk-fallback flows
+    are fully supported. Warning on them would train users to ignore
+    the message.
+
+    ``functools.cache`` keys on the executable path so each binary
+    warns at most once per process, not once per platform solved. The probe
+    swallows all errors (returns ``None``), so this can never break a
+    solve.
+    """
+    version = mamba_binary_version(conda)
+    if version is None:
+        return
+    if _CORRUPT_CACHE_WRITER_MIN <= version < _CORRUPT_CACHE_WRITER_FIXED:
+        logger.warning(
+            "The solver %s is mamba/micromamba %s. Versions 2.1.1 "
+            "through 2.5.x write corrupt repodata_record.json stub "
+            "records into the package cache (conda/conda-lock#896, "
+            "mamba-org/mamba#4052): metadata such as depends, "
+            "timestamp, license, and sha256 can be lost, which may "
+            "silently drop packages from lockfiles. conda-lock will "
+            "detect and heal affected records from info/index.json "
+            "where possible, but upgrading to mamba/micromamba "
+            ">= 2.6.0 (mamba-org/mamba#4110) is strongly recommended.",
+            conda,
+            version,
+        )
 
 
 def warn_on_pkgs_dirs_leak(pkgs_dirs: list[pathlib.Path]) -> None:

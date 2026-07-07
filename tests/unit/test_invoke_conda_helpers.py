@@ -6,7 +6,7 @@ import pathlib
 
 import pytest
 
-from conda_lock.invoke_conda import get_pkgs_dirs
+from conda_lock.invoke_conda import get_pkgs_dirs, mamba_binary_version
 
 
 @pytest.mark.parametrize(
@@ -53,3 +53,13 @@ def test_get_pkgs_dirs_defaults_method_by_binary(monkeypatch):
     get_pkgs_dirs(conda="/opt/conda", platform="linux-64")
     assert "config" in seen_args[0]
     assert "info" in seen_args[1]
+
+
+def test_mamba_binary_version_skips_non_mamba_binaries():
+    """The name gate returns None without ever spawning a subprocess."""
+    assert mamba_binary_version("/usr/bin/conda") is None
+
+
+def test_mamba_binary_version_returns_none_on_probe_failure():
+    """A missing or broken executable maps to None, never an exception."""
+    assert mamba_binary_version("/nonexistent/path/micromamba") is None

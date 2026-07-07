@@ -25,6 +25,7 @@ from conda_lock.invoke_conda import conda_pkgs_dir
 from conda_lock.solver.dry_run import (
     link_action_as_fetch,
     reconstruct_fetch_actions_in_place,
+    warn_on_corrupt_cache_writing_solver,
     warn_on_pkgs_dirs_leak,
 )
 from tests.support.fixtures import (
@@ -603,6 +604,63 @@ def test_warn_on_pkgs_dirs_leak_quiet_when_only_expected(caplog):
 # ---------------------------------------------------------------------------
 # warn_on_corrupt_cache_writing_solver
 # ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("version", "expect_warning"),
+    [
+        ("2.1.0", False),  # last clean release before the bug
+        ("2.1.1", True),  # first corrupt-writer release
+        ("2.3.3", True),  # partial-corruption phase (mamba#4071)
+        ("2.5.0", True),  # last corrupt-writer minor
+        ("2.6.0", False),  # fixed (mamba#4110)
+        ("2.8.1", False),
+        ("1.5.12", False),  # pre-bug versions write clean records
+        (None, False),  # non-mamba solver (conda) or failed probe
+    ],
+)
+def test_warn_on_corrupt_cache_writing_solver_version_gate(
+    monkeypatch, caplog, version, expect_warning
+):
+    """Warn exactly for the corrupt-writer range [2.1.1, 2.6.0).
+
+    Not a blanket pre-2.6 warning: versions below 2.1.1 write clean
+    cache records and their disk-fallback flow is fully supported.
+    """
+    from packaging.version import Version
+
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.mamba_binary_version",
+        lambda _conda: Version(version) if version else None,
+    )
+    warn_on_corrupt_cache_writing_solver.cache_clear()
+    with caplog.at_level("WARNING", logger="conda_lock.solver.dry_run"):
+        warn_on_corrupt_cache_writing_solver(f"/probe/{version}/micromamba")
+    msgs = "\n".join(r.getMessage() for r in caplog.records)
+    if expect_warning:
+        assert "conda/conda-lock#896" in msgs
+        assert ">= 2.6.0" in msgs
+        assert str(version) in msgs
+    else:
+        assert "conda/conda-lock#896" not in msgs
+
+
+def test_warn_on_corrupt_cache_writing_solver_warns_once_per_binary(
+    monkeypatch, caplog
+):
+    """The advisory fires once per solver path, not once per platform."""
+    from packaging.version import Version
+
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.mamba_binary_version",
+        lambda _conda: Version("2.5.0"),
+    )
+    warn_on_corrupt_cache_writing_solver.cache_clear()
+    with caplog.at_level("WARNING", logger="conda_lock.solver.dry_run"):
+        warn_on_corrupt_cache_writing_solver("/some/micromamba")
+        warn_on_corrupt_cache_writing_solver("/some/micromamba")
+    warnings = [r for r in caplog.records if "conda/conda-lock#896" in r.getMessage()]
+    assert len(warnings) == 1
 
 
 def test_reconstruct_fetch_actions_creates_missing_action_keys():

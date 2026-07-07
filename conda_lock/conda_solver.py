@@ -53,7 +53,10 @@ from conda_lock.lockfile.v2prelim.models import HashModel, LockedDependency
 from conda_lock.models.channel import Channel, normalize_url_with_placeholders
 from conda_lock.models.dry_run_install import DryRunInstall, LinkAction
 from conda_lock.models.lock_spec import Dependency, VersionedDependency
-from conda_lock.solver.dry_run import reconstruct_fetch_actions_in_place
+from conda_lock.solver.dry_run import (
+    reconstruct_fetch_actions_in_place,
+    warn_on_corrupt_cache_writing_solver,
+)
 from conda_lock.solver.graph_integrity import assert_no_orphaned_conda_packages
 from conda_lock.solver.lockfile_heal import heal_locked_dependencies_from_cache
 from conda_lock.tempdir_manager import temporary_directory
@@ -116,6 +119,11 @@ def solve_conda(
         Channels to query
 
     """
+
+    # Advisory only: mamba 2.1.1-2.5 poisons the package cache with
+    # stub records (conda/conda-lock#896); say so up front instead of
+    # waiting for the heal machinery to fire mid-solve.
+    warn_on_corrupt_cache_writing_solver(str(conda))
 
     conda_specs = [
         _to_match_spec(dep.name, dep.version, dep.build, dep.conda_channel)
