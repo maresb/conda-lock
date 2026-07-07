@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import pathlib
@@ -8,7 +9,7 @@ import threading
 
 from collections.abc import Iterator, Sequence
 from logging import getLogger
-from typing import IO, TypeAlias
+from typing import IO, Any, Literal, TypeAlias
 
 from ensureconda.api import determine_micromamba_version, ensureconda
 from packaging.version import Version
@@ -330,3 +331,42 @@ def is_micromamba(conda: PathLike) -> bool:
     return str(conda).endswith("micromamba") or str(conda).lower().endswith(
         "micromamba.exe"
     )
+
+
+def extract_json_object(proc_stdout: str) -> str:
+    try:
+        return proc_stdout[proc_stdout.index("{") : proc_stdout.rindex("}") + 1]
+    except ValueError:
+        return proc_stdout
+
+
+def get_pkgs_dirs(
+    *,
+    conda: PathLike,
+    platform: str,
+    method: Literal["config", "info"] | None = None,
+) -> list[pathlib.Path]:
+    """Extract the package cache directories from the conda configuration."""
+    if method is None:
+        method = "config" if is_micromamba(conda) else "info"
+    if method == "config":
+        # 'package cache' was added to 'micromamba info' in v1.4.6.
+        args = [str(conda), "config", "--json", "list", "pkgs_dirs"]
+    elif method == "info":
+        args = [str(conda), "info", "--json"]
+    env = conda_env_override(platform)
+    output = subprocess.check_output(args, env=env).decode()
+    json_object_str = extract_json_object(output)
+    json_object: dict[str, Any] = json.loads(json_object_str)
+    pkgs_dirs_list: list[str]
+    if "pkgs_dirs" in json_object:
+        pkgs_dirs_list = json_object["pkgs_dirs"]
+    elif "package cache" in json_object:
+        pkgs_dirs_list = json_object["package cache"]
+    else:
+        raise ValueError(
+            f"Unable to extract pkgs_dirs from {json_object}. "
+            "Please report this issue to the conda-lock developers."
+        )
+    pkgs_dirs = [pathlib.Path(d) for d in pkgs_dirs_list]
+    return pkgs_dirs

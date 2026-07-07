@@ -8,9 +8,11 @@ rich-LINK actions (mamba 2.x / micromamba), sparse-LINK actions
 (conda, Python mamba 1.x), or already-complete FETCH actions.
 """
 
-from typing import cast
+from typing import Any, cast
 
-from conda_lock.models.dry_run_install import FetchAction, LinkAction
+from conda_lock.invoke_conda import PathLike, get_pkgs_dirs
+from conda_lock.models.dry_run_install import DryRunInstall, FetchAction, LinkAction
+from conda_lock.solver.repodata_cache import get_repodata_record
 
 
 _FETCH_KEYS_FROM_LINK: tuple[str, ...] = (
@@ -64,3 +66,67 @@ def link_action_as_fetch(link_action: LinkAction) -> FetchAction | None:
     constrains = link_action.get("constrains")
     fetch["constrains"] = constrains if isinstance(constrains, list) else []
     return fetch
+
+
+def reconstruct_fetch_actions(
+    conda: PathLike,
+    platform: str,
+    dry_run_install: DryRunInstall | dict[str, dict[str, list[Any]]],
+) -> DryRunInstall | dict[str, dict[str, list[Any]]]:
+    """
+    Conda may choose to link a previously downloaded distribution from pkgs_dirs rather
+    than downloading a fresh one. Find the repodata record in existing distributions
+    that have only a LINK action, and use it to synthesize a corresponding FETCH action
+    with the metadata we need to extract for the package plan.
+
+    Mamba 2.6.0 puts the full repodata into LINK actions, so we can often
+    synthesize FETCH from the LINK metadata directly without going to
+    disk. Older solvers emit sparse LINKs and still need the disk lookup.
+    """
+    if "LINK" not in dry_run_install["actions"]:
+        dry_run_install["actions"]["LINK"] = []
+    if "FETCH" not in dry_run_install["actions"]:
+        dry_run_install["actions"]["FETCH"] = []
+
+    link_actions = {p["name"]: p for p in dry_run_install["actions"]["LINK"]}
+    fetch_actions = {p["name"]: p for p in dry_run_install["actions"]["FETCH"]}
+    link_only_names = set(link_actions.keys()).difference(fetch_actions.keys())
+
+    # Mamba-family solvers put the full repodata into LINK actions, so we
+    # can often synthesize FETCH without going to disk. Resolve those first
+    # and only query the (potentially expensive) ``pkgs_dirs`` listing if
+    # anything is left over.
+    deferred: list[tuple[str, LinkAction]] = []
+    for link_pkg_name in link_only_names:
+        link_action = link_actions[link_pkg_name]
+        from_link = link_action_as_fetch(link_action)
+        if from_link is not None:
+            dry_run_install["actions"]["FETCH"].append(from_link)
+        else:
+            deferred.append((link_pkg_name, link_action))
+
+    if deferred:
+        pkgs_dirs = get_pkgs_dirs(conda=conda, platform=platform)
+    else:
+        pkgs_dirs = []
+
+    for _link_pkg_name, link_action in deferred:
+        if "dist_name" in link_action:
+            dist_name = link_action["dist_name"]
+        elif "fn" in link_action:
+            dist_name = str(link_action["fn"])
+            if dist_name.endswith(".tar.bz2"):
+                dist_name = dist_name[:-8]
+            elif dist_name.endswith(".conda"):
+                dist_name = dist_name[:-6]
+            else:
+                raise ValueError(f"Unknown filename format: {dist_name}")
+        else:
+            raise ValueError(f"Unable to extract the dist_name from {link_action}.")
+        repodata = get_repodata_record(pkgs_dirs, dist_name)
+        if repodata is None:
+            raise FileNotFoundError(
+                f"Distribution '{dist_name}' not found in pkgs_dirs {pkgs_dirs}"
+            )
+        dry_run_install["actions"]["FETCH"].append(repodata)
+    return dry_run_install
