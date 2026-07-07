@@ -143,7 +143,29 @@ def reconstruct_fetch_actions_in_place(
         # Translate cache-layer outcomes to user-facing warnings.
         # The cache layer is silent at WARNING level; this is where
         # operator-facing remediation text lives.
-        if lookup.outcome == "not_found":
+        if lookup.outcome == "healed":
+            logger.warning(
+                "Healed corrupt repodata_record.json at %s using "
+                "info/index.json (mamba/micromamba 2.1.1-2.5 "
+                "corruption signature, see conda/conda-lock#896 / "
+                "mamba-org/mamba#4110). Run `mamba clean -a` and "
+                "re-create your env on mamba 2.6.0+ to remove "
+                "the corrupt cache permanently.",
+                lookup.healed_from,
+            )
+        elif lookup.outcome == "unhealable_corrupt":
+            logger.warning(
+                "Cache record for %s carries the mamba 2.1.1-2.5 "
+                "corruption signature and the sibling info/index.json "
+                "is unavailable, so the record cannot be healed. "
+                "Reason: %s. Regenerate from sources on a "
+                "known-clean cache (`mamba clean -a` then "
+                "`conda-lock lock -f <your sources> ...`) -- see "
+                "conda/conda-lock#896 / mamba-org/mamba#4110.",
+                dist_name,
+                lookup.reason,
+            )
+        elif lookup.outcome == "not_found":
             logger.warning(
                 "Failed to find repodata_record.json for %s. "
                 "Giving up. Last reason: %s",

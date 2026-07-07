@@ -1,16 +1,46 @@
-"""Local package-cache I/O for the conda-lock dryrun pipeline.
+"""Local package-cache I/O and corruption detection.
 
 This module owns the question "what does the on-disk cache say about a
 given LINK action?" -- nothing else. URL normalization (libmamba
 parity), candidate-path derivation across the legacy flat layout and
-the mamba 2.6.0 hierarchical layout, identity validation between
-cache records and LINK actions, and ``repodata_record.json``
-lookup live here.
+the mamba 2.6.0 hierarchical layout, identity validation,
+recognition of the mamba 2.1.1-2.5 ``repodata_record.json``
+stub-record corruption signature, and ``info/index.json``-based
+healing of those stubs all live here.
 
-Strict layering: this module imports only from ``models``. URL
-normalization is local to this module since it is a cache-path
-concern; the same helpers may later be useful elsewhere, but the
-boundary stays cache-cache for now.
+Strict layering: this module imports from ``models`` only -- never
+from ``conda_lock.conda_solver`` or ``conda_lock.solver.dry_run``.
+Subprocess probing of the conda CLI (``get_pkgs_dirs``) lives in
+``conda_lock.invoke_conda`` because it is a CLI concern, not a
+cache-record concern. User-facing policy (warn-vs-fail) lives in
+the orchestration layer (``conda_lock.solver.dry_run``,
+``conda_lock.conda_solver``); this layer only returns narrow facts.
+
+Why read the cache directly instead of binding libmamba? Four
+reasons, in decreasing order of weight:
+
+1. conda-lock drives solvers as subprocesses and must work when the
+   solver is conda or a standalone micromamba binary -- in neither
+   case is a ``libmambapy`` matching the solver importable from
+   conda-lock's environment, and shipping one as a hard dependency
+   would couple conda-lock's install to a specific libmamba ABI.
+2. libmamba exposes no API for what this module actually does:
+   *validating* and *healing* cache records written by other
+   (older, buggy) mamba versions. Mamba 2.6.0's own fix
+   (mamba-org/mamba#4110) applies when mamba writes records, not
+   as a repair service for existing corrupt caches.
+3. The surface mirrored here is small and stable: two directory
+   layouts and a JSON filename. The on-disk cache format has
+   changed once in mamba's history (2.6.0, mamba-org/mamba#4163);
+   the ``libmambapy`` API broke compatibly-versioned consumers at
+   1.x -> 2.x and is explicitly not a stability contract.
+4. Reading files keeps this layer trivially testable against
+   synthetic cache trees (see ``tests/unit/test_repodata_cache.py``)
+   with no solver installed at all.
+
+The parts that must track libmamba behavior bit-for-bit
+(``_normalize_url_for_cache_path``) cite the corresponding libmamba
+source so drift is auditable.
 """
 
 import json
@@ -20,7 +50,7 @@ import re
 import time
 
 from dataclasses import dataclass
-from typing import Literal, cast
+from typing import Any, Literal, cast
 from urllib.parse import urlsplit, urlunsplit
 
 from conda_lock.models.dry_run_install import FetchAction, LinkAction
@@ -37,8 +67,41 @@ class RepodataLookup:
     (``conda_lock.solver.dry_run``) maps each ``outcome`` to a
     user-facing warning. Mutually exclusive states:
 
-    - ``"found"``: the cache had a record matching the LINK.
+    - ``"found"``: the cache had a clean record matching the LINK.
       ``record`` is the parsed FETCH-shaped dict.
+    - ``"healed"``: the cache had a mamba 2.1.1-2.5 stub record;
+      we recovered ``depends`` from the sibling ``info/index.json``
+      and the resulting record matches the LINK. ``record`` is the
+      healed dict; ``healed_from`` points at the corrupt record's
+      path so the orchestration WARNING can name it.
+    - ``"unhealable_corrupt"``: the cache had a stub record that
+      cleared a two-stage identity gate -- (1) no contradictions on
+      ``name`` / ``version`` / ``subdir`` / ``fn`` / ``md5`` /
+      ``sha256`` / ``url`` (``record_matches_link``); (2) at least
+      one strong *artifact identity* field
+      (``url`` / ``md5`` / ``sha256`` / ``fn``) matched the LINK
+      *positively* (``_stub_has_strong_identity_match``) -- but
+      ``info/index.json`` was missing or unreadable, so we could
+      not heal. Both gates are required before this outcome is
+      assigned, so:
+
+      * an impostor stub at a flat-fallback path (cross-channel
+        ``dist_name`` collision) fails stage 1 and falls through to
+        ``"not_found"``;
+      * a stub that shares only ``name`` / ``version`` with the LINK
+        (and possibly ``subdir``) but exposes no strong artifact
+        field clears stage 1 by default but fails stage 2, also
+        falling through to ``"not_found"``.
+
+      The strong-identity precondition matters because
+      ``record_matches_link`` skips fields when one side is empty,
+      so its "True" return means "no contradictions," not "positive
+      identity proven." ``subdir`` is deliberately not in the strong
+      set: it narrows platform, not artifact. The
+      ``unhealable_corrupt`` claim is operator-actionable
+      (``mamba clean -a``) and must not be based on
+      contradictions-not-found alone. ``record`` is ``None``;
+      ``reason`` carries the diagnostic.
     - ``"not_found"``: no candidate file existed in any
       ``pkgs_dir``, or every found candidate failed identity checks
       against the LINK. ``record`` is ``None``; ``reason`` carries
@@ -47,8 +110,9 @@ class RepodataLookup:
     """
 
     record: FetchAction | None
-    outcome: Literal["found", "not_found"]
+    outcome: Literal["found", "healed", "unhealable_corrupt", "not_found"]
     reason: str | None = None
+    healed_from: pathlib.Path | None = None
 
 
 # libmamba's token regex (`/t/([a-zA-Z0-9-_]{0,2}[a-zA-Z0-9-]*)`) matches
@@ -301,6 +365,160 @@ def candidate_record_paths(
     return candidates
 
 
+def is_mamba_2_1_to_2_5_stub_record(record: dict[str, Any]) -> bool:
+    """Detect the ``repodata_record.json`` corruption signature from
+    mamba/micromamba 2.1.1-2.5.
+
+    Those versions wrote URL-stub metadata directly to ``repodata_record.json``
+    instead of merging with ``info/index.json``. The exact damage varies
+    by version (mamba-org/mamba#4052, partially fixed in 2.3.3 via
+    mamba-org/mamba#4071, remaining fields tracked in
+    mamba-org/mamba#4095, fully fixed in mamba-org/mamba#4110 /
+    mamba 2.6.0):
+
+    - 2.1.1-2.3.2: ``depends``, ``constrains``, ``timestamp``,
+      ``license``, ``build_number``, ``track_features`` stubbed and
+      ``sha256`` dropped. Empty ``depends`` is the most damaging
+      downstream symptom -- it breaks ``apply_categories`` in
+      conda-lock and silently drops packages from the lockfile.
+    - 2.3.3-2.5.0: ``depends``/``constrains`` restored, but
+      ``timestamp``, ``license``, and ``sha256`` still stubbed.
+
+    The combination of ``timestamp == 0`` and an empty ``license`` is
+    the marker -- it never appears in legitimately-written records.
+    Verified against the pinned reference caches in
+    ``tests/test-corrupt-repodata/``: 0/191 false positives on the
+    clean 2.1.0 baseline, 191/191 true positives on both 2.1.1 and
+    2.3.3.
+
+    >>> is_mamba_2_1_to_2_5_stub_record(
+    ...     {"timestamp": 0, "license": "", "depends": [], "md5": "abc"}
+    ... )
+    True
+    >>> is_mamba_2_1_to_2_5_stub_record(  # healthy record
+    ...     {"timestamp": 1774072609, "license": "Zlib", "depends": ["x"], "sha256": "s"}
+    ... )
+    False
+    >>> is_mamba_2_1_to_2_5_stub_record(  # legitimately unlicensed, but has sha256
+    ...     {"timestamp": 0, "license": "", "depends": ["x"], "sha256": "s"}
+    ... )
+    False
+    >>> is_mamba_2_1_to_2_5_stub_record(  # zero timestamp alone is not the signature
+    ...     {"timestamp": 0, "license": "MIT", "depends": []}
+    ... )
+    False
+    """
+    if record.get("timestamp") != 0:
+        return False
+    if record.get("license", ""):
+        return False
+    # Either an empty ``depends`` or a missing ``sha256`` corroborates the
+    # signature. The combination above is already specific enough that we
+    # accept either.
+    if record.get("depends") in (None, []):
+        return True
+    if not record.get("sha256"):
+        return True
+    return False
+
+
+# Artifact identity fields strong enough to attribute a corrupt
+# stub record to a specific LINK. Each value here uniquely (or
+# near-uniquely) identifies a single conda package artifact:
+#
+#   * ``url`` -- channel + subdir + filename, the most precise.
+#   * ``md5`` and ``sha256`` -- content-addressable hashes.
+#   * ``fn`` -- name-version-build filename, unique within a channel
+#     and subdir; combined with the LINK's name+version positive
+#     match, it is enough to attribute the artifact.
+#
+# ``subdir`` is intentionally NOT here. It narrows platform, not
+# artifact: ``linux-64`` matches every Linux package in the
+# universe. ``record_matches_link`` already validates ``subdir`` as
+# a *contradiction* check (``linux-64`` vs ``osx-arm64`` rejects),
+# but using it as positive identity proof would let a stub with
+# matching name + version + ``subdir=linux-64`` claim our package's
+# cache is corrupt -- the exact "no contradictions" overreach we
+# are trying to avoid.
+_STRONG_IDENTITY_FIELDS: tuple[str, ...] = ("url", "md5", "sha256", "fn")
+
+
+def _stub_has_strong_identity_match(
+    record: FetchAction, link_action: LinkAction
+) -> bool:
+    """Return True iff at least one strong artifact identity field
+    is populated on both sides and matches positively.
+
+    ``record_matches_link`` returns ``True`` when nothing contradicts;
+    that is not enough evidence to classify a corrupt stub as
+    "unhealable corruption affecting this package". A real mamba
+    2.1.1-2.5 stub retains ``url``, ``md5``, and ``fn`` (verified
+    191/191 across the pinned reference caches in
+    ``tests/test-corrupt-repodata/``) -- but NOT ``sha256``, which
+    the bug drops -- so it clears this bar via any of the three
+    surviving fields. A stub that's missing all four is an older or
+    sparser record that we cannot positively attribute to our LINK
+    -- treat it as ``not_found`` rather than overclaiming
+    corruption. ``subdir`` is deliberately excluded; see the
+    comment on ``_STRONG_IDENTITY_FIELDS``.
+    """
+    for field in _STRONG_IDENTITY_FIELDS:
+        # ``FetchAction`` and ``LinkAction`` are TypedDicts, so
+        # ``.get(field)`` with a runtime string yields ``object``;
+        # cast to ``str | None`` since every entry in
+        # ``_STRONG_IDENTITY_FIELDS`` is a string-typed key.
+        record_val = cast("str | None", record.get(field))
+        if not record_val:
+            continue
+        if field == "url":
+            link_url = _link_action_explicit_or_derived_url(link_action)
+            if link_url and normalize_url_for_compare(record_val) == (
+                normalize_url_for_compare(link_url)
+            ):
+                return True
+        else:
+            link_val = cast("str | None", link_action.get(field))
+            if link_val and record_val == link_val:
+                return True
+    return False
+
+
+def heal_corrupt_record(
+    record: dict[str, Any], record_path: pathlib.Path
+) -> dict[str, Any] | None:
+    """Repair a mamba 2.1.1-2.5 corrupt ``repodata_record.json``.
+
+    Overlays the corrupt record with ``info/index.json`` from the same
+    package directory. ``info/index.json`` is extracted directly from the
+    package tarball at install time and is never affected by the bug, so
+    it carries the canonical ``depends``, ``constrains``, ``timestamp``,
+    ``license``, ``build_number``, etc. Cache-derived fields (``url``,
+    ``channel``, ``fn``, ``md5``, ``sha256``, ``size``) are kept from the
+    record when non-empty.
+
+    Returns the healed record, or ``None`` if ``info/index.json`` is
+    missing or unreadable.
+    """
+    index_path = record_path.parent / "index.json"
+    if not index_path.is_file():
+        return None
+    try:
+        with open(index_path) as f:
+            index_data: dict[str, Any] = json.load(f)
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.debug("cannot heal from unreadable %s: %s", index_path, exc)
+        return None
+    healed = dict(index_data)
+    # Overlay only non-stub values from the cache record. This recovers
+    # the ``url`` / ``channel`` / ``md5`` / ``sha256`` that ``index.json``
+    # doesn't carry, but skips fields the bug zeroed out.
+    for key, value in record.items():
+        if value in ("", 0, [], None):
+            continue
+        healed[key] = value
+    return healed
+
+
 def get_repodata_record(
     pkgs_dirs: list[pathlib.Path],
     dist_name: str,
@@ -308,7 +526,7 @@ def get_repodata_record(
 ) -> RepodataLookup:
     """Look up ``repodata_record.json`` for one LINK action in the cache.
 
-    Returns a structured ``RepodataLookup`` instead of a bare record.
+    Returns a ``RepodataLookup`` with one of four ``outcome`` states.
     The orchestration layer (``conda_lock.solver.dry_run``) maps
     each outcome to a user-facing warning; this function only emits
     DEBUG-level diagnostics.
@@ -330,8 +548,16 @@ def get_repodata_record(
     failure is still surfaced: the returned ``not_found`` carries
     the last parse error as its ``reason``.
 
+    Records matching the mamba 2.1.1-2.5 corruption signature
+    (``timestamp == 0`` + empty ``license``) are healed from
+    ``info/index.json`` rather than skipped, so existing corrupt
+    caches don't keep producing broken lockfiles after the user
+    upgrades. The "healed" outcome surfaces this fact to the
+    orchestration layer so the appropriate WARNING with operator
+    remediation text can be emitted there.
+
     Distinct failure modes (missing file, JSON corruption, identity
-    mismatch) are tracked through the retry
+    mismatch, unhealable corruption) are tracked through the retry
     loop so the final ``RepodataLookup.reason`` is the most
     actionable diagnostic. "Rejected" beats "missing": if we found
     a candidate and rejected it for, say, sha256 mismatch, that's
@@ -341,6 +567,7 @@ def get_repodata_record(
     NUM_RETRIES = 10
     last_rejected: str | None = None
     last_missing: str | None = None
+    last_unhealable: str | None = None
     for retry in range(1, NUM_RETRIES + 1):
         for pkgs_dir in pkgs_dirs:
             for candidate in candidate_record_paths(pkgs_dir, dist_name, link_action):
@@ -355,22 +582,99 @@ def get_repodata_record(
                     last_rejected = f"failed to read {candidate}: {exc}"
                     logger.debug(last_rejected)
                     continue
+                healed_from: pathlib.Path | None = None
+                if is_mamba_2_1_to_2_5_stub_record(cast(dict, record)):
+                    # Two-stage identity gate before classifying this
+                    # stub as our package's unhealable corruption.
+                    #
+                    # Stage 1: ``record_matches_link`` rejects on any
+                    # *contradiction* in name/version/subdir/fn/md5/
+                    # sha256/url. The legacy flat layout
+                    # (``<pkgs>/<dist_name>/info/...``) is keyed on
+                    # dist_name alone, so a stub there can be from a
+                    # different package that happens to share the
+                    # dist name (cross-channel collision, stale
+                    # extracted dir). Reject those.
+                    matched, reason = record_matches_link(record, link_action)
+                    if not matched:
+                        last_rejected = (
+                            f"corrupt-looking candidate at {candidate} "
+                            f"rejected: {reason}"
+                        )
+                        logger.debug(last_rejected)
+                        continue
+                    # Stage 2: ``record_matches_link`` is satisfied by
+                    # "no contradictions" and *skips* artifact fields
+                    # that one side leaves empty. That is fine for
+                    # general matching, but for the
+                    # ``unhealable_corrupt`` claim we need positive
+                    # proof that the corruption applies to *this*
+                    # package, not just an older/sparser record that
+                    # happens to share the dist name (or a platform).
+                    # Require at least one strong artifact identity
+                    # field (url/md5/sha256/fn) to match positively.
+                    # ``subdir`` is excluded -- it narrows platform,
+                    # not artifact, and a matching ``linux-64``
+                    # alone is the kind of "no contradictions"
+                    # overreach we are trying to avoid. A real
+                    # mamba 2.1.1-2.5 stub keeps ``url``, ``md5``,
+                    # and ``fn`` (``sha256`` is dropped by the bug),
+                    # so it clears this bar trivially via any of the
+                    # three surviving fields.
+                    if not _stub_has_strong_identity_match(record, link_action):
+                        last_rejected = (
+                            f"corrupt-looking candidate at {candidate} "
+                            f"shares name/version with the LINK but has "
+                            f"no strong artifact identity "
+                            f"(url/md5/sha256/fn) to confirm it is "
+                            f"the same package -- not enough evidence "
+                            f"to claim unhealable corruption"
+                        )
+                        logger.debug(last_rejected)
+                        continue
+                    healed = heal_corrupt_record(cast(dict, record), candidate)
+                    if healed is None:
+                        last_unhealable = (
+                            f"corrupt record at {candidate} (mamba 2.1.1-2.5 "
+                            f"signature) matched the LINK but info/index.json "
+                            f"is missing -- cannot heal"
+                        )
+                        logger.debug(last_unhealable)
+                        continue
+                    record = cast(FetchAction, healed)
+                    healed_from = candidate
                 matched, reason = record_matches_link(record, link_action)
                 if matched:
-                    return RepodataLookup(record=record, outcome="found")
+                    return RepodataLookup(
+                        record=record,
+                        outcome="healed" if healed_from else "found",
+                        healed_from=healed_from,
+                    )
                 last_rejected = f"identity mismatch at {candidate}: {reason}"
                 logger.debug(last_rejected)
         # Per-retry summary stays at DEBUG so a single missing package
         # doesn't drown operator output in 11 nearly-identical lines.
         # The orchestration layer logs a single WARNING after the
         # retry loop returns.
-        final_reason = last_rejected or last_missing
+        final_reason = last_rejected or last_unhealable or last_missing
         logger.debug(
             f"Failed to find repodata_record.json for {dist_name} "
             f"(last reason: {final_reason}). "
             f"Retrying in 0.1 seconds ({retry}/{NUM_RETRIES})"
         )
         time.sleep(0.1)
+    # Outcome priority: ``unhealable_corrupt`` wins over
+    # ``not_found``. ``last_unhealable`` is set only when an
+    # identity-proven stub record (cleared both gates above) failed
+    # to heal because ``info/index.json`` was missing -- which is
+    # the operator-actionable fact (``mamba clean -a`` recovers the
+    # whole cache). A later candidate's identity rejection or
+    # missing file is noise from the retry fan-out and must not
+    # demote that signal.
+    if last_unhealable:
+        return RepodataLookup(
+            record=None, outcome="unhealable_corrupt", reason=last_unhealable
+        )
     return RepodataLookup(
         record=None,
         outcome="not_found",
