@@ -8,7 +8,7 @@ rich-LINK actions (mamba 2.x / micromamba), sparse-LINK actions
 (conda, Python mamba 1.x), or already-complete FETCH actions.
 """
 
-from typing import Any, cast
+from typing import cast
 
 from conda_lock.invoke_conda import PathLike, get_pkgs_dirs
 from conda_lock.models.dry_run_install import DryRunInstall, FetchAction, LinkAction
@@ -68,11 +68,9 @@ def link_action_as_fetch(link_action: LinkAction) -> FetchAction | None:
     return fetch
 
 
-def reconstruct_fetch_actions(
-    conda: PathLike,
-    platform: str,
-    dry_run_install: DryRunInstall | dict[str, dict[str, list[Any]]],
-) -> DryRunInstall | dict[str, dict[str, list[Any]]]:
+def reconstruct_fetch_actions_in_place(
+    conda: PathLike, platform: str, dry_run_install: DryRunInstall
+) -> None:
     """
     Conda may choose to link a previously downloaded distribution from pkgs_dirs rather
     than downloading a fresh one. Find the repodata record in existing distributions
@@ -82,6 +80,15 @@ def reconstruct_fetch_actions(
     Mamba 2.6.0 puts the full repodata into LINK actions, so we can often
     synthesize FETCH from the LINK metadata directly without going to
     disk. Older solvers emit sparse LINKs and still need the disk lookup.
+
+    **Mutates ``dry_run_install`` in place and returns ``None``.**
+    The input's ``actions["FETCH"]`` list is extended (and
+    ``actions["LINK"]`` / ``actions["FETCH"]`` keys created if
+    absent). The ``_in_place`` suffix and the ``None`` return follow
+    the ``list.sort`` convention: mutation is the entire point, and
+    returning the mutated object would let a caller mistake this for
+    a pure function and keep using the (also mutated) input. If you
+    need the original dryrun pristine, deep-copy before calling.
     """
     if "LINK" not in dry_run_install["actions"]:
         dry_run_install["actions"]["LINK"] = []
@@ -129,4 +136,3 @@ def reconstruct_fetch_actions(
                 f"Distribution '{dist_name}' not found in pkgs_dirs {pkgs_dirs}"
             )
         dry_run_install["actions"]["FETCH"].append(repodata)
-    return dry_run_install

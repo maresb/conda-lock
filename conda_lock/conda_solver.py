@@ -27,7 +27,7 @@ from conda_lock.lockfile.v2prelim.models import HashModel, LockedDependency
 from conda_lock.models.channel import Channel, normalize_url_with_placeholders
 from conda_lock.models.dry_run_install import DryRunInstall, LinkAction
 from conda_lock.models.lock_spec import Dependency, VersionedDependency
-from conda_lock.solver.dry_run import reconstruct_fetch_actions
+from conda_lock.solver.dry_run import reconstruct_fetch_actions_in_place
 from conda_lock.tempdir_manager import temporary_directory
 
 
@@ -235,7 +235,8 @@ def solve_specs_for_arch(
 
     try:
         dryrun_install: DryRunInstall = json.loads(extract_json_object(proc.stdout))
-        return reconstruct_fetch_actions(conda, platform, dryrun_install)
+        reconstruct_fetch_actions_in_place(conda, platform, dryrun_install)
+        return dryrun_install
     except json.JSONDecodeError as e:
         raise RuntimeError(f"Failed to parse json: '{proc.stdout}'") from e
 
@@ -392,8 +393,8 @@ def update_specs_for_arch(
             installed_link_action = installed[package]
             dryrun_install["actions"]["LINK"].append(installed_link_action)
 
-        reconstructed = reconstruct_fetch_actions(conda, platform, dryrun_install)
-        return reconstructed
+        reconstruct_fetch_actions_in_place(conda, platform, dryrun_install)
+        return dryrun_install
 
 
 @contextmanager
