@@ -2,7 +2,8 @@
 
 Cache-side concerns: URL normalization (libmamba parity),
 hierarchical and legacy candidate-path derivation, identity checks
-between cache records and LINK actions.
+between cache records and LINK actions, mamba 2.1.1-2.5 stub-record
+detection, and ``info/index.json``-based healing of those stubs.
 
 The dict literals model real mamba/conda JSON output, which is
 dynamically typed at the boundary -- pretending they were TypedDicts
@@ -190,62 +191,70 @@ def test_record_matches_link_validates_identity():
         "channel": "conda-forge",
     }
     assert _matched(record, link)
+    # Every concrete identity field is enforced.
     assert not _matched({**record, "version": "9.9.9"}, link)
     assert not _matched({**record, "subdir": "osx-64"}, link)
     assert not _matched({**record, "sha256": "deadbeef"}, link)
     assert not _matched({**record, "md5": "deadbeef"}, link)
-    assert not _matched({**record, "name": "other"}, link)
+    assert not _matched({**record, "fn": "other.conda"}, link)
+    assert not _matched(
+        {**record, "url": "https://other.example.com/c/linux-64/x.conda"}, link
+    )
 
 
 def test_record_matches_link_url_takes_precedence_over_channel():
-    """If both sides expose a URL, comparison is on the URL (with
-    libmamba-compat normalization), not on the channel string."""
+    """libmamba: when the record carries a URL, validate the URL and DON'T
+    fall back to channel-string compare. Mirrored / aliased channels can
+    legitimately spell their channel string differently while pointing at
+    the same artifact URL."""
+    name_version = {"name": "foo", "version": "1.0"}
+    url = "https://conda.anaconda.org/conda-forge/linux-64/foo.conda"
     record = {
-        "name": "foo",
-        "version": "1.0",
-        "url": "https://conda.example.com/c/linux-64/foo-1.0-bld.conda",
-        "channel": "https://conda.example.com/c",
+        **name_version,
+        "url": url,
+        "channel": "https://conda.anaconda.org/conda-forge",
     }
-    link = {
-        "name": "foo",
-        "version": "1.0",
-        "url": "https://conda.example.com/c/linux-64/foo-1.0-bld.conda",
-        "channel": "conda-example",  # different spelling -- accepted
-    }
+    link = {**name_version, "url": url, "channel": "conda-forge"}
     assert _matched(record, link)
 
 
 def test_record_matches_link_falls_back_to_channel_when_record_url_empty():
+    """libmamba: only when the record has no URL, validate the channel
+    string. A channel mismatch in that fallback DOES reject."""
     name_version = {"name": "foo", "version": "1.0"}
     record = {**name_version, "channel": "conda-forge"}
     link = {**name_version, "channel": "conda-forge"}
     assert _matched(record, link)
-    link_other = {**name_version, "channel": "other"}
-    assert not _matched(record, link_other)
+    assert not _matched({**name_version, "channel": "other"}, link)
 
 
 def test_record_matches_link_url_compare_matches_libmamba():
-    """``compare_cleaned_url``-style: scheme/credentials/trailing slash
-    are normalized away before comparison."""
+    """libmamba's ``compare_cleaned_url`` parses both URLs, forces scheme
+    to ``https``, strips credentials, and trims trailing slashes before
+    comparing. Differences libmamba considers equivalent must not reject."""
     name_version = {"name": "foo", "version": "1.0"}
     record = {**name_version, "url": "http://conda.example.com/c/linux-64/foo.conda"}
-    link = {**name_version, "url": "https://conda.example.com/c/linux-64/foo.conda/"}
+    link = {**name_version, "url": "https://conda.example.com/c/linux-64/foo.conda"}
+    assert _matched(record, link)
+    record = {**name_version, "url": "https://conda.example.com/c/linux-64/foo.conda/"}
+    link = {**name_version, "url": "https://conda.example.com/c/linux-64/foo.conda"}
     assert _matched(record, link)
     record = {
         **name_version,
-        "url": "https://user:pw@conda.example.com/c/linux-64/foo.conda",
+        "url": "https://user:pass@conda.example.com/c/linux-64/foo.conda",
     }
     link = {**name_version, "url": "https://conda.example.com/c/linux-64/foo.conda"}
     assert _matched(record, link)
 
 
 def test_record_matches_link_returns_reason_for_diagnostic():
+    """Failure reasons should be specific so the production log isn't an
+    archaeology project later."""
     record = {"name": "foo", "version": "1.0", "sha256": "abc"}
     link = {"name": "foo", "version": "1.0", "sha256": "deadbeef"}
     matched, reason = record_matches_link(record, link)
     assert not matched
-    assert reason is not None
-    assert "sha256" in reason
+    assert reason and "sha256" in reason
 
 
 # ---------------------------------------------------------------------------
@@ -254,14 +263,18 @@ def test_record_matches_link_returns_reason_for_diagnostic():
 
 
 def test_candidate_record_paths_are_metadata_derived(tmp_path: Path):
-    """Hierarchical first, legacy flat second."""
-    pkgs = tmp_path / "pkgs"
-    paths = candidate_record_paths(
-        pkgs, "libzlib-1.3.2-h25fd6f3_2", _MAMBA_26_LINK_ACTION
+    """Candidate paths are computed from LINK metadata, never globbed."""
+    candidates = candidate_record_paths(
+        tmp_path, "libzlib-1.3.2-h25fd6f3_2", _MAMBA_26_LINK_ACTION
     )
-    assert len(paths) == 2
-    assert "https/conda.anaconda.org/conda-forge/linux-64" in str(paths[0])
-    assert paths[1] == pkgs / "libzlib-1.3.2-h25fd6f3_2/info/repodata_record.json"
+    assert candidates == [
+        tmp_path
+        / "https/conda.anaconda.org/conda-forge/linux-64"
+        / "libzlib-1.3.2-h25fd6f3_2"
+        / "info"
+        / "repodata_record.json",
+        tmp_path / "libzlib-1.3.2-h25fd6f3_2" / "info" / "repodata_record.json",
+    ]
 
 
 def test_get_repodata_record_legacy_layout(tmp_path: Path):
@@ -273,16 +286,17 @@ def test_get_repodata_record_legacy_layout(tmp_path: Path):
         version="1.0.0",
         subdir="linux-64",
     )
-    record = get_repodata_record(
+    lookup = get_repodata_record(
         [flat],
         "foo-1.0.0-bld",
         {"name": "foo", "version": "1.0.0", "platform": "linux-64"},
     )
-    assert record == {"name": "foo", "version": "1.0.0", "subdir": "linux-64"}
+    assert lookup.outcome == "found"
+    assert lookup.record == {"name": "foo", "version": "1.0.0", "subdir": "linux-64"}
 
 
 def test_get_repodata_record_hierarchical_layout(tmp_path: Path):
-    """Mamba 2.6.0 hierarchical layout."""
+    """Mamba 2.6.0 hierarchical layout: pkgs/<channel-url>/<platform>/<dist>/info."""
     hier = tmp_path / "hier"
     _write_record(
         hier
@@ -296,18 +310,18 @@ def test_get_repodata_record_hierarchical_layout(tmp_path: Path):
         sha256=_MAMBA_26_LINK_ACTION["sha256"],
         url=_MAMBA_26_LINK_ACTION["url"],
     )
-    record = get_repodata_record(
+    lookup = get_repodata_record(
         [hier], "libzlib-1.3.2-h25fd6f3_2", _MAMBA_26_LINK_ACTION
     )
-    assert record is not None
-    assert record["url"] == _MAMBA_26_LINK_ACTION["url"]
+    assert lookup.outcome == "found"
+    assert lookup.record is not None
+    assert lookup.record["url"] == _MAMBA_26_LINK_ACTION["url"]
 
 
 def test_get_repodata_record_rejects_cross_channel_collision(tmp_path: Path):
-    """A different package with the same dist_name in a different channel
-    must NOT be returned. Mamba 2.6.0's hierarchy exists precisely to
-    disambiguate such collisions; conda-lock must not silently pick the
-    wrong record."""
+    """A different package with the same dist_name in a different channel must
+    NOT be returned. Mamba 2.6.0's hierarchy exists precisely to disambiguate
+    such collisions; conda-lock must not silently pick the wrong record."""
     pkgs = tmp_path / "pkgs"
     _write_record(
         pkgs
@@ -321,7 +335,48 @@ def test_get_repodata_record_rejects_cross_channel_collision(tmp_path: Path):
         sha256="deadbeef",
         url="https://repo.example.com/private/linux-64/libzlib-1.3.2-h25fd6f3_2.conda",
     )
-    record = get_repodata_record(
+    lookup = get_repodata_record(
         [pkgs], "libzlib-1.3.2-h25fd6f3_2", _MAMBA_26_LINK_ACTION
     )
-    assert record is None
+    assert lookup.outcome == "not_found"
+    assert lookup.record is None
+
+
+# --- 1. Corruption detection + heal -------------------------------------
+
+
+def test_get_repodata_record_skips_unparseable_candidate(tmp_path):
+    """A half-written/garbled candidate is skipped, not fatal: the flat
+    fallback still serves the good record, mirroring the transient
+    partial-write race the retry loop exists for."""
+    link = dict(_MAMBA_26_LINK_ACTION)
+    dist_name = "libzlib-1.3.2-h25fd6f3_2"
+    pkgs_dir = tmp_path / "pkgs"
+    hier_dir = (
+        pkgs_dir / "https/conda.anaconda.org/conda-forge/linux-64" / dist_name / "info"
+    )
+    hier_dir.mkdir(parents=True)
+    (hier_dir / "repodata_record.json").write_text('{"truncated": ')
+    flat_dir = pkgs_dir / dist_name / "info"
+    flat_dir.mkdir(parents=True)
+    (flat_dir / "repodata_record.json").write_text(json.dumps(link))
+    lookup = get_repodata_record([pkgs_dir], dist_name, link)
+    assert lookup.outcome == "found"
+    assert lookup.record is not None
+    assert lookup.record["sha256"] == link["sha256"]
+
+
+def test_get_repodata_record_reports_unparseable_only_candidate(tmp_path):
+    """When every candidate is unreadable, the failure is surfaced: the
+    not_found reason carries the parse error rather than a bare
+    file-not-found."""
+    link = dict(_MAMBA_26_LINK_ACTION)
+    dist_name = "libzlib-1.3.2-h25fd6f3_2"
+    pkgs_dir = tmp_path / "pkgs"
+    flat_dir = pkgs_dir / dist_name / "info"
+    flat_dir.mkdir(parents=True)
+    (flat_dir / "repodata_record.json").write_text("not json at all")
+    lookup = get_repodata_record([pkgs_dir], dist_name, link)
+    assert lookup.outcome == "not_found"
+    assert lookup.record is None
+    assert "failed to read" in (lookup.reason or "")

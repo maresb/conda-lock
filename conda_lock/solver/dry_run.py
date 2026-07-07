@@ -8,11 +8,16 @@ rich-LINK actions (mamba 2.x / micromamba), sparse-LINK actions
 (conda, Python mamba 1.x), or already-complete FETCH actions.
 """
 
+import logging
+
 from typing import cast
 
 from conda_lock.invoke_conda import PathLike, get_pkgs_dirs
 from conda_lock.models.dry_run_install import DryRunInstall, FetchAction, LinkAction
 from conda_lock.solver.repodata_cache import get_repodata_record
+
+
+logger = logging.getLogger(__name__)
 
 
 _FETCH_KEYS_FROM_LINK: tuple[str, ...] = (
@@ -134,9 +139,19 @@ def reconstruct_fetch_actions_in_place(
                 raise ValueError(f"Unknown filename format: {dist_name}")
         else:
             raise ValueError(f"Unable to extract the dist_name from {link_action}.")
-        repodata = get_repodata_record(pkgs_dirs, dist_name, link_action)
-        if repodata is None:
+        lookup = get_repodata_record(pkgs_dirs, dist_name, link_action)
+        # Translate cache-layer outcomes to user-facing warnings.
+        # The cache layer is silent at WARNING level; this is where
+        # operator-facing remediation text lives.
+        if lookup.outcome == "not_found":
+            logger.warning(
+                "Failed to find repodata_record.json for %s. "
+                "Giving up. Last reason: %s",
+                dist_name,
+                lookup.reason,
+            )
+        if lookup.record is None:
             raise FileNotFoundError(
                 f"Distribution '{dist_name}' not found in pkgs_dirs {pkgs_dirs}"
             )
-        dry_run_install["actions"]["FETCH"].append(repodata)
+        dry_run_install["actions"]["FETCH"].append(lookup.record)

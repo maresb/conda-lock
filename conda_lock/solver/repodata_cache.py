@@ -19,13 +19,36 @@ import pathlib
 import re
 import time
 
-from typing import cast
+from dataclasses import dataclass
+from typing import Literal, cast
 from urllib.parse import urlsplit, urlunsplit
 
 from conda_lock.models.dry_run_install import FetchAction, LinkAction
 
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class RepodataLookup:
+    """Outcome of looking up ``repodata_record.json`` for one LINK action.
+
+    The cache layer reports facts; the orchestration layer
+    (``conda_lock.solver.dry_run``) maps each ``outcome`` to a
+    user-facing warning. Mutually exclusive states:
+
+    - ``"found"``: the cache had a record matching the LINK.
+      ``record`` is the parsed FETCH-shaped dict.
+    - ``"not_found"``: no candidate file existed in any
+      ``pkgs_dir``, or every found candidate failed identity checks
+      against the LINK. ``record`` is ``None``; ``reason`` carries
+      the most actionable diagnostic (rejected identity beats
+      missing-file).
+    """
+
+    record: FetchAction | None
+    outcome: Literal["found", "not_found"]
+    reason: str | None = None
 
 
 # libmamba's token regex (`/t/([a-zA-Z0-9-_]{0,2}[a-zA-Z0-9-]*)`) matches
@@ -103,7 +126,9 @@ def normalize_url_for_compare(url: str) -> str:
     ``https``, removes credentials, and compares the strings with their
     trailing slashes stripped. Two URLs that differ only by
     ``http``/``https``, by trailing slash, or by carrying credentials
-    must still be treated as equal.
+    must still be treated as equal. We don't have ``CondaURL`` here, but
+    a credential-stripped + scheme-normalized + slash-trimmed compare
+    matches the cases that occur in practice for conda packages.
     """
     cleaned = libmamba_strip_url_secrets(url)
     parsed = urlsplit(cleaned)
@@ -156,6 +181,9 @@ def _link_action_explicit_or_derived_url(link_action: LinkAction) -> str | None:
     conda / Python-mamba-1.x
     sparse-LINK case, where the URL is reconstructed from disjoint
     fields and is therefore weaker evidence than an explicit value.
+    Both paths are still useful for ``record_matches_link`` to validate
+    against a record on disk; future maintainers should treat a derived
+    URL as a heuristic, not gospel.
     """
     url = link_action.get("url")
     if url:
@@ -190,9 +218,9 @@ def record_matches_link(
       here, so mirrored channels whose channel string spelling differs
       (``"conda-forge"`` vs the canonical URL) but whose package URLs
       match are accepted -- matching libmamba's precedence.
-    - Otherwise fall back to a channel-string compare so a sparse LINK
-      without a URL still gets validated past name/version whenever both
-      sides carry channel.
+    - Otherwise fall back to a channel-string compare so a sparse
+      LINK without a URL still gets validated past name/version
+      whenever both sides carry channel.
 
     Returns ``(matched, reason_if_rejected)``.
     """
@@ -277,30 +305,38 @@ def get_repodata_record(
     pkgs_dirs: list[pathlib.Path],
     dist_name: str,
     link_action: LinkAction,
-) -> FetchAction | None:
+) -> RepodataLookup:
     """Look up ``repodata_record.json`` for one LINK action in the cache.
 
-    Validates each found candidate against the LINK via
-    ``record_matches_link`` so a same-dist record from a different
-    channel (legacy flat layout collision) cannot be silently
-    returned for the wrong package.
+    Returns a structured ``RepodataLookup`` instead of a bare record.
+    The orchestration layer (``conda_lock.solver.dry_run``) maps
+    each outcome to a user-facing warning; this function only emits
+    DEBUG-level diagnostics.
 
     On rare occasion during CI tests, conda fails to find a package
-    in the package cache; waiting 0.1 seconds resolves it. Allow up
-    to a full second to elapse before giving up. Distinct failure
-    modes are logged at DEBUG so that a final ``not found`` doesn't
-    bury whether we never saw the file or saw it and rejected it.
+    in the package cache, perhaps because the package is still being
+    processed; waiting 0.1 seconds seems to solve the issue. Here we
+    allow up to a full second to elapse before giving up.
 
     A candidate that exists but fails to parse as JSON is skipped
-    (logged at DEBUG) rather than treated as a hard error, for the
-    same reason the retry loop exists: the solver may still be
-    writing the record (the write is not atomic), and another
-    candidate path or ``pkgs_dir`` -- or the same path 0.1s later --
-    may hold a good copy. Aborting the whole lookup on the first
-    unparseable file would turn a transient partial write into a
-    hard failure even when a valid record is available. If every
-    candidate fails, the lookup still fails loudly via the
-    giving-up WARNING below.
+    (logged at DEBUG, folded into the ``not_found`` reason chain)
+    rather than treated as a hard error, for the same reason the
+    retry loop exists: the solver may still be writing the record
+    (the write is not atomic), and another candidate path or
+    ``pkgs_dir`` -- or the same path 0.1s later -- may hold a good
+    copy. Aborting the whole lookup on the first unparseable file
+    would turn a transient partial write into a hard failure even
+    when a valid record is available. If every candidate fails, the
+    failure is still surfaced: the returned ``not_found`` carries
+    the last parse error as its ``reason``.
+
+    Distinct failure modes (missing file, JSON corruption, identity
+    mismatch) are tracked through the retry
+    loop so the final ``RepodataLookup.reason`` is the most
+    actionable diagnostic. "Rejected" beats "missing": if we found
+    a candidate and rejected it for, say, sha256 mismatch, that's
+    the signal worth surfacing -- not the trivia that the legacy
+    flat fallback path didn't exist.
     """
     NUM_RETRIES = 10
     last_rejected: str | None = None
@@ -321,9 +357,13 @@ def get_repodata_record(
                     continue
                 matched, reason = record_matches_link(record, link_action)
                 if matched:
-                    return record
+                    return RepodataLookup(record=record, outcome="found")
                 last_rejected = f"identity mismatch at {candidate}: {reason}"
                 logger.debug(last_rejected)
+        # Per-retry summary stays at DEBUG so a single missing package
+        # doesn't drown operator output in 11 nearly-identical lines.
+        # The orchestration layer logs a single WARNING after the
+        # retry loop returns.
         final_reason = last_rejected or last_missing
         logger.debug(
             f"Failed to find repodata_record.json for {dist_name} "
@@ -331,9 +371,8 @@ def get_repodata_record(
             f"Retrying in 0.1 seconds ({retry}/{NUM_RETRIES})"
         )
         time.sleep(0.1)
-    final_reason = last_rejected or last_missing
-    logger.warning(
-        f"Failed to find repodata_record.json for {dist_name}. Giving up. "
-        f"Last reason: {final_reason}"
+    return RepodataLookup(
+        record=None,
+        outcome="not_found",
+        reason=last_rejected or last_missing,
     )
-    return None
