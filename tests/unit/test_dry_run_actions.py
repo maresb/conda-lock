@@ -106,6 +106,27 @@ def test_link_action_as_fetch_requires_identity_field(missing: str):
     assert link_action_as_fetch(partial) is None
 
 
+def test_link_action_as_fetch_rejects_corruption_signature():
+    """The rich-LINK fast path bypasses ``get_repodata_record`` and
+    therefore the ``is_mamba_2_1_to_2_5_stub_record`` check. Mamba 2.6.0+
+    is supposed to heal cache records before emitting them in LINK,
+    but a corrupted record passing through unhealed would otherwise
+    ride straight into a synthesized FETCH, depending on an external
+    invariant. We re-check the corruption signature in the fast path
+    so the LINK-shaped corruption case routes to disk fallback (where
+    ``heal_corrupt_record`` can recover from ``info/index.json``).
+    """
+    corrupt_link = {
+        **_MAMBA_26_LINK_ACTION,
+        "depends": [],  # corrupt mamba 2.1.1-2.5 zeroed this
+        "license": "",  # ditto
+        "timestamp": 0,  # ditto
+    }
+    # All the FETCH-shaped fields are present, so the *only* reason
+    # this should be rejected is the corruption signature.
+    assert link_action_as_fetch(corrupt_link) is None
+
+
 # ---------------------------------------------------------------------------
 # reconstruct_fetch_actions_in_place integration
 # ---------------------------------------------------------------------------

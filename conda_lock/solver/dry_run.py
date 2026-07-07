@@ -14,7 +14,10 @@ from typing import cast
 
 from conda_lock.invoke_conda import PathLike, get_pkgs_dirs
 from conda_lock.models.dry_run_install import DryRunInstall, FetchAction, LinkAction
-from conda_lock.solver.repodata_cache import get_repodata_record
+from conda_lock.solver.repodata_cache import (
+    get_repodata_record,
+    is_mamba_2_1_to_2_5_stub_record,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -51,11 +54,26 @@ def link_action_as_fetch(link_action: LinkAction) -> FetchAction | None:
     downstream code (``solve_conda``) reads from a FETCH. Critically we
     require ``depends`` to be present *and* a list, otherwise an absent
     or null value would silently erase a package's runtime dependencies.
+
+    We also reject the fast path when the LINK metadata itself carries
+    the mamba 2.1.1-2.5 corruption signature (``timestamp == 0`` plus
+    empty ``license``, with empty ``depends`` or missing ``sha256``).
+    In every dryrun we have captured, rich-LINK values come from
+    channel repodata at solve time and are clean even when the local
+    cache record is corrupt -- but that is an external invariant, not
+    something this code can rely on. A solver flow that sources LINK
+    values from cache records (offline operation, explicit/local
+    sources) would let the corrupt fields ride straight into a FETCH,
+    bypassing the cache-side heal completely. Routing such LINKs to
+    disk fallback gives them a chance to be healed via
+    ``info/index.json``.
     """
     for key in _FETCH_KEYS_FROM_LINK:
         if key not in link_action or link_action[key] is None:  # type: ignore[literal-required]
             return None
     if not isinstance(link_action["depends"], list):
+        return None
+    if is_mamba_2_1_to_2_5_stub_record(cast(dict, link_action)):
         return None
     fetch = cast(
         FetchAction,
