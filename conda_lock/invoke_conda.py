@@ -334,6 +334,19 @@ def is_micromamba(conda: PathLike) -> bool:
 
 
 def extract_json_object(proc_stdout: str) -> str:
+    """Trim subprocess stdout to the outermost ``{...}`` JSON object.
+
+    Conda/mamba dryrun output sometimes wraps the JSON in solver
+    chatter (TQDM progress, stray prints, banner lines). The JSON
+    document is always a single object spanning from the first ``{``
+    to the last ``}``; everything else is noise. Returns the input
+    unchanged if no braces are present.
+
+    >>> extract_json_object('0%|  | 0/1\\n{"actions": {}}\\ndone')
+    '{"actions": {}}'
+    >>> extract_json_object("no json here")
+    'no json here'
+    """
     try:
         return proc_stdout[proc_stdout.index("{") : proc_stdout.rindex("}") + 1]
     except ValueError:
@@ -346,7 +359,15 @@ def get_pkgs_dirs(
     platform: str,
     method: Literal["config", "info"] | None = None,
 ) -> list[pathlib.Path]:
-    """Extract the package cache directories from the conda configuration."""
+    """Extract the package cache directories from the conda configuration.
+
+    This shells out to ``conda config`` (or ``conda info`` for
+    older mamba) and parses the JSON output. Lives here next to
+    the other ``invoke_conda`` helpers because it is fundamentally
+    a CLI probe of the conda installation -- not part of the
+    cache-record I/O abstraction in
+    ``conda_lock.solver.repodata_cache``.
+    """
     if method is None:
         method = "config" if is_micromamba(conda) else "info"
     if method == "config":

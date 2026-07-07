@@ -1,7 +1,16 @@
 """Local package-cache I/O for the conda-lock dryrun pipeline.
 
 This module owns the question "what does the on-disk cache say about a
-given distribution?" -- nothing else.
+given LINK action?" -- nothing else. Path derivation across the
+legacy flat layout and the mamba 2.6.0 hierarchical layout
+(see https://github.com/mamba-org/mamba/pull/4163) and
+``repodata_record.json`` lookup live here.
+
+Strict layering: this module imports only from ``models`` and
+``invoke_conda``. Subprocess probing of the conda CLI
+(``get_pkgs_dirs``) and JSON-stdout parsing (``extract_json_object``)
+live in ``conda_lock.invoke_conda`` since they are CLI concerns
+rather than cache-record concerns.
 """
 
 import json
@@ -9,31 +18,135 @@ import logging
 import pathlib
 import time
 
-from conda_lock.models.dry_run_install import FetchAction
+from conda_lock.models.dry_run_install import FetchAction, LinkAction
 
 
 logger = logging.getLogger(__name__)
 
 
-def get_repodata_record(
-    pkgs_dirs: list[pathlib.Path], dist_name: str
-) -> FetchAction | None:
-    """Get the repodata_record.json of a given distribution from the package cache.
+def _normalize_url_for_cache_path(url: str) -> str:
+    """Apply mamba 2.6.0's URL normalization for package cache paths.
 
-    On rare occasion during the CI tests, conda fails to find a package in the
-    package cache, perhaps because the package is still being processed? Waiting for
-    0.1 seconds seems to solve the issue. Here we allow for a full second to elapse
-    before giving up.
+    Mirrors libmamba's ``package_cache_folder_relative_path``: scheme
+    separators ``://`` become ``/`` and remaining ``:`` / ``\\`` are
+    replaced with ``_``. Path separators are preserved.
+
+    >>> _normalize_url_for_cache_path("https://conda.anaconda.org/conda-forge/linux-64")
+    'https/conda.anaconda.org/conda-forge/linux-64'
+    """
+    return url.replace("://", "/").replace(":", "_").replace("\\", "_")
+
+
+def hierarchical_cache_subpath(link_action: LinkAction) -> pathlib.Path | None:
+    """Return ``<normalized base url>/<subdir>`` for the mamba 2.6.0 layout.
+
+    Prefers the LINK action's ``url`` (stripping the filename), falling back
+    to ``base_url`` + ``platform``. Returns ``None`` when neither is usable.
+
+    >>> hierarchical_cache_subpath(
+    ...     {"url": "https://conda.anaconda.org/conda-forge/linux-64/libzlib-1.3.2-h25fd6f3_2.conda"}
+    ... ).as_posix()
+    'https/conda.anaconda.org/conda-forge/linux-64'
+    >>> hierarchical_cache_subpath(
+    ...     {"base_url": "https://conda.anaconda.org/conda-forge", "platform": "linux-64"}
+    ... ).as_posix()
+    'https/conda.anaconda.org/conda-forge/linux-64'
+    >>> hierarchical_cache_subpath({"name": "libzlib"}) is None
+    True
+    """
+    url = link_action.get("url")
+    platform = link_action.get("platform") or link_action.get("subdir") or ""
+    directory: str | None = None
+    if url and "/" in url:
+        directory = url.rsplit("/", 1)[0]
+    elif link_action.get("base_url") and platform:
+        base = link_action["base_url"].rstrip("/")
+        suffix = f"/{platform}"
+        if base.endswith(suffix):
+            base = base[: -len(suffix)]
+        directory = f"{base}/{platform}"
+    if directory is None:
+        return None
+    return pathlib.Path(_normalize_url_for_cache_path(directory))
+
+
+def candidate_record_paths(
+    pkgs_dir: pathlib.Path,
+    dist_name: str,
+    link_action: LinkAction,
+) -> list[pathlib.Path]:
+    """Candidate ``repodata_record.json`` locations, in priority order.
+
+    Conda and pre-2.6 mamba use a flat layout (``<pkgs_dir>/<dist_name>/...``).
+    Mamba/micromamba 2.6.0 nests packages under the channel and subdir
+    derived from the package URL (see mamba-org/mamba#4163). We compute the
+    expected hierarchical path from the LINK metadata rather than walking the
+    cache, then fall back to the legacy flat path.
+
+    >>> import pathlib
+    >>> [
+    ...     p.as_posix()
+    ...     for p in candidate_record_paths(
+    ...         pathlib.Path("/pkgs"),
+    ...         "libzlib-1.3.2-h25fd6f3_2",
+    ...         {"url": "https://conda.anaconda.org/conda-forge/linux-64/libzlib-1.3.2-h25fd6f3_2.conda"},
+    ...     )
+    ... ]  # doctest: +NORMALIZE_WHITESPACE
+    ['/pkgs/https/conda.anaconda.org/conda-forge/linux-64/libzlib-1.3.2-h25fd6f3_2/info/repodata_record.json',
+     '/pkgs/libzlib-1.3.2-h25fd6f3_2/info/repodata_record.json']
+    >>> [
+    ...     p.as_posix()
+    ...     for p in candidate_record_paths(
+    ...         pathlib.Path("/pkgs"), "libzlib-1.3.2-h25fd6f3_2", {"name": "libzlib"}
+    ...     )
+    ... ]
+    ['/pkgs/libzlib-1.3.2-h25fd6f3_2/info/repodata_record.json']
+    """
+    candidates: list[pathlib.Path] = []
+    sub = hierarchical_cache_subpath(link_action)
+    if sub is not None:
+        candidates.append(pkgs_dir / sub / dist_name / "info" / "repodata_record.json")
+    candidates.append(pkgs_dir / dist_name / "info" / "repodata_record.json")
+    return candidates
+
+
+def get_repodata_record(
+    pkgs_dirs: list[pathlib.Path],
+    dist_name: str,
+    link_action: LinkAction,
+) -> FetchAction | None:
+    """Look up ``repodata_record.json`` for one LINK action in the cache.
+
+    On rare occasion during CI tests, conda fails to find a package
+    in the package cache (perhaps because the package is still being
+    processed); waiting 0.1 seconds resolves it. Allow up to a full
+    second to elapse before giving up.
+
+    A candidate that exists but fails to parse as JSON is skipped
+    (logged at DEBUG) rather than treated as a hard error, for the
+    same reason the retry loop exists: the solver may still be
+    writing the record (the write is not atomic), and another
+    candidate path or ``pkgs_dir`` -- or the same path 0.1s later --
+    may hold a good copy. Aborting the whole lookup on the first
+    unparseable file would turn a transient partial write into a
+    hard failure even when a valid record is available. If every
+    candidate fails, the lookup still fails loudly via the
+    giving-up WARNING below.
     """
     NUM_RETRIES = 10
     for retry in range(1, NUM_RETRIES + 1):
         for pkgs_dir in pkgs_dirs:
-            record = pkgs_dir / dist_name / "info" / "repodata_record.json"
-            if record.exists():
-                with open(record) as f:
-                    repodata: FetchAction = json.load(f)
-                return repodata
-        logger.warning(
+            for candidate in candidate_record_paths(pkgs_dir, dist_name, link_action):
+                if not candidate.is_file():
+                    continue
+                try:
+                    with open(candidate) as f:
+                        record: FetchAction = json.load(f)
+                except (OSError, json.JSONDecodeError) as exc:
+                    logger.debug(f"failed to read {candidate}: {exc}")
+                    continue
+                return record
+        logger.debug(
             f"Failed to find repodata_record.json for {dist_name}. "
             f"Retrying in 0.1 seconds ({retry}/{NUM_RETRIES})"
         )

@@ -37,7 +37,10 @@ def link_action_as_fetch(link_action: LinkAction) -> FetchAction | None:
     micromamba 1.5.12 through 2.8.1; conda and the Python ``mamba``
     1.x CLI emit sparse conda-meta LINKs instead. When the fields are
     all present we don't need to crack open ``repodata_record.json``
-    on disk.
+    on disk -- doubly useful given that mamba 2.6.0 reorganized the
+    cache hierarchically by channel/subdir
+    (see https://github.com/mamba-org/mamba/pull/4163), invalidating the
+    flat-path lookup that ``get_repodata_record`` used to do.
 
     Synthesis is rejected unless the LINK has every field that the
     downstream code (``solve_conda``) reads from a FETCH. Critically we
@@ -71,15 +74,16 @@ def link_action_as_fetch(link_action: LinkAction) -> FetchAction | None:
 def reconstruct_fetch_actions_in_place(
     conda: PathLike, platform: str, dry_run_install: DryRunInstall
 ) -> None:
-    """
-    Conda may choose to link a previously downloaded distribution from pkgs_dirs rather
-    than downloading a fresh one. Find the repodata record in existing distributions
-    that have only a LINK action, and use it to synthesize a corresponding FETCH action
-    with the metadata we need to extract for the package plan.
+    """Normalize a conda/mamba dryrun so every planned package has a FETCH.
 
-    Mamba 2.6.0 puts the full repodata into LINK actions, so we can often
-    synthesize FETCH from the LINK metadata directly without going to
-    disk. Older solvers emit sparse LINKs and still need the disk lookup.
+    Conda may choose to link a previously downloaded distribution from
+    ``pkgs_dirs`` rather than downloading a fresh one, in which case
+    its dryrun returns only a LINK action, which for conda and the
+    Python ``mamba`` 1.x CLI lacks the ``url`` / ``md5`` / ``sha256``
+    / ``depends`` fields the package plan needs.
+    For each LINK without a matching FETCH, this function either
+    synthesizes one from the LINK metadata (mamba-family fast path)
+    or reads ``repodata_record.json`` from the cache.
 
     **Mutates ``dry_run_install`` in place and returns ``None``.**
     The input's ``actions["FETCH"]`` list is extended (and
@@ -130,7 +134,7 @@ def reconstruct_fetch_actions_in_place(
                 raise ValueError(f"Unknown filename format: {dist_name}")
         else:
             raise ValueError(f"Unable to extract the dist_name from {link_action}.")
-        repodata = get_repodata_record(pkgs_dirs, dist_name)
+        repodata = get_repodata_record(pkgs_dirs, dist_name, link_action)
         if repodata is None:
             raise FileNotFoundError(
                 f"Distribution '{dist_name}' not found in pkgs_dirs {pkgs_dirs}"
