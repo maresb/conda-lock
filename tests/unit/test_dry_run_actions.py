@@ -15,12 +15,15 @@ bugs. The relevant arg-type checks are disabled file-wide.
 
 from __future__ import annotations
 
+import json
+
 from pathlib import Path
 
 import pytest
 
 from conda_lock.solver.dry_run import (
     link_action_as_fetch,
+    reconstruct_fetch_actions_in_place,
 )
 from tests.support.fixtures import (
     CONDA_LINK_ACTION as _CONDA_LINK_ACTION,
@@ -103,6 +106,131 @@ def test_link_action_as_fetch_requires_identity_field(missing: str):
     assert link_action_as_fetch(partial) is None
 
 
+# ---------------------------------------------------------------------------
+# reconstruct_fetch_actions_in_place integration
+# ---------------------------------------------------------------------------
+
+
+def test_reconstruct_fetch_actions_synthesizes_from_link(monkeypatch):
+    """When LINK contains all FETCH fields (mamba 2.x/micromamba), no disk access is
+    needed and ``get_pkgs_dirs`` must not be invoked."""
+
+    def boom(**_kwargs):
+        raise AssertionError("get_pkgs_dirs should not be called")
+
+    monkeypatch.setattr("conda_lock.solver.dry_run.get_pkgs_dirs", boom)
+
+    dryrun = {
+        "actions": {
+            "LINK": [_MAMBA_26_LINK_ACTION],
+            "FETCH": [],
+        }
+    }
+    reconstruct_fetch_actions_in_place("/dummy", "linux-64", dryrun)
+    assert len(dryrun["actions"]["FETCH"]) == 1
+    fetch = dryrun["actions"]["FETCH"][0]
+    assert fetch["name"] == "libzlib"
+    assert fetch["url"] == _MAMBA_26_LINK_ACTION["url"]
+    assert fetch["sha256"] == _MAMBA_26_LINK_ACTION["sha256"]
+
+
+def test_reconstruct_fetch_actions_real_mamba_2_6_0_dryrun(monkeypatch):
+    """Replay a real ``mamba 2.6.0`` LINK-only dryrun JSON.
+
+    Captured by running ``mamba create --dry-run --json zlib`` against an
+    already-populated ``CONDA_PKGS_DIRS`` so the solver has nothing to fetch.
+    """
+
+    def boom(**_kwargs):
+        raise AssertionError("get_pkgs_dirs should not be called")
+
+    monkeypatch.setattr("conda_lock.solver.dry_run.get_pkgs_dirs", boom)
+
+    fixture = (
+        TESTS_DIR / "test-mamba-fixtures" / "dryrun-mamba-2.6.0-linux-64-zlib.json"
+    )
+    dryrun = json.loads(fixture.read_text())
+    assert len(dryrun["actions"]["LINK"]) >= 1
+    assert dryrun["actions"].get("FETCH", []) == []
+    reconstruct_fetch_actions_in_place("/dummy", "linux-64", dryrun)
+    fetched = dryrun["actions"]["FETCH"]
+    assert len(fetched) == len(dryrun["actions"]["LINK"])
+    by_name = {f["name"]: f for f in fetched}
+    for link in dryrun["actions"]["LINK"]:
+        fetch = by_name[link["name"]]
+        assert fetch["url"] == link["url"]
+        assert fetch["sha256"] == link["sha256"]
+        assert fetch["md5"] == link["md5"]
+        assert fetch["depends"] == link["depends"]
+        assert fetch["subdir"] == link["subdir"]
+
+
+def test_reconstruct_fetch_actions_real_micromamba_1_5_dryrun(monkeypatch):
+    """Replay a real ``micromamba 1.5.12`` LINK-only dryrun JSON.
+
+    Pre-2.6 micromamba already emits rich LINK actions, so the fast
+    path must synthesize every FETCH without touching the disk.
+    """
+
+    def boom(**_kwargs):
+        raise AssertionError("get_pkgs_dirs should not be called")
+
+    monkeypatch.setattr("conda_lock.solver.dry_run.get_pkgs_dirs", boom)
+
+    fixture = (
+        TESTS_DIR
+        / "test-mamba-fixtures"
+        / "dryrun-micromamba-1.5.12-linux-64-libzlib.json"
+    )
+    dryrun = json.loads(fixture.read_text())
+    assert dryrun["actions"].get("FETCH") in (None, [])
+    link = dryrun["actions"]["LINK"][0]
+    reconstruct_fetch_actions_in_place("/dummy", "linux-64", dryrun)
+    fetched = dryrun["actions"]["FETCH"]
+    assert [f["name"] for f in fetched] == ["libzlib"]
+    assert fetched[0]["url"] == link["url"]
+    assert fetched[0]["sha256"] == link["sha256"]
+    assert fetched[0]["depends"] == link["depends"]
+
+
+@pytest.mark.parametrize(
+    "fixture_name",
+    [
+        "dryrun-conda-26.5.2-linux-64-libzlib.json",
+        "dryrun-mamba-1.5.12-python-linux-64-libzlib.json",
+    ],
+)
+def test_reconstruct_fetch_actions_real_sparse_dryrun_uses_disk(
+    tmp_path: Path, monkeypatch, fixture_name: str
+):
+    """Replay real ``conda`` / Python ``mamba`` 1.x LINK-only dryruns.
+
+    These solvers emit the sparse conda-meta LINK shape (no
+    ``depends``, no artifact identity), so reconstruction must read
+    ``repodata_record.json`` from the package cache -- flat layout,
+    as those solvers write it.
+    """
+    fixture = TESTS_DIR / "test-mamba-fixtures" / fixture_name
+    dryrun = json.loads(fixture.read_text())
+    link = dryrun["actions"]["LINK"][0]
+    dist_name = link["dist_name"]
+
+    record = dict(_MAMBA_26_LINK_ACTION)
+    flat_dir = tmp_path / "pkgs" / dist_name / "info"
+    flat_dir.mkdir(parents=True)
+    (flat_dir / "repodata_record.json").write_text(json.dumps(record))
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.get_pkgs_dirs",
+        lambda **_kwargs: [tmp_path / "pkgs"],
+    )
+
+    reconstruct_fetch_actions_in_place("/dummy", "linux-64", dryrun)
+    fetched = dryrun["actions"]["FETCH"]
+    assert [f["name"] for f in fetched] == ["libzlib"]
+    assert fetched[0]["depends"] == record["depends"]
+    assert fetched[0]["sha256"] == record["sha256"]
+
+
 # --- 3. Degraded-path warning -------------------------------------------
 
 
@@ -128,3 +256,65 @@ def _sparse_link_action() -> dict:
         "fn": "libzlib-1.3.2-h25fd6f3_2.conda",
         "version": "1.3.2",
     }
+
+
+# ---------------------------------------------------------------------------
+# warn_on_corrupt_cache_writing_solver
+# ---------------------------------------------------------------------------
+
+
+def test_reconstruct_fetch_actions_creates_missing_action_keys():
+    """A dryrun without LINK/FETCH keys is normalized, not crashed on."""
+    dryrun = {"actions": {}}
+    reconstruct_fetch_actions_in_place("/dummy", "linux-64", dryrun)
+    assert dryrun["actions"] == {"LINK": [], "FETCH": []}
+
+
+@pytest.mark.parametrize(
+    ("fn", "expected_dist_name"),
+    [
+        ("libzlib-1.3.2-h25fd6f3_2.conda", "libzlib-1.3.2-h25fd6f3_2"),
+        ("libzlib-1.3.2-h25fd6f3_2.tar.bz2", "libzlib-1.3.2-h25fd6f3_2"),
+    ],
+)
+def test_reconstruct_fetch_actions_derives_dist_name_from_fn(
+    tmp_path: Path, monkeypatch, fn: str, expected_dist_name: str
+):
+    """A LINK without ``dist_name`` (the mamba rich-LINK shape) that gets
+    deferred to disk fallback derives the cache dirname from ``fn``,
+    stripping either archive extension."""
+    # Keep record and LINK consistent (same fn/url) so the identity
+    # gate is not what this test exercises.
+    url = "https://conda.anaconda.org/conda-forge/linux-64/" + fn
+    record = {**_MAMBA_26_LINK_ACTION, "fn": fn, "url": url}
+    flat_dir = tmp_path / "pkgs" / expected_dist_name / "info"
+    flat_dir.mkdir(parents=True)
+    (flat_dir / "repodata_record.json").write_text(json.dumps(record))
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.get_pkgs_dirs",
+        lambda **_kwargs: [tmp_path / "pkgs"],
+    )
+    # No dist_name, no depends -> fast path declines, disk fallback runs.
+    link = {k: v for k, v in record.items() if k not in ("depends",)}
+    dryrun = {"actions": {"LINK": [link], "FETCH": []}}
+    reconstruct_fetch_actions_in_place("/dummy", "linux-64", dryrun)
+    assert dryrun["actions"]["FETCH"][0]["depends"] == record["depends"]
+
+
+def test_reconstruct_fetch_actions_rejects_unknown_filename_format(monkeypatch):
+    """An undeferrable LINK (unknown archive extension) is a hard error,
+    not a silent skip."""
+    monkeypatch.setattr("conda_lock.solver.dry_run.get_pkgs_dirs", lambda **_kwargs: [])
+    link = {"name": "weird", "fn": "weird-1.0-0.zip"}
+    dryrun = {"actions": {"LINK": [link], "FETCH": []}}
+    with pytest.raises(ValueError, match="Unknown filename format"):
+        reconstruct_fetch_actions_in_place("/dummy", "linux-64", dryrun)
+
+
+def test_reconstruct_fetch_actions_requires_dist_name_or_fn(monkeypatch):
+    """A LINK exposing neither ``dist_name`` nor ``fn`` cannot be looked
+    up on disk at all."""
+    monkeypatch.setattr("conda_lock.solver.dry_run.get_pkgs_dirs", lambda **_kwargs: [])
+    dryrun = {"actions": {"LINK": [{"name": "mystery"}], "FETCH": []}}
+    with pytest.raises(ValueError, match="Unable to extract the dist_name"):
+        reconstruct_fetch_actions_in_place("/dummy", "linux-64", dryrun)
