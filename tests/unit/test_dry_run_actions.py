@@ -231,6 +231,85 @@ def test_reconstruct_fetch_actions_real_sparse_dryrun_uses_disk(
     assert fetched[0]["sha256"] == record["sha256"]
 
 
+def test_reconstruct_fetch_actions_disk_fallback_on_hierarchical_cache(
+    tmp_path: Path, monkeypatch
+):
+    """Drive the disk-fallback path with an on-disk hierarchical cache.
+
+    Synthesis is rejected because the LINK is sparse (older-conda shape),
+    so this exercises ``get_pkgs_dirs`` -> ``candidate_record_paths`` ->
+    file open -> ``record_matches_link`` against a real cache directory
+    laid out the way mamba 2.6.0 actually writes it.
+    """
+    fixture = (
+        TESTS_DIR / "test-mamba-fixtures" / "dryrun-mamba-2.6.0-linux-64-zlib.json"
+    )
+    real = json.loads(fixture.read_text())
+    real_link = real["actions"]["LINK"][0]
+    dist_name = Path(real_link["fn"]).stem  # strip ".conda"
+
+    pkgs_dir = tmp_path / "pkgs"
+    record_dir = (
+        pkgs_dir
+        / "https/conda.anaconda.org/conda-forge"
+        / real_link["subdir"]
+        / dist_name
+        / "info"
+    )
+    record_dir.mkdir(parents=True)
+    record_path = record_dir / "repodata_record.json"
+    record_path.write_text(json.dumps(real_link))
+
+    sparse_link = {
+        "name": real_link["name"],
+        "version": real_link["version"],
+        "platform": real_link["subdir"],
+        "channel": real_link["channel"],
+        "dist_name": dist_name,
+        "fn": real_link["fn"],
+        "md5": real_link["md5"],
+        "sha256": real_link["sha256"],
+        # No `depends`, no `timestamp` -> link_action_as_fetch returns None.
+        "url": real_link["url"],
+    }
+    dryrun = {"actions": {"LINK": [sparse_link], "FETCH": []}}
+
+    monkeypatch.setattr(
+        "conda_lock.solver.dry_run.get_pkgs_dirs",
+        lambda **_kwargs: [pkgs_dir],
+    )
+
+    reconstruct_fetch_actions_in_place("/dummy", real_link["subdir"], dryrun)
+    assert len(dryrun["actions"]["FETCH"]) == 1
+    fetch = dryrun["actions"]["FETCH"][0]
+    assert fetch["url"] == real_link["url"]
+    assert fetch["sha256"] == real_link["sha256"]
+
+    # Plant impostor records (wrong sha256) at both hierarchical and flat
+    # locations and assert validation rejects them.
+    impostor_dir = (
+        pkgs_dir
+        / "https/repo.example.com/private"
+        / real_link["subdir"]
+        / dist_name
+        / "info"
+    )
+    impostor_dir.mkdir(parents=True)
+    (impostor_dir / "repodata_record.json").write_text(
+        json.dumps({**real_link, "sha256": "deadbeef", "url": real_link["url"]})
+    )
+    flat_dir = pkgs_dir / dist_name / "info"
+    flat_dir.mkdir(parents=True)
+    (flat_dir / "repodata_record.json").write_text(
+        json.dumps({**real_link, "sha256": "deadbeef"})
+    )
+    # Drop the URL so the hierarchical path can't be derived; falls back to flat.
+    sparse_no_url = {k: v for k, v in sparse_link.items() if k != "url"}
+    dryrun = {"actions": {"LINK": [sparse_no_url], "FETCH": []}}
+    with pytest.raises(FileNotFoundError):
+        reconstruct_fetch_actions_in_place("/dummy", real_link["subdir"], dryrun)
+
+
 # --- 3. Degraded-path warning -------------------------------------------
 
 
