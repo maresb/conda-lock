@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 from pathlib import PurePosixPath
 from typing import Literal
-from urllib.parse import SplitResult, urlsplit, urlunsplit
+from urllib.parse import SplitResult, unquote, urlsplit, urlunsplit
 
 from pydantic import Field, ValidationInfo, field_validator
 
@@ -116,7 +116,7 @@ class BaseLockedDependency(StrictModel):
                 f"Platform mismatch for package {self.name} {self.version}. "
                 f"Expected '{self.platform}' but URL '{self.url}' contains '{parsed_platform}'."
             )
-        filename_with_extension = path.name  # e.g. "tzdata-2022g-h191b570_0.conda"
+        filename_with_extension = unquote(path.name)
 
         # base_url is everything up to the platform directory
         base_url_path = str(path.parent.parent)  # e.g. "/conda-forge"
@@ -131,7 +131,7 @@ class BaseLockedDependency(StrictModel):
             base_url_parts
         )  # e.g. "https://user:pass@conda.anaconda.org/conda-forge"
 
-        channel_url = f"{base_url}/{self.platform}"  # e.g. "https://user:pass@conda.anaconda.org/conda-forge/linux-64"
+        channel_url = f"{base_url}/{parsed_platform}"
 
         fetch_action = FetchAction(
             name=self.name,
@@ -143,7 +143,7 @@ class BaseLockedDependency(StrictModel):
             sha256=self.hash.sha256,
             depends=[f"{k} {v}".strip() for k, v in self.dependencies.items()],
             constrains=[],
-            subdir=self.platform,
+            subdir=parsed_platform,
             timestamp=0,
         )
         return fetch_action
