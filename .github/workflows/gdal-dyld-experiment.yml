@@ -24,7 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - label: sequential-links
+          - label: suspended-spawn
             timeout: 900
     name: ${{ matrix.label }}
     steps:
@@ -46,7 +46,7 @@ jobs:
         run: |
           /usr/bin/python3 experiments/gdal-dyld/trace_probe.py \
             --output "$RUNNER_TEMP/gdal-dyld/trace" --timeout "$TRACE_TIMEOUT" -- \
-            /usr/bin/python3 experiments/gdal-dyld/link_state_probe.py \
+            /usr/bin/python3 experiments/gdal-dyld/spawn_probe.py \
             --micromamba "$MAMBA_EXE" --root-prefix "$MAMBA_ROOT_PREFIX" \
             --output "$RUNNER_TEMP/gdal-dyld/probe"
       - name: Collect evidence
