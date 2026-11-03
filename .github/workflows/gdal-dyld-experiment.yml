@@ -16,102 +16,61 @@ defaults:
     shell: bash
 
 jobs:
-  natural-gdal:
+  trigger:
     if: github.repository == 'maresb/conda-lock'
     runs-on: macos-latest
     timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: natural-1
+            mode: natural
+            trials: 8
+            timeout: 1800
+          - label: natural-2
+            mode: natural
+            trials: 8
+            timeout: 1800
+          - label: natural-3
+            mode: natural
+            trials: 8
+            timeout: 1800
+          - label: readers
+            mode: readers
+            trials: 20
+            timeout: 900
+    name: ${{ matrix.label }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+      - uses: mamba-org/setup-micromamba@add3a49764cedee8ee24e82dfde87f5bc2914462 # v2.0.7
         with:
-          python-version: '3.10'
-      - name: Record runner and install original Micromamba
-        run: |
-          set -euo pipefail
-          test "$(uname -m)" = arm64
-          mkdir -p "$RUNNER_TEMP/gdal-dyld"
-          { sw_vers; uname -m; /usr/bin/what /usr/lib/dyld; xcrun clang --version; } > "$RUNNER_TEMP/gdal-dyld/host.log"
-          curl --fail --location --silent --show-error \
-            https://micro.mamba.pm/api/micromamba/osx-arm64/2.10.0 -o "$RUNNER_TEMP/gdal-dyld/micromamba.tar.bz2"
-          tar -xjf "$RUNNER_TEMP/gdal-dyld/micromamba.tar.bz2" -C "$RUNNER_TEMP/gdal-dyld" bin/micromamba
-      - name: Untraced original-format comparison
-        run: |
-          python3 experiments/gdal-dyld/gdal_probe.py \
-            --micromamba "$RUNNER_TEMP/gdal-dyld/bin/micromamba" \
-            --lockfile experiments/gdal-dyld/fixtures/conda-osx-arm64.lock \
-            --root-prefix "$RUNNER_TEMP/gdal-dyld/root" \
-            --output "$RUNNER_TEMP/gdal-dyld/baseline" \
-            --trials 2 --launches 100 --modes hardlink --sequences 3 \
-            --original-formats --skip-diagnostics
-      - name: Trace the same original-format sequence
-        run: |
-          python3 experiments/gdal-dyld/trace_probe.py \
-            --output "$RUNNER_TEMP/gdal-dyld/trace" --timeout 900 -- \
-            python3 experiments/gdal-dyld/gdal_probe.py \
-            --micromamba "$RUNNER_TEMP/gdal-dyld/bin/micromamba" \
-            --lockfile experiments/gdal-dyld/fixtures/conda-osx-arm64.lock \
-            --root-prefix "$RUNNER_TEMP/gdal-dyld/root" \
-            --output "$RUNNER_TEMP/gdal-dyld/traced" \
-            --trials 2 --launches 100 --modes hardlink --sequences 3 \
-            --original-formats --skip-diagnostics
-      - name: Collect evidence
-        if: ${{ !cancelled() }}
-        run: python3 experiments/gdal-dyld/collect_evidence.py "$RUNNER_TEMP/gdal-dyld"
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        if: ${{ !cancelled() }}
-        with:
-          name: gdal-natural-evidence
-          path: ${{ runner.temp }}/gdal-dyld/evidence
-          retention-days: 30
-  controlled-loaders:
-    if: github.repository == 'maresb/conda-lock'
-    runs-on: macos-latest
-    timeout-minutes: 40
-    steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-        with:
-          persist-credentials: false
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
-        with:
-          python-version: '3.10'
+          init-shell: bash
+          micromamba-version: 2.10.0
       - name: Record runner
         run: |
           test "$(uname -m)" = arm64
           mkdir -p "$RUNNER_TEMP/gdal-dyld"
           { sw_vers; uname -m; /usr/bin/what /usr/lib/dyld; xcrun clang --version; } > "$RUNNER_TEMP/gdal-dyld/host.log"
-      - name: Standalone executable reproducer
-        run: python3 experiments/gdal-dyld/reproduce.py | tee "$RUNNER_TEMP/gdal-dyld/reproduce.log"
-      - name: Executable and library copy matrix
+      - name: Trace GDAL trigger experiment
+        env:
+          PROBE_MODE: ${{ matrix.mode }}
+          PROBE_TRIALS: ${{ matrix.trials }}
+          TRACE_TIMEOUT: ${{ matrix.timeout }}
         run: |
-          python3 experiments/gdal-dyld/minimal_probe.py \
-            --output "$RUNNER_TEMP/gdal-dyld/minimal" --iterations 3 --macos-version 11.1 --posix-spawn
-          python3 experiments/gdal-dyld/race_probe.py \
-            --fixture "$RUNNER_TEMP/gdal-dyld/minimal" \
-            --output "$RUNNER_TEMP/gdal-dyld/race" --iterations 30
-      - name: Library-only race controls
-        run: |
-          python3 experiments/gdal-dyld/library_probe.py \
-            --output "$RUNNER_TEMP/gdal-dyld/library-controls" --trials 30 \
-            --layouts loader_path --operations none open stat --reader-pause-us 0
-          python3 experiments/gdal-dyld/library_probe.py \
-            --output "$RUNNER_TEMP/gdal-dyld/library-masked" --trials 30 \
-            --layouts rpath --modes hardlink --operations open --reader-pause-us 0
-      - name: Held-descriptor path identity
-        run: |
-          probe_dir="$RUNNER_TEMP/gdal-dyld/path-identity"
-          mkdir "$probe_dir"
-          xcrun clang -Wall -Wextra -Werror experiments/gdal-dyld/path_identity.c -o "$probe_dir/probe"
-          cache_executable="$RUNNER_TEMP/gdal-dyld/minimal/cache/app/bin/app"
-          ln "$cache_executable" "$probe_dir/app"
-          "$probe_dir/probe" "$cache_executable" "$probe_dir/app" --hold-env-fd > "$probe_dir/held-fd.log"
+          /usr/bin/python3 experiments/gdal-dyld/trace_probe.py \
+            --output "$RUNNER_TEMP/gdal-dyld/trace" --timeout "$TRACE_TIMEOUT" -- \
+            /usr/bin/python3 experiments/gdal-dyld/trigger_probe.py "$PROBE_MODE" \
+            --micromamba "$MAMBA_EXE" --root-prefix "$MAMBA_ROOT_PREFIX" \
+            --output "$RUNNER_TEMP/gdal-dyld/probe" --trials "$PROBE_TRIALS"
       - name: Collect evidence
         if: ${{ !cancelled() }}
-        run: python3 experiments/gdal-dyld/collect_evidence.py "$RUNNER_TEMP/gdal-dyld"
+        run: /usr/bin/python3 experiments/gdal-dyld/collect_evidence.py "$RUNNER_TEMP/gdal-dyld"
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: ${{ !cancelled() }}
         with:
-          name: gdal-controlled-evidence
+          name: gdal-trigger-${{ matrix.label }}
           path: ${{ runner.temp }}/gdal-dyld/evidence
           retention-days: 30
