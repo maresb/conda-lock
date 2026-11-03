@@ -48,7 +48,7 @@ jobs:
       - uses: mamba-org/setup-micromamba@add3a49764cedee8ee24e82dfde87f5bc2914462 # v2.0.7
         with:
           init-shell: bash
-          micromamba-version: 2.10.0
+          micromamba-version: 2.10.0-0
       - name: Record runner
         run: |
           test "$(uname -m)" = arm64

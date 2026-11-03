@@ -12,7 +12,7 @@ from pathlib import Path
 
 root = Path(sys.argv[1])
 output = root / "evidence"
-output.mkdir(exist_ok=True)
+output.mkdir(parents=True, exist_ok=True)
 rows = []
 for entry in sorted(root.iterdir()):
     if entry.name in {"evidence", "root", "bin"}:
