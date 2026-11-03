@@ -241,11 +241,12 @@ def main():
             ]
             random.Random(964).shuffle(cases)
             for mode, operation, target, trial in cases:
-                replacement = paths["env_app"].with_suffix(".replacement")
+                # rename(source, destination) is a no-op when both name the same inode.
+                # No measured process is running while this fixture is replaced.
+                paths["env_app"].unlink()
                 (os.link if mode == "hardlink" else shutil.copy2)(
-                    paths["cache_app"], replacement
+                    paths["cache_app"], paths["env_app"]
                 )
-                os.replace(replacement, paths["env_app"])
                 key = f"{mode}/{target}/{operation}"
                 reader = None
                 operations = 0

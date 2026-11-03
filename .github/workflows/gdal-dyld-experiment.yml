@@ -24,18 +24,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - label: natural-1
-            mode: natural
-            trials: 8
-            timeout: 1800
-          - label: natural-2
-            mode: natural
-            trials: 8
-            timeout: 1800
-          - label: natural-3
-            mode: natural
-            trials: 8
-            timeout: 1800
           - label: readers
             mode: readers
             trials: 20
