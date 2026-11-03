@@ -69,7 +69,19 @@ def main():
                     if not ready.is_set():
                         stats["first_input_ns"] = time.time_ns()
                         ready.set()
-                    if "gdalinfo" in line or "libgdal" in line:
+                    # Metadata calls on directory descriptors may omit a pathname.
+                    actor = line.split()[-1].rsplit(".", 1)[0] if line.split() else ""
+                    context_actor = actor.startswith(
+                        ("mdworker", "mds", "mdimport")
+                    ) or actor in {
+                        "fseventsd",
+                        "amfid",
+                        "syspolicyd",
+                        "metadata_reader",
+                        "ReportCrash",
+                        "osanalyticshelper",
+                    }
+                    if "gdalinfo" in line or "libgdal" in line or context_actor:
                         events.write(
                             json.dumps(
                                 {

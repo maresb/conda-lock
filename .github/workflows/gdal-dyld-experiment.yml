@@ -24,9 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - label: spotlight
-            mode: readers
-            trials: 80
+          - label: sequential-links
             timeout: 900
     name: ${{ matrix.label }}
     steps:
@@ -42,18 +40,15 @@ jobs:
           test "$(uname -m)" = arm64
           mkdir -p "$RUNNER_TEMP/gdal-dyld"
           { sw_vers; uname -m; /usr/bin/what /usr/lib/dyld; xcrun clang --version; } > "$RUNNER_TEMP/gdal-dyld/host.log"
-          /usr/bin/mdimport -h > "$RUNNER_TEMP/gdal-dyld/mdimport-help.log" 2>&1 || true
       - name: Trace GDAL trigger experiment
         env:
-          PROBE_MODE: ${{ matrix.mode }}
-          PROBE_TRIALS: ${{ matrix.trials }}
           TRACE_TIMEOUT: ${{ matrix.timeout }}
         run: |
           /usr/bin/python3 experiments/gdal-dyld/trace_probe.py \
             --output "$RUNNER_TEMP/gdal-dyld/trace" --timeout "$TRACE_TIMEOUT" -- \
-            /usr/bin/python3 experiments/gdal-dyld/trigger_probe.py "$PROBE_MODE" \
+            /usr/bin/python3 experiments/gdal-dyld/link_state_probe.py \
             --micromamba "$MAMBA_EXE" --root-prefix "$MAMBA_ROOT_PREFIX" \
-            --output "$RUNNER_TEMP/gdal-dyld/probe" --trials "$PROBE_TRIALS" --reader-backend spotlight
+            --output "$RUNNER_TEMP/gdal-dyld/probe"
       - name: Collect evidence
         if: ${{ !cancelled() }}
         run: /usr/bin/python3 experiments/gdal-dyld/collect_evidence.py "$RUNNER_TEMP/gdal-dyld"
