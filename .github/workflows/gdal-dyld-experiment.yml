@@ -24,9 +24,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - label: readers
+          - label: spotlight
             mode: readers
-            trials: 20
+            trials: 80
             timeout: 900
     name: ${{ matrix.label }}
     steps:
@@ -42,6 +42,7 @@ jobs:
           test "$(uname -m)" = arm64
           mkdir -p "$RUNNER_TEMP/gdal-dyld"
           { sw_vers; uname -m; /usr/bin/what /usr/lib/dyld; xcrun clang --version; } > "$RUNNER_TEMP/gdal-dyld/host.log"
+          /usr/bin/mdimport -h > "$RUNNER_TEMP/gdal-dyld/mdimport-help.log" 2>&1 || true
       - name: Trace GDAL trigger experiment
         env:
           PROBE_MODE: ${{ matrix.mode }}
@@ -52,7 +53,7 @@ jobs:
             --output "$RUNNER_TEMP/gdal-dyld/trace" --timeout "$TRACE_TIMEOUT" -- \
             /usr/bin/python3 experiments/gdal-dyld/trigger_probe.py "$PROBE_MODE" \
             --micromamba "$MAMBA_EXE" --root-prefix "$MAMBA_ROOT_PREFIX" \
-            --output "$RUNNER_TEMP/gdal-dyld/probe" --trials "$PROBE_TRIALS"
+            --output "$RUNNER_TEMP/gdal-dyld/probe" --trials "$PROBE_TRIALS" --reader-backend spotlight
       - name: Collect evidence
         if: ${{ !cancelled() }}
         run: /usr/bin/python3 experiments/gdal-dyld/collect_evidence.py "$RUNNER_TEMP/gdal-dyld"

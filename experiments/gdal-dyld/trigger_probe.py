@@ -10,6 +10,7 @@ import platform
 import random
 import shutil
 import subprocess
+import sys
 import time
 
 from pathlib import Path
@@ -36,6 +37,9 @@ def parse_args():
     parser.add_argument("--root-prefix", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--trials", type=int, required=True)
+    parser.add_argument(
+        "--reader-backend", choices=["syscalls", "spotlight"], default="syscalls"
+    )
     args = parser.parse_args()
     if (
         platform.system() != "Darwin"
@@ -46,6 +50,28 @@ def parse_args():
     if args.trials < 1:
         parser.error("Use positive trials")
     return args
+
+
+def activities_for(backend):
+    if backend == "spotlight":
+        return [(op, "app") for op in ["none", "import", "test"]]
+    return [("none", "app")] + [
+        (op, target)
+        for op in ["open", "stat", "getattrlist", "event"]
+        for target in ["app", "lib"]
+    ]
+
+
+def reader_command(operation, target, binary, log_path):
+    if operation in {"import", "test"}:
+        return [
+            sys.executable,
+            str(Path(__file__).with_name("spotlight_reader.py")),
+            operation,
+            str(target),
+            str(log_path),
+        ]
+    return [str(binary), operation, str(target)]
 
 
 def main():
@@ -60,6 +86,7 @@ def main():
         "platform": platform.platform(),
         "trials": args.trials,
         "mode": args.mode,
+        "reader_backend": args.reader_backend,
         "micromamba": subprocess.check_output(
             [*command, "--version"], text=True
         ).strip(),
@@ -228,11 +255,7 @@ def main():
                 ],
                 check=True,
             )
-            activities = [("none", "app")] + [
-                (op, target)
-                for op in ["open", "stat", "getattrlist", "event"]
-                for target in ["app", "lib"]
-            ]
+            activities = activities_for(args.reader_backend)
             cases = [
                 (mode, op, target, trial)
                 for mode in ["hardlink", "copy"]
@@ -253,11 +276,12 @@ def main():
                 try:
                     if operation != "none":
                         reader = subprocess.Popen(
-                            [
-                                str(reader_binary),
+                            reader_command(
                                 operation,
-                                str(paths["cache_" + target]),
-                            ],
+                                paths["cache_" + target],
+                                reader_binary,
+                                output / f"{mode}-{operation}-{trial:03d}.log",
+                            ),
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE,
                             text=True,
@@ -268,7 +292,7 @@ def main():
                 finally:
                     if reader is not None:
                         reader.terminate()
-                        stdout, stderr = reader.communicate(timeout=10)
+                        stdout, stderr = reader.communicate(timeout=15)
                         assert reader.returncode == 0, stderr
                         operations = int(stdout.strip())
                         assert operations > 0
