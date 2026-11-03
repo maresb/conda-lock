@@ -1,0 +1,52 @@
+{
+  "run_url": "https://github.com/maresb/conda-lock/actions/runs/41738239207/job/126272883668",
+  "commit": "f10e2477aeadefcda5797c0197f7e921eebaa453",
+  "artifact_id": 13280071969,
+  "artifact_sha256": "c0d0adf7fcf4fe5cc4924af7ac2d5a8aac5b1de2995692c9561fdbb5caf490f8",
+  "failure": {
+    "launch": {
+      "event": "launch",
+      "case": "hardlink/stat-cache",
+      "trial": 10,
+      "pid": 2069,
+      "started_ns": 1793748027167367000,
+      "ended_ns": 1793748027358383000,
+      "returncode": 134,
+      "stdout": "suspended_child_pid=2076\n",
+      "stderr": "dyld[2076]: Library not loaded: @rpath/libcrypto.3.dylib\n  Referenced from: <042BC0C2-C636-39C6-8DFD-3580A4847EF8> /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/lib/libgdal.32.3.6.2.dylib\n  Reason: tried: '/Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/lib/libcrypto.3.dylib' (no such file), '/Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/../lib/libcrypto.3.dylib' (no such file), '/Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/../lib/libcrypto.3.dylib' (no such file), '/usr/local/lib/libcrypto.3.dylib' (no such file), '/usr/lib/libcrypto.3.dylib' (no such file, not in dyld cache)\n",
+      "original_signature": true
+    },
+    "exec": {
+      "time_us": 84027346980,
+      "line": "23:20:27.346980  posix_spawn                            /Users/runner/micromamba/envs/gdal-suspended/bin/gdalinfo                                                                                                             0.000939   suspended_spawn.10116",
+      "actor": "suspended_spawn",
+      "op": "posix_spawn"
+    },
+    "main": {
+      "time_us": 84027347784,
+      "line": "23:20:27.347784  fsgetpath                              /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                                       0.000019   gdalinfo.10117",
+      "actor": "gdalinfo",
+      "op": "fsgetpath"
+    },
+    "cache_accesses": [
+      {
+        "time_us": 84027160568,
+        "line": "23:20:27.160568  open              F=5        (R__________X___)  /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                              0.000071   Python.7201",
+        "actor": "Python",
+        "op": "open"
+      },
+      {
+        "time_us": 84027167363,
+        "line": "23:20:27.167363  link                                   /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                                       0.000277   Python.7201",
+        "actor": "Python",
+        "op": "link"
+      },
+      {
+        "time_us": 84027347042,
+        "line": "23:20:27.347042  stat64                                 /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                                       0.000019   suspended_spawn.10116",
+        "actor": "suspended_spawn",
+        "op": "stat64"
+      }
+    ]
+  }
+}

@@ -1,5 +1,8 @@
 # GitHub-hosted macOS experiment, 2026-11-03
 
+Follow-up: [TRIGGER-RESULTS.md](TRIGGER-RESULTS.md) captures a spontaneous failure
+in the original install sequence and connects it to the wrong `fsgetpath` result.
+
 Run: <https://github.com/maresb/conda-lock/actions/runs/41727749639>
 
 Experiment commit: `3ba4c3fadaced4e27d89bcb17771f9aae065754f`.

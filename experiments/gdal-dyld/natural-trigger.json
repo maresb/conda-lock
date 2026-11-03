@@ -1,0 +1,113 @@
+{
+  "run_url": "https://github.com/maresb/conda-lock/actions/runs/41735120410/job/126262207838",
+  "commit": "6bf79f89e276555951785eb933c062f7c59fadda",
+  "artifact_id": 13278863527,
+  "artifact_sha256": "7f0bda6800a6a7ded58f07888dbb035f00eb15049a1a81309852bc878a77f226",
+  "failure": {
+    "launch": {
+      "event": "launch",
+      "case": "gdal-test-mm-lock",
+      "trial": 4,
+      "name": "gdal-test-mm-lock",
+      "retry": false,
+      "pid": 14451,
+      "started_ns": 1793747106817989000,
+      "ended_ns": 1793747106915401000,
+      "returncode": 134,
+      "stdout": "",
+      "stderr": "dyld[14452]: Library not loaded: @rpath/libcrypto.3.dylib\n  Referenced from: <042BC0C2-C636-39C6-8DFD-3580A4847EF8> /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/lib/libgdal.32.3.6.2.dylib\n  Reason: tried: '/Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/lib/libcrypto.3.dylib' (no such file), '/Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/../lib/libcrypto.3.dylib' (no such file), '/Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/../lib/libcrypto.3.dylib' (no such file), '/usr/local/lib/libcrypto.3.dylib' (no such file), '/usr/lib/libcrypto.3.dylib' (no such file, not in dyld cache)\n",
+      "original_signature": true
+    },
+    "exec": {
+      "time_us": 83106670259,
+      "line": "23:05:06.670259  execve                                 /Users/runner/micromamba/envs/gdal-test-mm-lock/bin/gdalinfo                                                                                                          0.000791   bash.47518",
+      "actor": "bash",
+      "op": "execve"
+    },
+    "main": {
+      "time_us": 83106670835,
+      "line": "23:05:06.670835  fsgetpath                              /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                                       0.000034   gdalinfo.47534",
+      "actor": "gdalinfo",
+      "op": "fsgetpath"
+    },
+    "cache_accesses": [
+      {
+        "time_us": 83105019890,
+        "line": "23:05:05.019890  stat64                                 /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                                       0.000002   micromamba.45185",
+        "actor": "micromamba",
+        "op": "stat64"
+      },
+      {
+        "time_us": 83105026818,
+        "line": "23:05:05.026818  link                                   /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                                       0.000186   micromamba.45185",
+        "actor": "micromamba",
+        "op": "link"
+      }
+    ]
+  },
+  "post_launch_file_identities": {
+    "event": "files",
+    "trial": 4,
+    "name": "gdal-test-mm-lock",
+    "files": {
+      "cache_app": {
+        "path": "/Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo",
+        "device": 16777226,
+        "inode": 2992524,
+        "nlink": 4,
+        "sha256": "76f5f8363c72ab845de1bd251a69761200f84dc0916bc5fcda4ae8f8545a13af"
+      },
+      "env_app": {
+        "path": "/Users/runner/micromamba/envs/gdal-test-mm-lock/bin/gdalinfo",
+        "device": 16777226,
+        "inode": 2992524,
+        "nlink": 4,
+        "sha256": "76f5f8363c72ab845de1bd251a69761200f84dc0916bc5fcda4ae8f8545a13af"
+      },
+      "cache_lib": {
+        "path": "/Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/lib/libgdal.32.3.6.2.dylib",
+        "device": 16777226,
+        "inode": 2992138,
+        "nlink": 1,
+        "sha256": "d3adb10aa517fae0054469291bf71be2b0574bd01e538affaaf20ee500dfffa1"
+      },
+      "env_lib": {
+        "path": "/Users/runner/micromamba/envs/gdal-test-mm-lock/lib/libgdal.32.3.6.2.dylib",
+        "device": 16777226,
+        "inode": 3490945,
+        "nlink": 1,
+        "sha256": "0d0de05a8bb65a9ac2e326141431e3fb52f92c9c32918d2ceb3400282033d557"
+      }
+    }
+  },
+  "retry_after_other_environments": {
+    "event": "launch",
+    "case": "gdal-test-mm-lock",
+    "trial": 4,
+    "name": "gdal-test-mm-lock",
+    "retry": true,
+    "pid": 14479,
+    "started_ns": 1793747108069826000,
+    "ended_ns": 1793747108212299000,
+    "returncode": 0,
+    "stdout": "GDAL 3.6.2, released 2023/01/02\n",
+    "stderr": "",
+    "original_signature": false
+  },
+  "trace_excerpt": [
+    "23:05:06.670259  execve                                 /Users/runner/micromamba/envs/gdal-test-mm-lock/bin/gdalinfo                                                                                                          0.000791   bash.47518",
+    "23:05:06.670835  fsgetpath                              /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                                       0.000034   gdalinfo.47534",
+    "23:05:06.670997  stat64                                 /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                                       0.000014   gdalinfo.47534",
+    "23:05:06.671028  open              F=3        (R______________)  /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                              0.000031   gdalinfo.47534",
+    "23:05:06.671046  stat64                                 /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                                       0.000004   gdalinfo.47534",
+    "23:05:06.671066  stat64                                 libgdal.32.3.6.2.dylib                                                                                                                                                0.000005   gdalinfo.47534",
+    "23:05:06.671069  stat64                                 libgdal.32.3.6.2.dylib                                                                                                                                                0.000002   gdalinfo.47534",
+    "23:05:06.671093  open              F=3        (R______________)  libgdal.32.3.6.2.dylib                                                                                                                                       0.000025   gdalinfo.47534",
+    "23:05:06.671706  open                   [  2] (R______________)  @rpath/libcrypto.3.dylib                                                                                                                                     0.000001   gdalinfo.47534",
+    "23:05:06.671711  stat64                 [  2]           /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/lib/libcrypto.3.dylib                                              0.000004   gdalinfo.47534",
+    "23:05:06.671726  stat64                 [  2]           /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/../lib/libcrypto.3.dylib                                       0.000002   gdalinfo.47534",
+    "23:05:06.671728  stat64                 [  2]           /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/../lib/libcrypto.3.dylib                                       0.000002   gdalinfo.47534",
+    "23:05:06.671731  stat64                 [  2]           /usr/local/lib/libcrypto.3.dylib                                                                                                                                      0.000001   gdalinfo.47534",
+    "23:05:06.672045  stat64                 [  2]           /usr/lib/libcrypto.3.dylib                                                                                                                                            0.000313   gdalinfo.47534"
+  ]
+}

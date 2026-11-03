@@ -1,0 +1,91 @@
+{
+  "run_id": 41735870560,
+  "commit": "187be9890896d37313da945c6771796ee3826f5e",
+  "artifact_id": 13279206189,
+  "artifact_sha256": "67bc76aa51a56832c6c0b8b1a59b09af00b51f5f4163fd7f1da9e28a801d3c91",
+  "failure": {
+    "launch": {
+      "event": "launch",
+      "case": "hardlink/app/import",
+      "trial": 15,
+      "name": "gdal-trigger-reader",
+      "retry": false,
+      "pid": 2507,
+      "started_ns": 1793746985726937000,
+      "ended_ns": 1793746985808859000,
+      "returncode": 134,
+      "stdout": "",
+      "stderr": "dyld[2509]: Library not loaded: @rpath/libcrypto.3.dylib\n  Referenced from: <042BC0C2-C636-39C6-8DFD-3580A4847EF8> /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/lib/libgdal.32.3.6.2.dylib\n  Reason: tried: '/Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/lib/libcrypto.3.dylib' (no such file), '/Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/../lib/libcrypto.3.dylib' (no such file), '/Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/../lib/libcrypto.3.dylib' (no such file), '/usr/local/lib/libcrypto.3.dylib' (no such file), '/usr/lib/libcrypto.3.dylib' (no such file, not in dyld cache)\n",
+      "original_signature": true
+    },
+    "exec": {
+      "time_us": 82985787584,
+      "line": "23:03:05.787584  execve                                 /Users/runner/micromamba/envs/gdal-trigger-reader/bin/gdalinfo                                                                                                        0.001449   bash.11704",
+      "actor": "bash",
+      "op": "execve"
+    },
+    "main": {
+      "time_us": 82985788314,
+      "line": "23:03:05.788314  fsgetpath                              /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                                       0.000017   gdalinfo.11730",
+      "actor": "gdalinfo",
+      "op": "fsgetpath"
+    },
+    "cache_accesses": [
+      {
+        "time_us": 82985787550,
+        "line": "23:03:05.787550  statfs64                               /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                                       0.000010   mds.1593",
+        "actor": "mds",
+        "op": "statfs64"
+      },
+      {
+        "time_us": 82985787575,
+        "line": "23:03:05.787575  getattrlist                            /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                                       0.000011   mds.1593",
+        "actor": "mds",
+        "op": "getattrlist"
+      },
+      {
+        "time_us": 82985788299,
+        "line": "23:03:05.788299  open              F=27       (R_____N___V____)  /Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo                                              0.000044   mds.814",
+        "actor": "mds",
+        "op": "open"
+      }
+    ]
+  },
+  "identities": {
+    "event": "reader_result",
+    "case": "hardlink/app/import",
+    "trial": 15,
+    "reader_operations": 6,
+    "files": {
+      "cache_app": {
+        "path": "/Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo",
+        "device": 16777230,
+        "inode": 3004953,
+        "nlink": 2,
+        "sha256": "76f5f8363c72ab845de1bd251a69761200f84dc0916bc5fcda4ae8f8545a13af"
+      },
+      "env_app": {
+        "path": "/Users/runner/micromamba/envs/gdal-trigger-reader/bin/gdalinfo",
+        "device": 16777230,
+        "inode": 3004953,
+        "nlink": 2,
+        "sha256": "76f5f8363c72ab845de1bd251a69761200f84dc0916bc5fcda4ae8f8545a13af"
+      },
+      "cache_lib": {
+        "path": "/Users/runner/micromamba/pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/lib/libgdal.32.3.6.2.dylib",
+        "device": 16777230,
+        "inode": 3004485,
+        "nlink": 1,
+        "sha256": "d3adb10aa517fae0054469291bf71be2b0574bd01e538affaaf20ee500dfffa1"
+      },
+      "env_lib": {
+        "path": "/Users/runner/micromamba/envs/gdal-trigger-reader/lib/libgdal.32.3.6.2.dylib",
+        "device": 16777230,
+        "inode": 3079980,
+        "nlink": 1,
+        "sha256": "a64027fa7d3ca7b00a3f01ef37caea9951f4a1c0e1e7cec7ce68d5e5d68aac1a"
+      }
+    },
+    "retry_returncode": 0
+  }
+}
