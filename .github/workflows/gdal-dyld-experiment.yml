@@ -49,7 +49,8 @@ jobs:
             {"label": "delay-probe", "os": "macos-26", "script": "delay_probe.py"},
             {"label": "respawn-probe", "os": "macos-26", "script": "respawn_probe.py"},
             {"label": "fallback-probe", "os": "macos-26", "script": "fallback_probe.py"},
-            {"label": "churn-probe", "os": "macos-26", "script": "churn_probe.py"}
+            {"label": "churn-probe", "os": "macos-26", "script": "churn_probe.py"},
+            {"label": "record-probe-v3", "os": "macos-26", "script": "record_probe3.py"}
           ]'
           wanted() { [ -z "$ONLY" ] || case ",$ONLY," in *",$1,"*) true ;; *) false ;; esac; }
           if [ -z "$ONLY" ]; then

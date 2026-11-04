@@ -431,10 +431,15 @@ def print_record(runs):
                 f"| {mode} | {agg['trials']} | {agg['x_cache']} | {agg['y_cache']} "
                 f"| {agg['y_cache_given_x_cache']} | {agg['y_env_given_x_cache']} |"
             )
-    print(
-        "\n## Reading, refreshing, and holding a stale record (per cell, over runs)\n"
-    )
-    job = "record-probe-v2"
+    for job, title in [
+        ("record-probe-v2", "second design, no reset between reads; superseded"),
+        ("record-probe-v3", "third design, main thread resets before every read"),
+    ]:
+        print_record_design(runs, job, title)
+
+
+def print_record_design(runs, job, title):
+    print(f"\n## Reading, refreshing, and holding a stale record ({title})\n")
     modes = sorted({k for r in runs for k in (r["summaries"].get(job) or {})})
     print(
         "| Cell | Trials | X first read cache | X second read cache, given first cache "
