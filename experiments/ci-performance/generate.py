@@ -313,4 +313,16 @@ top["jobs"]["macos-probe"] = {
     "timeout-minutes": 5,
     "steps": [{"run": "sw_vers\nuname -m\nsysctl -n hw.ncpu\n"}],
 }
+for platform in ["windows", "macos"]:
+    for mode, shards in [("baseline", 10), ("candidate", 4)]:
+        case = f"{platform}-{mode}"
+        entries = json.loads(matrix(shards, shards))["include"]
+        entries = [entry for entry in entries if entry["os"] == f"{platform}-latest"]
+        top["jobs"][f"{case}-pytest"] = {
+            "needs": "configure",
+            "if": f"needs.configure.outputs.mode == '{case}'",
+            "permissions": {"contents": "read", "actions": "write"},
+            "uses": "./.github/workflows/ci-perf-pytest.yml",
+            "with": {"matrix": json.dumps({"include": entries}), "cache-group": mode},
+        }
 save("ci-performance-experiment.yml", top)

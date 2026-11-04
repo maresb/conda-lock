@@ -143,3 +143,94 @@ jobs:
         sw_vers
         uname -m
         sysctl -n hw.ncpu
+  windows-baseline-pytest:
+    needs: configure
+    if: needs.configure.outputs.mode == 'windows-baseline'
+    permissions:
+      contents: read
+      actions: write
+    uses: ./.github/workflows/ci-perf-pytest.yml
+    with:
+      matrix: '{"include": [{"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 1, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 2, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 3, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 4, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 5, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 6, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 7, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 8, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 9, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 10, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 1, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 2, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 3, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 4, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 5, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 6, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 7, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 8, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 9, "pytest-split-group-size":
+        10}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 10, "pytest-split-group-size":
+        10}]}'
+      cache-group: baseline
+  windows-candidate-pytest:
+    needs: configure
+    if: needs.configure.outputs.mode == 'windows-candidate'
+    permissions:
+      contents: read
+      actions: write
+    uses: ./.github/workflows/ci-perf-pytest.yml
+    with:
+      matrix: '{"include": [{"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 1, "pytest-split-group-size":
+        4}, {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 2, "pytest-split-group-size": 4},
+        {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 3, "pytest-split-group-size": 4}, {"os":
+        "windows-latest", "python-version": "3.11", "pytest-split-group-index": 4, "pytest-split-group-size": 4}, {"os": "windows-latest",
+        "python-version": "3.14", "pytest-split-group-index": 1, "pytest-split-group-size": 4}, {"os": "windows-latest", "python-version":
+        "3.14", "pytest-split-group-index": 2, "pytest-split-group-size": 4}, {"os": "windows-latest", "python-version": "3.14",
+        "pytest-split-group-index": 3, "pytest-split-group-size": 4}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index":
+        4, "pytest-split-group-size": 4}]}'
+      cache-group: candidate
+  macos-baseline-pytest:
+    needs: configure
+    if: needs.configure.outputs.mode == 'macos-baseline'
+    permissions:
+      contents: read
+      actions: write
+    uses: ./.github/workflows/ci-perf-pytest.yml
+    with:
+      matrix: '{"include": [{"os": "macos-latest", "python-version": "3.11", "pytest-split-group-index": 1, "pytest-split-group-size":
+        10}, {"os": "macos-latest", "python-version": "3.11", "pytest-split-group-index": 2, "pytest-split-group-size": 10},
+        {"os": "macos-latest", "python-version": "3.11", "pytest-split-group-index": 3, "pytest-split-group-size": 10}, {"os":
+        "macos-latest", "python-version": "3.11", "pytest-split-group-index": 4, "pytest-split-group-size": 10}, {"os": "macos-latest",
+        "python-version": "3.11", "pytest-split-group-index": 5, "pytest-split-group-size": 10}, {"os": "macos-latest", "python-version":
+        "3.11", "pytest-split-group-index": 6, "pytest-split-group-size": 10}, {"os": "macos-latest", "python-version": "3.11",
+        "pytest-split-group-index": 7, "pytest-split-group-size": 10}, {"os": "macos-latest", "python-version": "3.11", "pytest-split-group-index":
+        8, "pytest-split-group-size": 10}, {"os": "macos-latest", "python-version": "3.11", "pytest-split-group-index": 9,
+        "pytest-split-group-size": 10}, {"os": "macos-latest", "python-version": "3.11", "pytest-split-group-index": 10, "pytest-split-group-size":
+        10}, {"os": "macos-latest", "python-version": "3.14", "pytest-split-group-index": 1, "pytest-split-group-size": 10},
+        {"os": "macos-latest", "python-version": "3.14", "pytest-split-group-index": 2, "pytest-split-group-size": 10}, {"os":
+        "macos-latest", "python-version": "3.14", "pytest-split-group-index": 3, "pytest-split-group-size": 10}, {"os": "macos-latest",
+        "python-version": "3.14", "pytest-split-group-index": 4, "pytest-split-group-size": 10}, {"os": "macos-latest", "python-version":
+        "3.14", "pytest-split-group-index": 5, "pytest-split-group-size": 10}, {"os": "macos-latest", "python-version": "3.14",
+        "pytest-split-group-index": 6, "pytest-split-group-size": 10}, {"os": "macos-latest", "python-version": "3.14", "pytest-split-group-index":
+        7, "pytest-split-group-size": 10}, {"os": "macos-latest", "python-version": "3.14", "pytest-split-group-index": 8,
+        "pytest-split-group-size": 10}, {"os": "macos-latest", "python-version": "3.14", "pytest-split-group-index": 9, "pytest-split-group-size":
+        10}, {"os": "macos-latest", "python-version": "3.14", "pytest-split-group-index": 10, "pytest-split-group-size": 10}]}'
+      cache-group: baseline
+  macos-candidate-pytest:
+    needs: configure
+    if: needs.configure.outputs.mode == 'macos-candidate'
+    permissions:
+      contents: read
+      actions: write
+    uses: ./.github/workflows/ci-perf-pytest.yml
+    with:
+      matrix: '{"include": [{"os": "macos-latest", "python-version": "3.11", "pytest-split-group-index": 1, "pytest-split-group-size":
+        4}, {"os": "macos-latest", "python-version": "3.11", "pytest-split-group-index": 2, "pytest-split-group-size": 4},
+        {"os": "macos-latest", "python-version": "3.11", "pytest-split-group-index": 3, "pytest-split-group-size": 4}, {"os":
+        "macos-latest", "python-version": "3.11", "pytest-split-group-index": 4, "pytest-split-group-size": 4}, {"os": "macos-latest",
+        "python-version": "3.14", "pytest-split-group-index": 1, "pytest-split-group-size": 4}, {"os": "macos-latest", "python-version":
+        "3.14", "pytest-split-group-index": 2, "pytest-split-group-size": 4}, {"os": "macos-latest", "python-version": "3.14",
+        "pytest-split-group-index": 3, "pytest-split-group-size": 4}, {"os": "macos-latest", "python-version": "3.14", "pytest-split-group-index":
+        4, "pytest-split-group-size": 4}]}'
+      cache-group: candidate

@@ -33,5 +33,10 @@ the original post cleanup; the parallel batches disable it. Job step durations
 separate the install concurrency effect from post-cleanup time. Every consumer
 starts with a fresh runner, so all formats incur their own cold package download.
 
+The `windows-baseline`, `windows-candidate`, `macos-baseline`, and
+`macos-candidate` cases run only that platform's pytest matrix. They reuse the
+respective full case's environment cache prefix, allowing sequential sharding
+comparisons without unrelated platforms or integration jobs in the runner queue.
+
 Generate the reusable benchmark workflows with `python experiments/ci-performance/generate.py`
 (requires PyYAML). Only `case.env` changes between repeat runs.
