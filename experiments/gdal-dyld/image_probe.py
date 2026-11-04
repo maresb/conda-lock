@@ -69,6 +69,8 @@ def main():
                         str(root / "probe"),
                         "--trials",
                         str(args.trials),
+                        "--modes",
+                        "hardlink,copy",
                     ],
                     stdout=log,
                     stderr=subprocess.STDOUT,

@@ -29,15 +29,31 @@ int main(void) {
 """
 
 
+def clone(source, target):
+    """Clone with clonefile(2) through cp -c; APFS only."""
+    subprocess.run(["cp", "-c", str(source), str(target)], check=True)
+
+
+INSTALL = {"hardlink": os.link, "copy": shutil.copy2, "clone": clone}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--trials", type=int, default=40)
+    parser.add_argument(
+        "--modes",
+        default="hardlink,copy,clone",
+        help="comma-separated subset of hardlink, copy, clone (clonefile via cp -c)",
+    )
     args = parser.parse_args()
     if sys.platform != "darwin":
         parser.error("Requires macOS")
     if args.trials < 1:
         parser.error("Use positive trials")
+    modes = args.modes.split(",")
+    if not modes or set(modes) - set(INSTALL):
+        parser.error("Unknown mode in --modes")
     root = args.output.resolve()
     root.mkdir(parents=True, exist_ok=False)
     source = Path(__file__).with_name("prime_exec.c")
@@ -68,7 +84,7 @@ def main():
     cached, installed = root / "cache/app", root / "env/app"
     cases = [
         (mode, state, method, trial)
-        for mode in ["hardlink", "copy"]
+        for mode in modes
         for state in ["cache-dead", "cache-alive", "env-dead", "env-alive"]
         for method in ["exec", "spawn"]
         for trial in range(args.trials)
@@ -81,7 +97,9 @@ def main():
             installed.unlink(missing_ok=True)
             cached.unlink(missing_ok=True)
             shutil.copy2(template, cached)
-            (os.link if mode == "hardlink" else shutil.copy2)(cached, installed)
+            INSTALL[mode](cached, installed)
+            shared = os.stat(cached).st_ino == os.stat(installed).st_ino
+            assert shared == (mode == "hardlink"), (mode, shared)
             result = subprocess.run(
                 [str(launcher), state, str(cached), str(installed), method, "1"],
                 capture_output=True,
@@ -106,6 +124,7 @@ def main():
                         "case": key,
                         "trial": trial,
                         "returncode": result.returncode,
+                        "inode_shared": shared,
                         "values": values,
                         "stdout": result.stdout,
                         "stderr": result.stderr,
