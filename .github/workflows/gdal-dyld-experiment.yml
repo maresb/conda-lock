@@ -51,6 +51,9 @@ jobs:
           - label: thread-exit-macos-26
             os: macos-26
             script: reproduce_thread_exit.py
+          - label: retained-inode-retry
+            os: macos-26
+            script: retry_probe.py
     name: ${{ matrix.label }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
