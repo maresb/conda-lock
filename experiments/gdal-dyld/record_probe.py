@@ -39,10 +39,14 @@ def count(c, values):
     if values.get("x1") == "cache":
         c["x2_cache_given_x1_cache"] += values["x2"] == "cache"
         c["x2_env_given_x1_cache"] += values["x2"] == "env"
+    if values.get("x1") == "env":
+        c["y_cache_given_x1_env"] += values["y"] == "cache"
     if values.get("h1") == "cache":
         c["h2_cache_given_h1_cache"] += values["h2"] == "cache"
         c["h2_env_given_h1_cache"] += values["h2"] == "env"
         c["x1_cache_given_h1_cache"] += values["x1"] == "cache"
+    if values.get("h1") == "env":
+        c["x1_cache_given_h1_env"] += values["x1"] == "cache"
     if "x2" in values:
         c[f"y_cache_given_x2_{values['x2']}"] += values["y"] == "cache"
 
