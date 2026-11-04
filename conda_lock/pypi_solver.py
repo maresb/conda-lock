@@ -58,7 +58,17 @@ if TYPE_CHECKING:
 
 # Manylinux tags understood by the solver. The target's __glibc virtual package
 # determines which are compatible; the default glibc need not match the newest tag.
-MANYLINUX_TAGS = ["1", "2010", "2014", "_2_17", "_2_18", "_2_24", "_2_28"]
+MANYLINUX_TAGS = [
+    "1",
+    "2010",
+    "2014",
+    "_2_17",
+    "_2_18",
+    "_2_24",
+    "_2_28",
+    "_2_34",
+    "_2_38",
+]
 
 # This needs to be updated periodically as new macOS versions are released.
 MACOS_VERSION = (13, 4)
