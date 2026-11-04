@@ -310,26 +310,46 @@ def print_record(runs):
             )
 
 
+def per_run_table(runs, job, row_keys, row_labels):
+    """Rows of cache_path/launches per run for the given cell keys."""
+    present = [r for r in runs if job in r["summaries"]]
+    print("| Cell | " + " | ".join(f"Run {r['id']}" for r in present) + " |")
+    print("|---|" + "---:|" * len(present))
+    for key, label in zip(row_keys, row_labels):
+        cells = []
+        for r in present:
+            v = r["summaries"][job].get(key)
+            cells.append(f"{v['cache_path']}/{v['launches']}" if v else "")
+        if any(cells):
+            print(f"| {label} | " + " | ".join(cells) + " |")
+
+
 def print_respawn(runs):
     print("\n## Repeated spawns from one process (cache paths / launches, per run)\n")
-    for r in runs:
-        s = r["summaries"].get("respawn-probe")
-        if s:
-            cells = [
-                f"{k}: {v['cache_path']}/{v['launches']}" for k, v in sorted(s.items())
-            ]
-            print(f"- run {r['id']}: " + "; ".join(cells))
+    keys = [f"hardlink/launch{i}" for i in range(1, 5)] + [
+        "copy/launch1",
+        "copy/launch4",
+    ]
+    labels = [f"Hardlink, launch {i}" for i in range(1, 5)] + [
+        "Copy, launch 1",
+        "Copy, launch 4",
+    ]
+    per_run_table(runs, "respawn-probe", keys, labels)
 
 
 def print_delay(runs):
     print("\n## Delay before the launch (cache paths / launches, per run)\n")
-    for r in runs:
-        s = r["summaries"].get("delay-probe")
-        if s:
-            cells = [
-                f"{k}: {v['cache_path']}/{v['launches']}" for k, v in sorted(s.items())
-            ]
-            print(f"- run {r['id']}: " + "; ".join(cells))
+    delays = sorted(
+        {
+            float(k.split("delay")[1].rstrip("s"))
+            for r in runs
+            for k in (r["summaries"].get("delay-probe") or {})
+            if k.startswith("hardlink/")
+        }
+    )
+    keys = [f"hardlink/delay{d:g}s" for d in delays] + ["copy/delay0s"]
+    labels = [f"Hardlink, {d:g} s" for d in delays] + ["Copy, 0 s"]
+    per_run_table(runs, "delay-probe", keys, labels)
 
 
 def main():
