@@ -8,13 +8,35 @@ under a bin directory.
 """
 
 import argparse
+import fcntl
 import hashlib
 import json
 import os
+import struct
 import subprocess
 import sys
 
 from pathlib import Path
+
+
+F_LOG2PHYS = 49  # macOS: physical device offset of the file's current logical offset
+
+
+def physical_offset(path):
+    """Device offset of the file's first block, or None if unavailable.
+
+    Equal offsets for two files mean shared storage: a hardlink or a clone.
+    """
+    try:
+        fd = os.open(path, os.O_RDONLY)
+        try:
+            raw = fcntl.fcntl(fd, F_LOG2PHYS, bytes(24))
+        finally:
+            os.close(fd)
+        _flags, _contiguous, offset = struct.unpack("=I4xqq", raw)
+        return offset
+    except (OSError, struct.error):
+        return None
 
 
 def identity(path):
@@ -25,6 +47,7 @@ def identity(path):
         "inode": st.st_ino,
         "nlink": st.st_nlink,
         "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        "physical_offset": physical_offset(path),
     }
 
 
@@ -74,6 +97,11 @@ def main():
             c["inode"] == installed["inode"] and c["device"] == installed["device"]
             for c in cached_identities
         ),
+        "shares_storage_with_cache": any(
+            c["physical_offset"] is not None
+            and c["physical_offset"] == installed["physical_offset"]
+            for c in cached_identities
+        ),
         "launches": len(launches),
         "failures": sum(1 for item in launches if item["returncode"] != 0),
         "events": launches,
@@ -85,6 +113,7 @@ def main():
         "launches": record["launches"],
         "failures": record["failures"],
         "shares_inode_with_cache": int(record["shares_inode_with_cache"]),
+        "shares_storage_with_cache": int(record["shares_storage_with_cache"]),
         "nlink": installed["nlink"],
         "cache_matches": len(cached),
     }
