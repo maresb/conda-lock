@@ -104,8 +104,10 @@ jobs:
       - name: Conda identity
         run: |
           "$CONDA/bin/conda" create -y -p "$RUNNER_TEMP/gdal-conda" --file experiments/gdal-dyld/fixtures/conda-osx-arm64.lock > "$RUNNER_TEMP/gdal-dyld/conda-create.log" 2>&1
+          PKGS=$("$CONDA/bin/conda" info --json | /usr/bin/python3 -c 'import json, sys; print(json.load(sys.stdin)["pkgs_dirs"][0])')
+          echo "conda pkgs_dirs[0]=$PKGS" >> "$RUNNER_TEMP/gdal-dyld/conda-create.log"
           /usr/bin/python3 experiments/gdal-dyld/installer_identity.py --output "$RUNNER_TEMP/gdal-dyld/probe" \
-            --label conda --executable "$RUNNER_TEMP/gdal-conda/bin/gdalinfo" --cache-root "$CONDA/pkgs"
+            --label conda --executable "$RUNNER_TEMP/gdal-conda/bin/gdalinfo" --cache-root "$PKGS"
       - uses: prefix-dev/setup-pixi@9936258fee697aff89b3fed6ca1f80a382ef694e # v0.11.3
         with:
           run-install: false
