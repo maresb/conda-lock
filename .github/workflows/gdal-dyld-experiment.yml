@@ -42,6 +42,9 @@ jobs:
           - label: thread-exit-macos-26-intel
             os: macos-26-intel
             script: reproduce_thread_exit.py
+          - label: link-cost
+            os: macos-26
+            script: link_cost_probe.py
     name: ${{ matrix.label }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -64,5 +67,56 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: gdal-trigger-${{ matrix.label }}
+          path: ${{ runner.temp }}/gdal-dyld/evidence
+          retention-days: 30
+
+  installer-identity:
+    if: github.repository == 'maresb/conda-lock'
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - name: Record runner
+        run: |
+          mkdir -p "$RUNNER_TEMP/gdal-dyld"
+          { sw_vers; uname -m; /usr/bin/what /usr/lib/dyld; } > "$RUNNER_TEMP/gdal-dyld/host.log"
+      - uses: mamba-org/setup-micromamba@add3a49764cedee8ee24e82dfde87f5bc2914462 # v2.0.7
+        with:
+          init-shell: none
+          micromamba-version: 2.10.0-0
+      - name: Micromamba identity
+        run: |
+          "$MAMBA_EXE" -r "$MAMBA_ROOT_PREFIX" create -y -n gdal-mm -f experiments/gdal-dyld/fixtures/conda-osx-arm64.lock > "$RUNNER_TEMP/gdal-dyld/micromamba-create.log" 2>&1
+          /usr/bin/python3 experiments/gdal-dyld/installer_identity.py --output "$RUNNER_TEMP/gdal-dyld/probe" \
+            --label micromamba --executable "$MAMBA_ROOT_PREFIX/envs/gdal-mm/bin/gdalinfo" --cache-root "$MAMBA_ROOT_PREFIX/pkgs"
+      - uses: conda-incubator/setup-miniconda@be893c923ea9cf1cf7cd510fbdde27c7e18cbdcb # v4.1.0
+        with:
+          miniconda-version: latest
+          auto-activate: false
+      - name: Conda identity
+        run: |
+          "$CONDA/bin/conda" create -y -p "$RUNNER_TEMP/gdal-conda" --file experiments/gdal-dyld/fixtures/conda-osx-arm64.lock > "$RUNNER_TEMP/gdal-dyld/conda-create.log" 2>&1
+          /usr/bin/python3 experiments/gdal-dyld/installer_identity.py --output "$RUNNER_TEMP/gdal-dyld/probe" \
+            --label conda --executable "$RUNNER_TEMP/gdal-conda/bin/gdalinfo" --cache-root "$CONDA/pkgs"
+      - uses: prefix-dev/setup-pixi@9936258fee697aff89b3fed6ca1f80a382ef694e # v0.11.3
+        with:
+          run-install: false
+      - name: Pixi identity
+        run: |
+          mkdir -p "$RUNNER_TEMP/gdal-pixi"
+          pixi init "$RUNNER_TEMP/gdal-pixi" > "$RUNNER_TEMP/gdal-dyld/pixi-create.log" 2>&1
+          pixi add --manifest-path "$RUNNER_TEMP/gdal-pixi/pixi.toml" gdal >> "$RUNNER_TEMP/gdal-dyld/pixi-create.log" 2>&1
+          CACHE=$(pixi info --json | /usr/bin/python3 -c 'import json, sys; print(json.load(sys.stdin)["cache_dir"])')
+          /usr/bin/python3 experiments/gdal-dyld/installer_identity.py --output "$RUNNER_TEMP/gdal-dyld/probe" \
+            --label pixi --executable "$RUNNER_TEMP/gdal-pixi/.pixi/envs/default/bin/gdalinfo" --cache-root "$CACHE"
+      - name: Collect evidence
+        if: ${{ !cancelled() }}
+        run: /usr/bin/python3 experiments/gdal-dyld/collect_evidence.py "$RUNNER_TEMP/gdal-dyld"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: ${{ !cancelled() }}
+        with:
+          name: gdal-trigger-installer-identity
           path: ${{ runner.temp }}/gdal-dyld/evidence
           retention-days: 30
