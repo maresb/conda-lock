@@ -1,0 +1,4212 @@
+{
+  "product_revision": "b32d4e58b909cc9011684970f621f64f9fe73506",
+  "mapping_batches": [
+    {
+      "run_id": "41894213367",
+      "trials": [
+        {
+          "job_id": 126799416510,
+          "conclusion": "success",
+          "artifact": "metrics-fc1dfa5c89c442f8b6504b48d1729930",
+          "cache": "cold",
+          "workers": 2,
+          "repeat": 1,
+          "distribution": "load",
+          "prepare_seconds": 3.0,
+          "pytest_seconds": 90.0,
+          "combined_seconds": 93.0,
+          "cpu_percent": 36.78888652410333,
+          "test_ids": 86,
+          "http_seconds": 0.1063942000000111,
+          "max_worker_lock_wait_seconds": 0.10340270000000373,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 5296,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819462.4955838,
+              "stop": 1793819462.4975324,
+              "seconds": 0.0019482000000152766,
+              "trace": "mapping-gw1-5296.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "gw1",
+              "pid": 5296,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819462.4977725,
+              "stop": 1793819462.6041656,
+              "seconds": 0.1063942000000111,
+              "trace": "mapping-gw1-5296.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 5296,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819462.606002,
+              "stop": 1793819462.6199393,
+              "seconds": 0.013937100000021019,
+              "trace": "mapping-gw1-5296.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 2784,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819462.5030773,
+              "stop": 1793819462.60648,
+              "seconds": 0.10340270000000373,
+              "trace": "mapping-gw0-2784.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 2784,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819462.607727,
+              "stop": 1793819462.622811,
+              "seconds": 0.015084000000001652,
+              "trace": "mapping-gw0-2784.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw1": {
+              "test_ids": 55,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 83.73164415359497,
+              "occupied_seconds": 83.63853630000023
+            },
+            "gw0": {
+              "test_ids": 31,
+              "first_test_seconds": 3.4809112548828125e-05,
+              "last_test_seconds": 69.08349132537842,
+              "occupied_seconds": 69.02780370000005
+            }
+          },
+          "single_worker_tail_seconds": 14.648152828216553,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              37.32313999999997
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              18.917869699999983
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              14.295880299999993
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              12.699829899999997
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              8.365006400000027
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              7.993907600000057
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              7.345753000000059
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+              7.0049412999999845
+            ],
+            [
+              "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              6.935628800000018
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              6.015607199999977
+            ]
+          ]
+        },
+        {
+          "job_id": 126799416374,
+          "conclusion": "success",
+          "artifact": "metrics-5caea39ddd854ccfbe98ff93b5316140",
+          "cache": "cold",
+          "workers": 2,
+          "repeat": 2,
+          "distribution": "load",
+          "prepare_seconds": 2.0,
+          "pytest_seconds": 71.0,
+          "combined_seconds": 73.0,
+          "cpu_percent": 37.76233911574732,
+          "test_ids": 86,
+          "http_seconds": 0.056669300000010026,
+          "max_worker_lock_wait_seconds": 0.10327610000001641,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 6748,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819476.2705615,
+              "stop": 1793819476.2722,
+              "seconds": 0.001638299999967785,
+              "trace": "mapping-gw1-6748.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "gw1",
+              "pid": 6748,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819476.2724414,
+              "stop": 1793819476.3291109,
+              "seconds": 0.056669300000010026,
+              "trace": "mapping-gw1-6748.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 6748,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819476.3306715,
+              "stop": 1793819476.339419,
+              "seconds": 0.008746799999983068,
+              "trace": "mapping-gw1-6748.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 5032,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819476.276829,
+              "stop": 1793819476.3801064,
+              "seconds": 0.10327610000001641,
+              "trace": "mapping-gw0-5032.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 5032,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819476.3812788,
+              "stop": 1793819476.3900764,
+              "seconds": 0.008797499999957381,
+              "trace": "mapping-gw0-5032.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw1": {
+              "test_ids": 47,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 64.03423023223877,
+              "occupied_seconds": 63.96317030000023
+            },
+            "gw0": {
+              "test_ids": 39,
+              "first_test_seconds": 0.00036597251892089844,
+              "last_test_seconds": 53.613847732543945,
+              "occupied_seconds": 53.5512966
+            }
+          },
+          "single_worker_tail_seconds": 10.420382499694824,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              27.965256199999942
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              14.97844409999999
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              12.31627930000002
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              9.057779500000038
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              6.920549699999981
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              6.613068300000009
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+              4.992058899999961
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              4.734512999999993
+            ],
+            [
+              "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              3.9430099999999584
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              3.6238722000000507
+            ]
+          ]
+        },
+        {
+          "job_id": 126799416486,
+          "conclusion": "success",
+          "artifact": "metrics-7dd048a29090438ab8e9a907cb899cfc",
+          "cache": "cold",
+          "workers": 4,
+          "repeat": 1,
+          "distribution": "load",
+          "prepare_seconds": 4.0,
+          "pytest_seconds": 137.0,
+          "combined_seconds": 141.0,
+          "cpu_percent": 51.609570247456276,
+          "test_ids": 86,
+          "http_seconds": 0.0771705999999881,
+          "max_worker_lock_wait_seconds": 0.104386599999998,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "gw3",
+              "pid": 9068,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819532.3829138,
+              "stop": 1793819532.385474,
+              "seconds": 0.002559400000052392,
+              "trace": "mapping-gw3-9068.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw3",
+              "pid": 9068,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819532.3873568,
+              "stop": 1793819532.404438,
+              "seconds": 0.017080700000008164,
+              "trace": "mapping-gw3-9068.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw2",
+              "pid": 3000,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819496.6521204,
+              "stop": 1793819496.6547554,
+              "seconds": 0.0026341999999885957,
+              "trace": "mapping-gw2-3000.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "gw2",
+              "pid": 3000,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819496.6551073,
+              "stop": 1793819496.73228,
+              "seconds": 0.0771705999999881,
+              "trace": "mapping-gw2-3000.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw2",
+              "pid": 3000,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819496.7347033,
+              "stop": 1793819496.7512739,
+              "seconds": 0.01656950000000279,
+              "trace": "mapping-gw2-3000.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 8572,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819496.6696186,
+              "stop": 1793819496.7740097,
+              "seconds": 0.104386599999998,
+              "trace": "mapping-gw1-8572.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 8572,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819496.7758732,
+              "stop": 1793819496.7957673,
+              "seconds": 0.0198929000000021,
+              "trace": "mapping-gw1-8572.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 2280,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819496.6672692,
+              "stop": 1793819496.7714138,
+              "seconds": 0.10414009999999507,
+              "trace": "mapping-gw0-2280.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 2280,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819496.7729394,
+              "stop": 1793819496.7902863,
+              "seconds": 0.01734619999996312,
+              "trace": "mapping-gw0-2280.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw3": {
+              "test_ids": 20,
+              "first_test_seconds": 0.0010986328125,
+              "last_test_seconds": 42.68722152709961,
+              "occupied_seconds": 42.6104724999999
+            },
+            "gw2": {
+              "test_ids": 10,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 59.29846453666687,
+              "occupied_seconds": 59.26800549999996
+            },
+            "gw1": {
+              "test_ids": 46,
+              "first_test_seconds": 0.0011632442474365234,
+              "last_test_seconds": 54.45770263671875,
+              "occupied_seconds": 54.29860820000005
+            },
+            "gw0": {
+              "test_ids": 10,
+              "first_test_seconds": 0.00032448768615722656,
+              "last_test_seconds": 127.1785991191864,
+              "occupied_seconds": 127.14315239999996
+            }
+          },
+          "single_worker_tail_seconds": 67.88013458251953,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              106.68340890000002
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_locked_environment_files[conda]",
+              31.375402699999995
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              21.09071069999993
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              18.107894299999998
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              13.622329400000012
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              11.621147299999961
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              11.22497930000003
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              10.930844100000002
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              8.839900199999931
+            ],
+            [
+              "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              6.798595199999966
+            ]
+          ]
+        },
+        {
+          "job_id": 126799416467,
+          "conclusion": "success",
+          "artifact": "metrics-40d0df0ab17d45bfbce38d41b4268361",
+          "cache": "cold",
+          "workers": 4,
+          "repeat": 2,
+          "distribution": "load",
+          "prepare_seconds": 2.0,
+          "pytest_seconds": 72.0,
+          "combined_seconds": 74.0,
+          "cpu_percent": 64.23931472387379,
+          "test_ids": 86,
+          "http_seconds": 0.2772937000000013,
+          "max_worker_lock_wait_seconds": 0.37237609999999677,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "gw3",
+              "pid": 6788,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819506.2902517,
+              "stop": 1793819506.2926793,
+              "seconds": 0.0024265000000127657,
+              "trace": "mapping-gw3-6788.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw3",
+              "pid": 6788,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819506.2944891,
+              "stop": 1793819506.314014,
+              "seconds": 0.019524899999993295,
+              "trace": "mapping-gw3-6788.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw2",
+              "pid": 2960,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819473.4321458,
+              "stop": 1793819473.43447,
+              "seconds": 0.002323699999976725,
+              "trace": "mapping-gw2-2960.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "gw2",
+              "pid": 2960,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819473.434765,
+              "stop": 1793819473.7120585,
+              "seconds": 0.2772937000000013,
+              "trace": "mapping-gw2-2960.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw2",
+              "pid": 2960,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819473.7144885,
+              "stop": 1793819473.7245107,
+              "seconds": 0.010021999999992204,
+              "trace": "mapping-gw2-2960.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 6548,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819473.4422505,
+              "stop": 1793819473.814627,
+              "seconds": 0.37237609999999677,
+              "trace": "mapping-gw1-6548.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 6548,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819473.8214335,
+              "stop": 1793819473.838844,
+              "seconds": 0.01741029999999455,
+              "trace": "mapping-gw1-6548.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 8268,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819473.4435105,
+              "stop": 1793819473.7634306,
+              "seconds": 0.31991990000000214,
+              "trace": "mapping-gw0-8268.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 8268,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819473.7650464,
+              "stop": 1793819473.7787526,
+              "seconds": 0.013705899999990834,
+              "trace": "mapping-gw0-8268.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw3": {
+              "test_ids": 21,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 62.56046152114868,
+              "occupied_seconds": 62.51327550000002
+            },
+            "gw2": {
+              "test_ids": 43,
+              "first_test_seconds": 0.0024116039276123047,
+              "last_test_seconds": 45.30839419364929,
+              "occupied_seconds": 45.20823730000018
+            },
+            "gw1": {
+              "test_ids": 10,
+              "first_test_seconds": 0.0013668537139892578,
+              "last_test_seconds": 51.8370578289032,
+              "occupied_seconds": 51.80871549999995
+            },
+            "gw0": {
+              "test_ids": 12,
+              "first_test_seconds": 0.0025491714477539062,
+              "last_test_seconds": 49.2088897228241,
+              "occupied_seconds": 49.17425370000004
+            }
+          },
+          "single_worker_tail_seconds": 10.723403692245483,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              39.405437199999994
+            ],
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              37.8706957
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              18.827264200000002
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              16.656850399999996
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              10.67574479999999
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              10.3392992
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_locked_environment_files[conda]",
+              9.593547400000034
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              8.996881700000017
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              7.542094700000007
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+              6.976782799999967
+            ]
+          ]
+        },
+        {
+          "job_id": 126799416473,
+          "conclusion": "success",
+          "artifact": "metrics-3b4f087f60554f7c8b51734fd13c4dad",
+          "cache": "primed",
+          "workers": 2,
+          "repeat": 1,
+          "distribution": "load",
+          "prepare_seconds": 3.0,
+          "pytest_seconds": 79.0,
+          "combined_seconds": 82.0,
+          "cpu_percent": 39.88574873959554,
+          "test_ids": 86,
+          "http_seconds": 0.060291599999999335,
+          "max_worker_lock_wait_seconds": 0.0018711000000166678,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "controller",
+              "pid": 8296,
+              "test": null,
+              "start": 1793819481.2755563,
+              "stop": 1793819481.2763703,
+              "seconds": 0.0008135999999865362,
+              "trace": "mapping-prepare-8296.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "controller",
+              "pid": 8296,
+              "test": null,
+              "start": 1793819481.2766402,
+              "stop": 1793819481.3369315,
+              "seconds": 0.060291599999999335,
+              "trace": "mapping-prepare-8296.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "controller",
+              "pid": 8296,
+              "test": null,
+              "start": 1793819481.3388371,
+              "stop": 1793819481.34934,
+              "seconds": 0.010502299999984643,
+              "trace": "mapping-prepare-8296.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 6496,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819488.2603943,
+              "stop": 1793819488.262266,
+              "seconds": 0.0018711000000166678,
+              "trace": "mapping-gw1-6496.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 6496,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819488.2636518,
+              "stop": 1793819488.2745485,
+              "seconds": 0.01089659999999526,
+              "trace": "mapping-gw1-6496.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 1892,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819488.2680147,
+              "stop": 1793819488.2697902,
+              "seconds": 0.001775100000003249,
+              "trace": "mapping-gw0-1892.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 1892,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819488.2710726,
+              "stop": 1793819488.2817438,
+              "seconds": 0.010671300000012707,
+              "trace": "mapping-gw0-1892.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw1": {
+              "test_ids": 48,
+              "first_test_seconds": 2.765655517578125e-05,
+              "last_test_seconds": 57.01537799835205,
+              "occupied_seconds": 56.92950380000033
+            },
+            "gw0": {
+              "test_ids": 38,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 70.10230922698975,
+              "occupied_seconds": 70.02829580000014
+            }
+          },
+          "single_worker_tail_seconds": 13.086931228637695,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              25.274718400000012
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              14.256502100000006
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              13.735687600000006
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              10.58823129999999
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              8.043276800000001
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              7.4751712000000055
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              6.131621700000011
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              5.4684190000000115
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+              5.262005500000015
+            ],
+            [
+              "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              4.3653573999999935
+            ]
+          ]
+        },
+        {
+          "job_id": 126799416369,
+          "conclusion": "success",
+          "artifact": "metrics-b0815892a22844bf8926d1f7579622f6",
+          "cache": "primed",
+          "workers": 2,
+          "repeat": 2,
+          "distribution": "load",
+          "prepare_seconds": 3.0,
+          "pytest_seconds": 89.0,
+          "combined_seconds": 92.0,
+          "cpu_percent": 38.92542641155871,
+          "test_ids": 86,
+          "http_seconds": 0.06014509999999973,
+          "max_worker_lock_wait_seconds": 0.0024238000000025295,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "controller",
+              "pid": 2812,
+              "test": null,
+              "start": 1793819479.1654234,
+              "stop": 1793819479.1663299,
+              "seconds": 0.0009063000000253396,
+              "trace": "mapping-prepare-2812.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "controller",
+              "pid": 2812,
+              "test": null,
+              "start": 1793819479.1665962,
+              "stop": 1793819479.2267401,
+              "seconds": 0.06014509999999973,
+              "trace": "mapping-prepare-2812.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "controller",
+              "pid": 2812,
+              "test": null,
+              "start": 1793819479.2287984,
+              "stop": 1793819479.2399008,
+              "seconds": 0.011102399999998624,
+              "trace": "mapping-prepare-2812.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 7680,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819492.4082358,
+              "stop": 1793819492.41066,
+              "seconds": 0.0024238000000025295,
+              "trace": "mapping-gw1-7680.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 7680,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819492.4121935,
+              "stop": 1793819492.4270387,
+              "seconds": 0.014844799999991665,
+              "trace": "mapping-gw1-7680.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 1440,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819492.4154527,
+              "stop": 1793819492.417214,
+              "seconds": 0.0017605999999830146,
+              "trace": "mapping-gw0-1440.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 1440,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819492.418334,
+              "stop": 1793819492.4294927,
+              "seconds": 0.011158800000004021,
+              "trace": "mapping-gw0-1440.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw1": {
+              "test_ids": 48,
+              "first_test_seconds": 0.001077413558959961,
+              "last_test_seconds": 58.38014626502991,
+              "occupied_seconds": 58.28478050000004
+            },
+            "gw0": {
+              "test_ids": 38,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 73.52328896522522,
+              "occupied_seconds": 73.45281050000011
+            }
+          },
+          "single_worker_tail_seconds": 15.143142700195312,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              25.689561699999985
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              15.311850700000036
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              13.431840399999999
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              11.309431800000027
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              9.225887600000078
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              7.7229065999999875
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              6.628729899999939
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              5.608366499999988
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+              5.443239999999946
+            ],
+            [
+              "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              4.333121000000062
+            ]
+          ]
+        },
+        {
+          "job_id": 126799416629,
+          "conclusion": "success",
+          "artifact": "metrics-4d65808e00a64b62ae58e8de0cb0c202",
+          "cache": "primed",
+          "workers": 4,
+          "repeat": 1,
+          "distribution": "load",
+          "prepare_seconds": 5.0,
+          "pytest_seconds": 74.0,
+          "combined_seconds": 79.0,
+          "cpu_percent": 75.13650050971712,
+          "test_ids": 86,
+          "http_seconds": 0.046036899999990055,
+          "max_worker_lock_wait_seconds": 0.004388700000049539,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "controller",
+              "pid": 5536,
+              "test": null,
+              "start": 1793819480.4094484,
+              "stop": 1793819480.410617,
+              "seconds": 0.001168399999983194,
+              "trace": "mapping-prepare-5536.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "controller",
+              "pid": 5536,
+              "test": null,
+              "start": 1793819480.4112008,
+              "stop": 1793819480.457237,
+              "seconds": 0.046036899999990055,
+              "trace": "mapping-prepare-5536.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "controller",
+              "pid": 5536,
+              "test": null,
+              "start": 1793819480.459666,
+              "stop": 1793819480.4734538,
+              "seconds": 0.013787699999966208,
+              "trace": "mapping-prepare-5536.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw3",
+              "pid": 7080,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819531.2044654,
+              "stop": 1793819531.2075,
+              "seconds": 0.0030335999999806518,
+              "trace": "mapping-gw3-7080.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw3",
+              "pid": 7080,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819531.2096903,
+              "stop": 1793819531.2310586,
+              "seconds": 0.02136769999998478,
+              "trace": "mapping-gw3-7080.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw2",
+              "pid": 3400,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819489.7974348,
+              "stop": 1793819489.8018248,
+              "seconds": 0.004388700000049539,
+              "trace": "mapping-gw2-3400.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw2",
+              "pid": 3400,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819489.8044262,
+              "stop": 1793819489.8317304,
+              "seconds": 0.027303800000026968,
+              "trace": "mapping-gw2-3400.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 8528,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819489.8171747,
+              "stop": 1793819489.8206286,
+              "seconds": 0.0034536000000002787,
+              "trace": "mapping-gw1-8528.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 8528,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819489.8226504,
+              "stop": 1793819489.8459973,
+              "seconds": 0.02334659999996802,
+              "trace": "mapping-gw1-8528.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 1648,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819489.8110642,
+              "stop": 1793819489.8143756,
+              "seconds": 0.003310800000008385,
+              "trace": "mapping-gw0-1648.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 1648,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819489.8165321,
+              "stop": 1793819489.838328,
+              "seconds": 0.021795600000018567,
+              "trace": "mapping-gw0-1648.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw3": {
+              "test_ids": 6,
+              "first_test_seconds": 0.0038132667541503906,
+              "last_test_seconds": 47.80079674720764,
+              "occupied_seconds": 47.77097829999991
+            },
+            "gw2": {
+              "test_ids": 24,
+              "first_test_seconds": 0.0042040348052978516,
+              "last_test_seconds": 42.22156357765198,
+              "occupied_seconds": 42.11494950000025
+            },
+            "gw1": {
+              "test_ids": 46,
+              "first_test_seconds": 0.004117250442504883,
+              "last_test_seconds": 60.275946378707886,
+              "occupied_seconds": 60.067315800000074
+            },
+            "gw0": {
+              "test_ids": 10,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 62.42959475517273,
+              "occupied_seconds": 62.377461799999935
+            }
+          },
+          "single_worker_tail_seconds": 2.1536483764648438,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              34.43067640000004
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              24.21248509999998
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              21.41749559999994
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              17.968018700000073
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              14.624798299999952
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              14.439569800000015
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              11.768758399999967
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              8.955374000000006
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_locked_environment_files[conda]",
+              8.563644600000032
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_input_hash_check[conda]",
+              6.546078800000032
+            ]
+          ]
+        },
+        {
+          "job_id": 126799416373,
+          "conclusion": "success",
+          "artifact": "metrics-e5b56c48b7e74c8eaf4ea765fa992397",
+          "cache": "primed",
+          "workers": 4,
+          "repeat": 2,
+          "distribution": "load",
+          "prepare_seconds": 3.0,
+          "pytest_seconds": 73.0,
+          "combined_seconds": 76.0,
+          "cpu_percent": 75.01098834057485,
+          "test_ids": 86,
+          "http_seconds": 0.05249909999997726,
+          "max_worker_lock_wait_seconds": 0.0036729000000264023,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "controller",
+              "pid": 3564,
+              "test": null,
+              "start": 1793819487.2892563,
+              "stop": 1793819487.2902305,
+              "seconds": 0.0009738999999626685,
+              "trace": "mapping-prepare-3564.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "controller",
+              "pid": 3564,
+              "test": null,
+              "start": 1793819487.2906473,
+              "stop": 1793819487.3431454,
+              "seconds": 0.05249909999997726,
+              "trace": "mapping-prepare-3564.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "controller",
+              "pid": 3564,
+              "test": null,
+              "start": 1793819487.3452382,
+              "stop": 1793819487.3608932,
+              "seconds": 0.015655000000037944,
+              "trace": "mapping-prepare-3564.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw3",
+              "pid": 2808,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819536.9983456,
+              "stop": 1793819537.001667,
+              "seconds": 0.003320599999995011,
+              "trace": "mapping-gw3-2808.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw3",
+              "pid": 2808,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819537.0038316,
+              "stop": 1793819537.025344,
+              "seconds": 0.021512299999983497,
+              "trace": "mapping-gw3-2808.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw2",
+              "pid": 7852,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819496.4050076,
+              "stop": 1793819496.4083827,
+              "seconds": 0.003374199999996108,
+              "trace": "mapping-gw2-7852.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw2",
+              "pid": 7852,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819496.4103754,
+              "stop": 1793819496.437873,
+              "seconds": 0.02749740000001566,
+              "trace": "mapping-gw2-7852.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 7176,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819496.432843,
+              "stop": 1793819496.436516,
+              "seconds": 0.0036729000000264023,
+              "trace": "mapping-gw1-7176.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 7176,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819496.4386039,
+              "stop": 1793819496.461335,
+              "seconds": 0.022731099999987237,
+              "trace": "mapping-gw1-7176.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 624,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819496.429439,
+              "stop": 1793819496.433057,
+              "seconds": 0.0036177000000066073,
+              "trace": "mapping-gw0-624.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 624,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819496.4353034,
+              "stop": 1793819496.4585404,
+              "seconds": 0.023237300000005234,
+              "trace": "mapping-gw0-624.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw3": {
+              "test_ids": 6,
+              "first_test_seconds": 0.004376649856567383,
+              "last_test_seconds": 47.26552367210388,
+              "occupied_seconds": 47.2405483
+            },
+            "gw2": {
+              "test_ids": 24,
+              "first_test_seconds": 0.0024285316467285156,
+              "last_test_seconds": 43.532044887542725,
+              "occupied_seconds": 43.44986460000035
+            },
+            "gw1": {
+              "test_ids": 46,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 58.702157497406006,
+              "occupied_seconds": 58.520054700000514
+            },
+            "gw0": {
+              "test_ids": 10,
+              "first_test_seconds": 0.004469394683837891,
+              "last_test_seconds": 61.52676486968994,
+              "occupied_seconds": 61.40776089999986
+            }
+          },
+          "single_worker_tail_seconds": 2.8246073722839355,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              34.93883699999998
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              23.392120800000043
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              20.707081600000038
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              16.49725010000003
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              14.62117870000003
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              14.216429199999993
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              11.603272800000013
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              10.29094050000009
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_locked_environment_files[conda]",
+              8.51568100000003
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_input_hash_check[conda]",
+              6.903993900000046
+            ]
+          ]
+        }
+      ],
+      "summaries": [
+        {
+          "cache": "cold",
+          "workers": 2,
+          "distribution": "load",
+          "repetitions": 2,
+          "prepare_seconds": 2.5,
+          "pytest_seconds": 80.5,
+          "combined_seconds": 83.0,
+          "http_seconds": 0.08153175000001056
+        },
+        {
+          "cache": "cold",
+          "workers": 4,
+          "distribution": "load",
+          "repetitions": 2,
+          "prepare_seconds": 3.0,
+          "pytest_seconds": 104.5,
+          "combined_seconds": 107.5,
+          "http_seconds": 0.1772321499999947
+        },
+        {
+          "cache": "primed",
+          "workers": 2,
+          "distribution": "load",
+          "repetitions": 2,
+          "prepare_seconds": 3.0,
+          "pytest_seconds": 84.0,
+          "combined_seconds": 87.0,
+          "http_seconds": 0.06021834999999953
+        },
+        {
+          "cache": "primed",
+          "workers": 4,
+          "distribution": "load",
+          "repetitions": 2,
+          "prepare_seconds": 4.0,
+          "pytest_seconds": 73.5,
+          "combined_seconds": 77.5,
+          "http_seconds": 0.04926799999998366
+        }
+      ],
+      "timing_note": "HTTP spans run from the Requesting log to Downloaded (including response handling and cache write). Lock spans include all timeout/retry cycles until acquisition."
+    },
+    {
+      "run_id": "41895411327",
+      "trials": [
+        {
+          "job_id": 126803792430,
+          "conclusion": "success",
+          "artifact": "metrics-7565343e6c0141ae8f1e806c4a4b8ee4",
+          "cache": "cold",
+          "workers": 2,
+          "repeat": 1,
+          "distribution": "load",
+          "prepare_seconds": 4.0,
+          "pytest_seconds": 110.0,
+          "combined_seconds": 114.0,
+          "cpu_percent": 39.27004784444062,
+          "test_ids": 86,
+          "http_seconds": 0.06278929999996308,
+          "max_worker_lock_wait_seconds": 0.10697469999990972,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 5092,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819964.8881173,
+              "stop": 1793819964.8915627,
+              "seconds": 0.0034436999999343243,
+              "trace": "mapping-gw1-5092.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "gw1",
+              "pid": 5092,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819964.8918953,
+              "stop": 1793819964.954684,
+              "seconds": 0.06278929999996308,
+              "trace": "mapping-gw1-5092.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 5092,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819964.9577565,
+              "stop": 1793819964.972148,
+              "seconds": 0.014390800000001036,
+              "trace": "mapping-gw1-5092.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 7580,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819964.8986654,
+              "stop": 1793819965.0056403,
+              "seconds": 0.10697469999990972,
+              "trace": "mapping-gw0-7580.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 7580,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819965.0076401,
+              "stop": 1793819965.0254107,
+              "seconds": 0.017770499999983258,
+              "trace": "mapping-gw0-7580.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw1": {
+              "test_ids": 52,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 100.71867537498474,
+              "occupied_seconds": 100.59052829999996
+            },
+            "gw0": {
+              "test_ids": 34,
+              "first_test_seconds": 0.0001556873321533203,
+              "last_test_seconds": 78.44905281066895,
+              "occupied_seconds": 78.35182809999901
+            }
+          },
+          "single_worker_tail_seconds": 22.269622564315796,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              39.055205999999885
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              22.075138599999946
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              18.533655200000112
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              15.068110199999865
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              10.459834300000011
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              10.410920999999917
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              10.358090299999958
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+              7.443732799999907
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              6.46590070000002
+            ],
+            [
+              "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              6.022404300000062
+            ]
+          ]
+        },
+        {
+          "job_id": 126803792380,
+          "conclusion": "success",
+          "artifact": "metrics-810631c5e93845c4aaf7c130cbf9ee26",
+          "cache": "cold",
+          "workers": 2,
+          "repeat": 2,
+          "distribution": "load",
+          "prepare_seconds": 2.0,
+          "pytest_seconds": 92.0,
+          "combined_seconds": 94.0,
+          "cpu_percent": 34.84741959430275,
+          "test_ids": 86,
+          "http_seconds": 0.20860590000000911,
+          "max_worker_lock_wait_seconds": 0.20493920000001253,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 2392,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819929.7557878,
+              "stop": 1793819929.758111,
+              "seconds": 0.0023226000000136082,
+              "trace": "mapping-gw1-2392.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "gw1",
+              "pid": 2392,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819929.7583945,
+              "stop": 1793819929.967004,
+              "seconds": 0.20860590000000911,
+              "trace": "mapping-gw1-2392.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 2392,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819929.969226,
+              "stop": 1793819929.980446,
+              "seconds": 0.011219499999981508,
+              "trace": "mapping-gw1-2392.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 4172,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819929.7652776,
+              "stop": 1793819929.9702213,
+              "seconds": 0.20493920000001253,
+              "trace": "mapping-gw0-4172.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 4172,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819929.971541,
+              "stop": 1793819929.9831262,
+              "seconds": 0.011584800000036921,
+              "trace": "mapping-gw0-4172.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw1": {
+              "test_ids": 55,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 82.47778987884521,
+              "occupied_seconds": 82.37864680000013
+            },
+            "gw0": {
+              "test_ids": 31,
+              "first_test_seconds": 4.267692565917969e-05,
+              "last_test_seconds": 65.85122871398926,
+              "occupied_seconds": 65.7900677999998
+            }
+          },
+          "single_worker_tail_seconds": 16.626561164855957,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              35.0023817
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              17.28947299999993
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              15.989955699999996
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              12.601344799999936
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              8.516184200000055
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              8.108286900000053
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+              6.922798599999965
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              6.307812300000023
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              5.452164400000015
+            ],
+            [
+              "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              4.5456245999999965
+            ]
+          ]
+        },
+        {
+          "job_id": 126803792426,
+          "conclusion": "success",
+          "artifact": "metrics-c04296f103da446fa05f8ab3ec65d6fb",
+          "cache": "cold",
+          "workers": 4,
+          "repeat": 1,
+          "distribution": "load",
+          "prepare_seconds": 3.0,
+          "pytest_seconds": 73.0,
+          "combined_seconds": 76.0,
+          "cpu_percent": 54.775976828551244,
+          "test_ids": 86,
+          "http_seconds": 1.3239025999999967,
+          "max_worker_lock_wait_seconds": 0.054314999999974134,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "gw3",
+              "pid": 8272,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819978.8124542,
+              "stop": 1793819978.8281178,
+              "seconds": 0.01566280000002962,
+              "trace": "mapping-gw3-8272.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw3",
+              "pid": 8272,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819978.8300567,
+              "stop": 1793819978.8455875,
+              "seconds": 0.015530599999976857,
+              "trace": "mapping-gw3-8272.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw2",
+              "pid": 6368,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819943.7030256,
+              "stop": 1793819943.7055285,
+              "seconds": 0.0025019000000270353,
+              "trace": "mapping-gw2-6368.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "gw2",
+              "pid": 6368,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819943.7057848,
+              "stop": 1793819945.0296924,
+              "seconds": 1.3239025999999967,
+              "trace": "mapping-gw2-6368.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw2",
+              "pid": 6368,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819945.0323489,
+              "stop": 1793819945.0467634,
+              "seconds": 0.014414599999952316,
+              "trace": "mapping-gw2-6368.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 8408,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819945.0291572,
+              "stop": 1793819945.083473,
+              "seconds": 0.054314999999974134,
+              "trace": "mapping-gw1-8408.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 8408,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819945.0851588,
+              "stop": 1793819945.1040146,
+              "seconds": 0.018855299999984254,
+              "trace": "mapping-gw1-8408.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 5456,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819945.0290322,
+              "stop": 1793819945.032306,
+              "seconds": 0.0032722000000262597,
+              "trace": "mapping-gw0-5456.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 5456,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819945.0336616,
+              "stop": 1793819945.0507147,
+              "seconds": 0.017052400000011403,
+              "trace": "mapping-gw0-5456.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw3": {
+              "test_ids": 23,
+              "first_test_seconds": 0.002489805221557617,
+              "last_test_seconds": 63.21221613883972,
+              "occupied_seconds": 63.14835690000007
+            },
+            "gw2": {
+              "test_ids": 32,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 43.78179860115051,
+              "occupied_seconds": 43.70926040000012
+            },
+            "gw1": {
+              "test_ids": 21,
+              "first_test_seconds": 0.002296924591064453,
+              "last_test_seconds": 44.57478904724121,
+              "occupied_seconds": 44.4925060999999
+            },
+            "gw0": {
+              "test_ids": 10,
+              "first_test_seconds": 0.0024988651275634766,
+              "last_test_seconds": 51.742053747177124,
+              "occupied_seconds": 51.70143719999987
+            }
+          },
+          "single_worker_tail_seconds": 11.470162391662598,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              40.51477870000002
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              20.698833299999933
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              20.135035600000037
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              17.869397500000105
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_locked_environment_files[conda]",
+              11.318435499999964
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              11.027158799999995
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              10.502495300000021
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              9.184987499999977
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+              8.029322999999977
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              7.410846800000002
+            ]
+          ]
+        },
+        {
+          "job_id": 126803792393,
+          "conclusion": "success",
+          "artifact": "metrics-eb020cc1b2884776a6fd706536ec7e9b",
+          "cache": "cold",
+          "workers": 4,
+          "repeat": 2,
+          "distribution": "load",
+          "prepare_seconds": 4.0,
+          "pytest_seconds": 66.0,
+          "combined_seconds": 70.0,
+          "cpu_percent": 63.1549414194416,
+          "test_ids": 86,
+          "http_seconds": 0.18919860000005428,
+          "max_worker_lock_wait_seconds": 0.25809449999997014,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "gw3",
+              "pid": 8892,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819973.4323308,
+              "stop": 1793819973.434464,
+              "seconds": 0.0021328999999923326,
+              "trace": "mapping-gw3-8892.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw3",
+              "pid": 8892,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819973.4360862,
+              "stop": 1793819973.4459524,
+              "seconds": 0.00986610000006749,
+              "trace": "mapping-gw3-8892.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw2",
+              "pid": 8708,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819936.3537326,
+              "stop": 1793819936.3556592,
+              "seconds": 0.0019256000000495987,
+              "trace": "mapping-gw2-8708.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "gw2",
+              "pid": 8708,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819936.3559008,
+              "stop": 1793819936.5451007,
+              "seconds": 0.18919860000005428,
+              "trace": "mapping-gw2-8708.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw2",
+              "pid": 8708,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819936.547785,
+              "stop": 1793819936.5576797,
+              "seconds": 0.009893400000009933,
+              "trace": "mapping-gw2-8708.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 8564,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819936.3676128,
+              "stop": 1793819936.6257105,
+              "seconds": 0.25809449999997014,
+              "trace": "mapping-gw1-8564.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 8564,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819936.6272779,
+              "stop": 1793819936.6436408,
+              "seconds": 0.016362700000058794,
+              "trace": "mapping-gw1-8564.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 8724,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819936.367747,
+              "stop": 1793819936.5743365,
+              "seconds": 0.20658690000004754,
+              "trace": "mapping-gw0-8724.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 8724,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819936.5757794,
+              "stop": 1793819936.5880592,
+              "seconds": 0.012279500000090593,
+              "trace": "mapping-gw0-8724.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw3": {
+              "test_ids": 23,
+              "first_test_seconds": 0.0020847320556640625,
+              "last_test_seconds": 58.53059482574463,
+              "occupied_seconds": 58.443339799999535
+            },
+            "gw2": {
+              "test_ids": 36,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 43.83896613121033,
+              "occupied_seconds": 43.73446559999957
+            },
+            "gw1": {
+              "test_ids": 13,
+              "first_test_seconds": 0.0015108585357666016,
+              "last_test_seconds": 46.19431447982788,
+              "occupied_seconds": 46.14950380000016
+            },
+            "gw0": {
+              "test_ids": 14,
+              "first_test_seconds": 0.0019838809967041016,
+              "last_test_seconds": 44.540695667266846,
+              "occupied_seconds": 44.49972379999974
+            }
+          },
+          "single_worker_tail_seconds": 12.336280345916748,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              33.832311100000084
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              32.127593299999944
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              22.639696100000037
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              15.070439199999896
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              10.977171999999882
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              10.829529200000025
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_locked_environment_files[conda]",
+              8.55106319999993
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              7.4894934999999805
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              7.347327299999847
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+              6.80618370000002
+            ]
+          ]
+        },
+        {
+          "job_id": 126803792504,
+          "conclusion": "success",
+          "artifact": "metrics-2dadff8bced84d2a99f21da1e8a02b5d",
+          "cache": "primed",
+          "workers": 2,
+          "repeat": 1,
+          "distribution": "load",
+          "prepare_seconds": 3.0,
+          "pytest_seconds": 100.0,
+          "combined_seconds": 103.0,
+          "cpu_percent": 43.69931695547157,
+          "test_ids": 86,
+          "http_seconds": 0.050450500000010834,
+          "max_worker_lock_wait_seconds": 0.00336350000000607,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "controller",
+              "pid": 5092,
+              "test": null,
+              "start": 1793819941.0919015,
+              "stop": 1793819941.0928078,
+              "seconds": 0.0009062000000028547,
+              "trace": "mapping-prepare-5092.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "controller",
+              "pid": 5092,
+              "test": null,
+              "start": 1793819941.0932202,
+              "stop": 1793819941.1436713,
+              "seconds": 0.050450500000010834,
+              "trace": "mapping-prepare-5092.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "controller",
+              "pid": 5092,
+              "test": null,
+              "start": 1793819941.1455498,
+              "stop": 1793819941.158538,
+              "seconds": 0.012988000000007105,
+              "trace": "mapping-prepare-5092.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 2764,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819950.267264,
+              "stop": 1793819950.2706275,
+              "seconds": 0.00336350000000607,
+              "trace": "mapping-gw1-2764.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 2764,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819950.2726629,
+              "stop": 1793819950.2922995,
+              "seconds": 0.019636599999984128,
+              "trace": "mapping-gw1-2764.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 3336,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819950.2794192,
+              "stop": 1793819950.2818315,
+              "seconds": 0.002411800000004405,
+              "trace": "mapping-gw0-3336.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 3336,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819950.2833362,
+              "stop": 1793819950.3043604,
+              "seconds": 0.021023900000017193,
+              "trace": "mapping-gw0-3336.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw1": {
+              "test_ids": 45,
+              "first_test_seconds": 0.00030350685119628906,
+              "last_test_seconds": 89.35561108589172,
+              "occupied_seconds": 89.2523702999998
+            },
+            "gw0": {
+              "test_ids": 41,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 71.66695857048035,
+              "occupied_seconds": 71.57213259999997
+            }
+          },
+          "single_worker_tail_seconds": 17.688652515411377,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              34.5183868
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              21.502428900000012
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              17.463857399999995
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              13.193538100000012
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              9.551331300000015
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              9.530365399999994
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              7.57611
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+              6.522259100000014
+            ],
+            [
+              "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              5.284626900000006
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              5.242698399999966
+            ]
+          ]
+        },
+        {
+          "job_id": 126803792256,
+          "conclusion": "success",
+          "artifact": "metrics-cb97a3b0ebd2427fb35cbf0f20c98e77",
+          "cache": "primed",
+          "workers": 2,
+          "repeat": 2,
+          "distribution": "load",
+          "prepare_seconds": 4.0,
+          "pytest_seconds": 113.0,
+          "combined_seconds": 117.0,
+          "cpu_percent": 42.670934439998554,
+          "test_ids": 86,
+          "http_seconds": 0.07945409999999242,
+          "max_worker_lock_wait_seconds": 0.0029734999999959655,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "controller",
+              "pid": 6608,
+              "test": null,
+              "start": 1793819942.2522871,
+              "stop": 1793819942.2532666,
+              "seconds": 0.0009791000000234362,
+              "trace": "mapping-prepare-6608.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "controller",
+              "pid": 6608,
+              "test": null,
+              "start": 1793819942.253679,
+              "stop": 1793819942.3331344,
+              "seconds": 0.07945409999999242,
+              "trace": "mapping-prepare-6608.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "controller",
+              "pid": 6608,
+              "test": null,
+              "start": 1793819942.335901,
+              "stop": 1793819942.3509014,
+              "seconds": 0.014999500000016042,
+              "trace": "mapping-prepare-6608.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 7232,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819950.6504087,
+              "stop": 1793819950.6530108,
+              "seconds": 0.0026014999999972588,
+              "trace": "mapping-gw1-7232.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 7232,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819950.6548867,
+              "stop": 1793819950.6743662,
+              "seconds": 0.01947899999998981,
+              "trace": "mapping-gw1-7232.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 7400,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819950.6622875,
+              "stop": 1793819950.6652613,
+              "seconds": 0.0029734999999959655,
+              "trace": "mapping-gw0-7400.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 7400,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819950.667173,
+              "stop": 1793819950.6828294,
+              "seconds": 0.01565630000001761,
+              "trace": "mapping-gw0-7400.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw1": {
+              "test_ids": 44,
+              "first_test_seconds": 0.0009794235229492188,
+              "last_test_seconds": 102.12503719329834,
+              "occupied_seconds": 102.00305879999999
+            },
+            "gw0": {
+              "test_ids": 42,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 84.48923134803772,
+              "occupied_seconds": 84.37008730000005
+            }
+          },
+          "single_worker_tail_seconds": 17.63580584526062,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              34.781270399999954
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              23.660161399999993
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              21.869914400000027
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              15.178046900000083
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              14.698961500000053
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              11.169895699999984
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              10.836608299999966
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              7.218905900000038
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+              6.767030599999941
+            ],
+            [
+              "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              5.852710599999966
+            ]
+          ]
+        },
+        {
+          "job_id": 126803792212,
+          "conclusion": "success",
+          "artifact": "metrics-2f20a0369b3249d1a82bd2b189e2f804",
+          "cache": "primed",
+          "workers": 4,
+          "repeat": 1,
+          "distribution": "load",
+          "prepare_seconds": 3.0,
+          "pytest_seconds": 73.0,
+          "combined_seconds": 76.0,
+          "cpu_percent": 74.323400012968,
+          "test_ids": 86,
+          "http_seconds": 0.31003020000002834,
+          "max_worker_lock_wait_seconds": 0.002805399999999736,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "controller",
+              "pid": 8652,
+              "test": null,
+              "start": 1793819936.2110372,
+              "stop": 1793819936.2117794,
+              "seconds": 0.0007418000000143365,
+              "trace": "mapping-prepare-8652.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "controller",
+              "pid": 8652,
+              "test": null,
+              "start": 1793819936.2120311,
+              "stop": 1793819936.5220654,
+              "seconds": 0.31003020000002834,
+              "trace": "mapping-prepare-8652.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "controller",
+              "pid": 8652,
+              "test": null,
+              "start": 1793819936.5243385,
+              "stop": 1793819936.535083,
+              "seconds": 0.010743699999977707,
+              "trace": "mapping-prepare-8652.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw3",
+              "pid": 3880,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819980.6741366,
+              "stop": 1793819980.6767254,
+              "seconds": 0.0025880999999685628,
+              "trace": "mapping-gw3-3880.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw3",
+              "pid": 3880,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819980.67857,
+              "stop": 1793819980.6946335,
+              "seconds": 0.016063400000007277,
+              "trace": "mapping-gw3-3880.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw2",
+              "pid": 8488,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819945.131475,
+              "stop": 1793819945.134281,
+              "seconds": 0.002805399999999736,
+              "trace": "mapping-gw2-8488.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw2",
+              "pid": 8488,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819945.1358855,
+              "stop": 1793819945.152292,
+              "seconds": 0.01640620000000581,
+              "trace": "mapping-gw2-8488.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 3504,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819945.1438756,
+              "stop": 1793819945.1462636,
+              "seconds": 0.0023876999999856707,
+              "trace": "mapping-gw1-3504.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 3504,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819945.1476583,
+              "stop": 1793819945.164042,
+              "seconds": 0.016383399999995163,
+              "trace": "mapping-gw1-3504.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 8324,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819945.1426685,
+              "stop": 1793819945.1449144,
+              "seconds": 0.002245200000004388,
+              "trace": "mapping-gw0-8324.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 8324,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819945.1462812,
+              "stop": 1793819945.1627955,
+              "seconds": 0.01651409999999487,
+              "trace": "mapping-gw0-8324.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw3": {
+              "test_ids": 24,
+              "first_test_seconds": 0.0014290809631347656,
+              "last_test_seconds": 62.71203398704529,
+              "occupied_seconds": 62.647369499999854
+            },
+            "gw2": {
+              "test_ids": 10,
+              "first_test_seconds": 0.0017244815826416016,
+              "last_test_seconds": 61.632726192474365,
+              "occupied_seconds": 61.600544499999955
+            },
+            "gw1": {
+              "test_ids": 42,
+              "first_test_seconds": 0.0009188652038574219,
+              "last_test_seconds": 48.75076246261597,
+              "occupied_seconds": 48.61861840000006
+            },
+            "gw0": {
+              "test_ids": 10,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 58.116933822631836,
+              "occupied_seconds": 58.08614769999991
+            }
+          },
+          "single_worker_tail_seconds": 1.0793077945709229,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_locked_environment_files[conda]",
+              34.58941250000004
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              31.829402300000027
+            ],
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              31.649236900000005
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              20.35442299999994
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              18.80491920000003
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              16.147844599999985
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              12.279144099999996
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              11.01930120000003
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              7.579216899999949
+            ],
+            [
+              "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              6.7131033
+            ]
+          ]
+        },
+        {
+          "job_id": 126803792296,
+          "conclusion": "success",
+          "artifact": "metrics-2b3ffd75b59842caa8ce87a39158fdbd",
+          "cache": "primed",
+          "workers": 4,
+          "repeat": 2,
+          "distribution": "load",
+          "prepare_seconds": 3.0,
+          "pytest_seconds": 70.0,
+          "combined_seconds": 73.0,
+          "cpu_percent": 68.6808944740686,
+          "test_ids": 86,
+          "http_seconds": 0.43391279999997323,
+          "max_worker_lock_wait_seconds": 0.0027396999999496074,
+          "spans": [
+            {
+              "kind": "lock",
+              "worker": "controller",
+              "pid": 6988,
+              "test": null,
+              "start": 1793819937.4630404,
+              "stop": 1793819937.4638603,
+              "seconds": 0.0008196999999654508,
+              "trace": "mapping-prepare-6988.jsonl"
+            },
+            {
+              "kind": "http",
+              "worker": "controller",
+              "pid": 6988,
+              "test": null,
+              "start": 1793819937.4641078,
+              "stop": 1793819937.8980315,
+              "seconds": 0.43391279999997323,
+              "trace": "mapping-prepare-6988.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "controller",
+              "pid": 6988,
+              "test": null,
+              "start": 1793819937.9001048,
+              "stop": 1793819937.910505,
+              "seconds": 0.010399899999981699,
+              "trace": "mapping-prepare-6988.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw3",
+              "pid": 7904,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819980.154036,
+              "stop": 1793819980.1567771,
+              "seconds": 0.0027396999999496074,
+              "trace": "mapping-gw3-7904.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw3",
+              "pid": 7904,
+              "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              "start": 1793819980.1586137,
+              "stop": 1793819980.1772346,
+              "seconds": 0.01862069999998539,
+              "trace": "mapping-gw3-7904.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw2",
+              "pid": 9052,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819944.8610017,
+              "stop": 1793819944.8636236,
+              "seconds": 0.002621700000020155,
+              "trace": "mapping-gw2-9052.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw2",
+              "pid": 9052,
+              "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+              "start": 1793819944.8649821,
+              "stop": 1793819944.8829324,
+              "seconds": 0.017949899999962327,
+              "trace": "mapping-gw2-9052.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw1",
+              "pid": 7644,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819944.8704438,
+              "stop": 1793819944.872852,
+              "seconds": 0.0024077000000488624,
+              "trace": "mapping-gw1-7644.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw1",
+              "pid": 7644,
+              "test": "tests/test_conda_lock.py::test_parse_environment_file",
+              "start": 1793819944.8744876,
+              "stop": 1793819944.8925765,
+              "seconds": 0.01808840000001055,
+              "trace": "mapping-gw1-7644.jsonl"
+            },
+            {
+              "kind": "lock",
+              "worker": "gw0",
+              "pid": 3312,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819944.8742895,
+              "stop": 1793819944.8765655,
+              "seconds": 0.0022758000000067113,
+              "trace": "mapping-gw0-3312.jsonl"
+            },
+            {
+              "kind": "parse",
+              "worker": "gw0",
+              "pid": 3312,
+              "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+              "start": 1793819944.8779228,
+              "stop": 1793819944.895505,
+              "seconds": 0.017581899999981943,
+              "trace": "mapping-gw0-3312.jsonl"
+            }
+          ],
+          "worker_schedule": {
+            "gw3": {
+              "test_ids": 20,
+              "first_test_seconds": 0.0018894672393798828,
+              "last_test_seconds": 41.69648623466492,
+              "occupied_seconds": 41.641209
+            },
+            "gw2": {
+              "test_ids": 10,
+              "first_test_seconds": 0.0027306079864501953,
+              "last_test_seconds": 61.12226414680481,
+              "occupied_seconds": 61.09534390000016
+            },
+            "gw1": {
+              "test_ids": 46,
+              "first_test_seconds": 0.0,
+              "last_test_seconds": 53.53159427642822,
+              "occupied_seconds": 53.417289100000005
+            },
+            "gw0": {
+              "test_ids": 10,
+              "first_test_seconds": 0.002682209014892578,
+              "last_test_seconds": 59.30122780799866,
+              "occupied_seconds": 59.24105909999997
+            }
+          },
+          "single_worker_tail_seconds": 1.8210363388061523,
+          "slowest_tests": [
+            [
+              "tests/test_conda_lock.py::test_lock_poetry_ibis",
+              36.30783289999994
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_locked_environment_files[conda]",
+              35.335175100000015
+            ],
+            [
+              "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+              24.208944600000052
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock[conda]",
+              19.670265700000073
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+              13.77697130000007
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+              11.568224499999985
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+              11.417442900000083
+            ],
+            [
+              "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+              9.947463600000049
+            ],
+            [
+              "tests/test_conda_lock.py::test_os_name_marker[conda]",
+              8.859676700000023
+            ],
+            [
+              "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+              6.306221099999959
+            ]
+          ]
+        }
+      ],
+      "summaries": [
+        {
+          "cache": "cold",
+          "workers": 2,
+          "distribution": "load",
+          "repetitions": 2,
+          "prepare_seconds": 3.0,
+          "pytest_seconds": 101.0,
+          "combined_seconds": 104.0,
+          "http_seconds": 0.1356975999999861
+        },
+        {
+          "cache": "cold",
+          "workers": 4,
+          "distribution": "load",
+          "repetitions": 2,
+          "prepare_seconds": 3.5,
+          "pytest_seconds": 69.5,
+          "combined_seconds": 73.0,
+          "http_seconds": 0.7565506000000255
+        },
+        {
+          "cache": "primed",
+          "workers": 2,
+          "distribution": "load",
+          "repetitions": 2,
+          "prepare_seconds": 3.5,
+          "pytest_seconds": 106.5,
+          "combined_seconds": 110.0,
+          "http_seconds": 0.06495230000000163
+        },
+        {
+          "cache": "primed",
+          "workers": 4,
+          "distribution": "load",
+          "repetitions": 2,
+          "prepare_seconds": 3.0,
+          "pytest_seconds": 71.5,
+          "combined_seconds": 74.5,
+          "http_seconds": 0.3719715000000008
+        }
+      ],
+      "timing_note": "HTTP spans run from the Requesting log to Downloaded (including response handling and cache write). Lock spans include all timeout/retry cycles until acquisition."
+    }
+  ],
+  "scheduling_comparison": {
+    "run_id": "41895926559",
+    "trials": [
+      {
+        "job_id": 126805406176,
+        "conclusion": "success",
+        "artifact": "metrics-7ef9a1adabc847e28c3f7fb46b1d3dc5",
+        "cache": "primed",
+        "workers": 4,
+        "repeat": 1,
+        "distribution": "load",
+        "prepare_seconds": 3.0,
+        "pytest_seconds": 78.0,
+        "combined_seconds": 81.0,
+        "cpu_percent": 66.78244363093293,
+        "test_ids": 86,
+        "http_seconds": 0.09770470000000842,
+        "max_worker_lock_wait_seconds": 0.05398440000004712,
+        "spans": [
+          {
+            "kind": "lock",
+            "worker": "controller",
+            "pid": 712,
+            "test": null,
+            "start": 1793820098.2640283,
+            "stop": 1793820098.2648263,
+            "seconds": 0.0007976999999925738,
+            "trace": "mapping-prepare-712.jsonl"
+          },
+          {
+            "kind": "http",
+            "worker": "controller",
+            "pid": 712,
+            "test": null,
+            "start": 1793820098.2650962,
+            "stop": 1793820098.3627987,
+            "seconds": 0.09770470000000842,
+            "trace": "mapping-prepare-712.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "controller",
+            "pid": 712,
+            "test": null,
+            "start": 1793820098.3649676,
+            "stop": 1793820098.375619,
+            "seconds": 0.010651200000012295,
+            "trace": "mapping-prepare-712.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw3",
+            "pid": 672,
+            "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+            "start": 1793820141.2427135,
+            "stop": 1793820141.2446318,
+            "seconds": 0.0019174999999904685,
+            "trace": "mapping-gw3-672.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw3",
+            "pid": 672,
+            "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+            "start": 1793820141.2460659,
+            "stop": 1793820141.2594466,
+            "seconds": 0.013380799999993087,
+            "trace": "mapping-gw3-672.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw2",
+            "pid": 5096,
+            "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+            "start": 1793820105.5896935,
+            "stop": 1793820105.5925505,
+            "seconds": 0.002856299999962175,
+            "trace": "mapping-gw2-5096.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw2",
+            "pid": 5096,
+            "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+            "start": 1793820105.5943854,
+            "stop": 1793820105.6116323,
+            "seconds": 0.01724730000000818,
+            "trace": "mapping-gw2-5096.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw1",
+            "pid": 3880,
+            "test": "tests/test_conda_lock.py::test_parse_environment_file",
+            "start": 1793820105.6060534,
+            "stop": 1793820105.660037,
+            "seconds": 0.05398440000004712,
+            "trace": "mapping-gw1-3880.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw1",
+            "pid": 3880,
+            "test": "tests/test_conda_lock.py::test_parse_environment_file",
+            "start": 1793820105.6621928,
+            "stop": 1793820105.683355,
+            "seconds": 0.021162600000025122,
+            "trace": "mapping-gw1-3880.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw0",
+            "pid": 1164,
+            "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+            "start": 1793820105.605579,
+            "stop": 1793820105.6079392,
+            "seconds": 0.002359899999987647,
+            "trace": "mapping-gw0-1164.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw0",
+            "pid": 1164,
+            "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+            "start": 1793820105.6094787,
+            "stop": 1793820105.6234381,
+            "seconds": 0.013959699999986697,
+            "trace": "mapping-gw0-1164.jsonl"
+          }
+        ],
+        "worker_schedule": {
+          "gw3": {
+            "test_ids": 23,
+            "first_test_seconds": 0.0030705928802490234,
+            "last_test_seconds": 67.01889181137085,
+            "occupied_seconds": 66.9577258999999
+          },
+          "gw2": {
+            "test_ids": 10,
+            "first_test_seconds": 0.003297567367553711,
+            "last_test_seconds": 60.258612394332886,
+            "occupied_seconds": 60.233948800000064
+          },
+          "gw1": {
+            "test_ids": 40,
+            "first_test_seconds": 0.0,
+            "last_test_seconds": 43.72063660621643,
+            "occupied_seconds": 43.62374729999988
+          },
+          "gw0": {
+            "test_ids": 13,
+            "first_test_seconds": 0.003335714340209961,
+            "last_test_seconds": 50.26603651046753,
+            "occupied_seconds": 50.2283822
+          }
+        },
+        "single_worker_tail_seconds": 6.760279417037964,
+        "slowest_tests": [
+          [
+            "tests/test_conda_lock.py::test_lock_poetry_ibis",
+            36.762646200000006
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_with_locked_environment_files[conda]",
+            32.947250699999984
+          ],
+          [
+            "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+            24.05382119999996
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock[conda]",
+            20.384574399999963
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+            18.526353899999947
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+            11.430016899999998
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+            10.972899600000005
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+            8.815145099999995
+          ],
+          [
+            "tests/test_conda_lock.py::test_os_name_marker[conda]",
+            8.517279200000019
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+            8.202234799999985
+          ]
+        ]
+      },
+      {
+        "job_id": 126805406690,
+        "conclusion": "success",
+        "artifact": "metrics-49975abbb83d4d13b29b7dbb272b4d90",
+        "cache": "primed",
+        "workers": 4,
+        "repeat": 2,
+        "distribution": "load",
+        "prepare_seconds": 4.0,
+        "pytest_seconds": 88.0,
+        "combined_seconds": 92.0,
+        "cpu_percent": 73.15677609635823,
+        "test_ids": 86,
+        "http_seconds": 0.2784050999999863,
+        "max_worker_lock_wait_seconds": 0.05421089999998685,
+        "spans": [
+          {
+            "kind": "lock",
+            "worker": "controller",
+            "pid": 7112,
+            "test": null,
+            "start": 1793820103.8818436,
+            "stop": 1793820103.8827596,
+            "seconds": 0.0009158999999954176,
+            "trace": "mapping-prepare-7112.jsonl"
+          },
+          {
+            "kind": "http",
+            "worker": "controller",
+            "pid": 7112,
+            "test": null,
+            "start": 1793820103.8832426,
+            "stop": 1793820104.1616461,
+            "seconds": 0.2784050999999863,
+            "trace": "mapping-prepare-7112.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "controller",
+            "pid": 7112,
+            "test": null,
+            "start": 1793820104.1640227,
+            "stop": 1793820104.1786911,
+            "seconds": 0.014668299999982537,
+            "trace": "mapping-prepare-7112.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw3",
+            "pid": 9116,
+            "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+            "start": 1793820156.3830702,
+            "stop": 1793820156.3861413,
+            "seconds": 0.0030706000000009226,
+            "trace": "mapping-gw3-9116.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw3",
+            "pid": 9116,
+            "test": "tests/test_conda_lock.py::test_move_dependency_from_pip_section[conda]",
+            "start": 1793820156.3886833,
+            "stop": 1793820156.4110663,
+            "seconds": 0.02238289999996823,
+            "trace": "mapping-gw3-9116.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw2",
+            "pid": 4012,
+            "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+            "start": 1793820112.5027432,
+            "stop": 1793820112.5058649,
+            "seconds": 0.0031209999999646243,
+            "trace": "mapping-gw2-4012.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw2",
+            "pid": 4012,
+            "test": "tests/test_conda_lock.py::test_parse_poetry_default_pip",
+            "start": 1793820112.5083346,
+            "stop": 1793820112.5325549,
+            "seconds": 0.024219700000003286,
+            "trace": "mapping-gw2-4012.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw1",
+            "pid": 5532,
+            "test": "tests/test_conda_lock.py::test_parse_environment_file",
+            "start": 1793820112.518191,
+            "stop": 1793820112.5724022,
+            "seconds": 0.05421089999998685,
+            "trace": "mapping-gw1-5532.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw1",
+            "pid": 5532,
+            "test": "tests/test_conda_lock.py::test_parse_environment_file",
+            "start": 1793820112.574822,
+            "stop": 1793820112.6045942,
+            "seconds": 0.02977210000000241,
+            "trace": "mapping-gw1-5532.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw0",
+            "pid": 5988,
+            "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+            "start": 1793820112.517784,
+            "stop": 1793820112.5207803,
+            "seconds": 0.0029958000000078755,
+            "trace": "mapping-gw0-5988.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw0",
+            "pid": 5988,
+            "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+            "start": 1793820112.522985,
+            "stop": 1793820112.5373058,
+            "seconds": 0.014320499999996628,
+            "trace": "mapping-gw0-5988.jsonl"
+          }
+        ],
+        "worker_schedule": {
+          "gw3": {
+            "test_ids": 27,
+            "first_test_seconds": 0.0035920143127441406,
+            "last_test_seconds": 55.727211713790894,
+            "occupied_seconds": 55.5582078999999
+          },
+          "gw2": {
+            "test_ids": 10,
+            "first_test_seconds": 0.0008020401000976562,
+            "last_test_seconds": 72.91769862174988,
+            "occupied_seconds": 72.8596747000002
+          },
+          "gw1": {
+            "test_ids": 35,
+            "first_test_seconds": 0.0022678375244140625,
+            "last_test_seconds": 77.6751720905304,
+            "occupied_seconds": 77.44053720000022
+          },
+          "gw0": {
+            "test_ids": 14,
+            "first_test_seconds": 0.0,
+            "last_test_seconds": 58.839789390563965,
+            "occupied_seconds": 58.73003550000004
+          }
+        },
+        "single_worker_tail_seconds": 4.757473468780518,
+        "slowest_tests": [
+          [
+            "tests/test_conda_lock.py::test_lock_poetry_ibis",
+            41.14472380000001
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_with_locked_environment_files[conda]",
+            40.41997090000001
+          ],
+          [
+            "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+            23.328640300000018
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock[conda]",
+            22.842866500000014
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+            19.11699490000001
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+            15.484620300000074
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+            13.838021899999944
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+            13.411826100000042
+          ],
+          [
+            "tests/test_conda_lock.py::test_os_name_marker[conda]",
+            10.28042819999996
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+            9.76170540000004
+          ]
+        ]
+      },
+      {
+        "job_id": 126805406325,
+        "conclusion": "success",
+        "artifact": "metrics-00193547e3e04b7cbf0a1bbb2bf67bde",
+        "cache": "primed",
+        "workers": 4,
+        "repeat": 1,
+        "distribution": "worksteal",
+        "prepare_seconds": 5.0,
+        "pytest_seconds": 72.0,
+        "combined_seconds": 77.0,
+        "cpu_percent": 72.4511353903815,
+        "test_ids": 86,
+        "http_seconds": 0.04477239999999938,
+        "max_worker_lock_wait_seconds": 0.003603700000041954,
+        "spans": [
+          {
+            "kind": "lock",
+            "worker": "controller",
+            "pid": 868,
+            "test": null,
+            "start": 1793820108.9143,
+            "stop": 1793820108.9153237,
+            "seconds": 0.0010235999999963497,
+            "trace": "mapping-prepare-868.jsonl"
+          },
+          {
+            "kind": "http",
+            "worker": "controller",
+            "pid": 868,
+            "test": null,
+            "start": 1793820108.9157805,
+            "stop": 1793820108.960553,
+            "seconds": 0.04477239999999938,
+            "trace": "mapping-prepare-868.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "controller",
+            "pid": 868,
+            "test": null,
+            "start": 1793820108.9623404,
+            "stop": 1793820108.9755547,
+            "seconds": 0.013214300000015555,
+            "trace": "mapping-prepare-868.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw3",
+            "pid": 6368,
+            "test": "tests/test_regression.py::test_pr_436[osx-arm64]",
+            "start": 1793820117.7775936,
+            "stop": 1793820117.7811162,
+            "seconds": 0.0035220000000322216,
+            "trace": "mapping-gw3-6368.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw3",
+            "pid": 6368,
+            "test": "tests/test_regression.py::test_pr_436[osx-arm64]",
+            "start": 1793820117.7832515,
+            "stop": 1793820117.8050988,
+            "seconds": 0.02184710000000223,
+            "trace": "mapping-gw3-6368.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw2",
+            "pid": 4612,
+            "test": "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+            "start": 1793820129.732262,
+            "stop": 1793820129.7358663,
+            "seconds": 0.003603700000041954,
+            "trace": "mapping-gw2-4612.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw2",
+            "pid": 4612,
+            "test": "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+            "start": 1793820129.7381763,
+            "stop": 1793820129.76053,
+            "seconds": 0.022353500000008353,
+            "trace": "mapping-gw2-4612.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw1",
+            "pid": 5984,
+            "test": "tests/test_conda_lock.py::test_os_name_marker[conda]",
+            "start": 1793820117.857122,
+            "stop": 1793820117.8604634,
+            "seconds": 0.003340700000023844,
+            "trace": "mapping-gw1-5984.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw1",
+            "pid": 5984,
+            "test": "tests/test_conda_lock.py::test_os_name_marker[conda]",
+            "start": 1793820117.8624988,
+            "stop": 1793820117.8843787,
+            "seconds": 0.021879599999977017,
+            "trace": "mapping-gw1-5984.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw0",
+            "pid": 6728,
+            "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+            "start": 1793820117.66072,
+            "stop": 1793820117.6641433,
+            "seconds": 0.0034233000000085667,
+            "trace": "mapping-gw0-6728.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw0",
+            "pid": 6728,
+            "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+            "start": 1793820117.6663601,
+            "stop": 1793820117.6890135,
+            "seconds": 0.022653300000001764,
+            "trace": "mapping-gw0-6728.jsonl"
+          }
+        ],
+        "worker_schedule": {
+          "gw3": {
+            "test_ids": 26,
+            "first_test_seconds": 0.0011951923370361328,
+            "last_test_seconds": 61.97728943824768,
+            "occupied_seconds": 61.87603960000018
+          },
+          "gw2": {
+            "test_ids": 39,
+            "first_test_seconds": 0.0011696815490722656,
+            "last_test_seconds": 50.61950945854187,
+            "occupied_seconds": 50.49262320000025
+          },
+          "gw1": {
+            "test_ids": 10,
+            "first_test_seconds": 0.0,
+            "last_test_seconds": 60.4955837726593,
+            "occupied_seconds": 60.457320500000094
+          },
+          "gw0": {
+            "test_ids": 11,
+            "first_test_seconds": 0.000110626220703125,
+            "last_test_seconds": 43.806987285614014,
+            "occupied_seconds": 43.76768479999987
+          }
+        },
+        "single_worker_tail_seconds": 1.481705665588379,
+        "slowest_tests": [
+          [
+            "tests/test_conda_lock.py::test_lock_poetry_ibis",
+            41.63254069999999
+          ],
+          [
+            "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+            26.701187500000003
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock[conda]",
+            20.778528499999993
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+            13.895611299999985
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+            12.516522200000054
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+            12.421008800000038
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+            10.222816200000011
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+            10.112536099999943
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_with_channel_inversion",
+            9.644777800000043
+          ],
+          [
+            "tests/test_conda_lock.py::test_os_name_marker[conda]",
+            8.491132199999981
+          ]
+        ]
+      },
+      {
+        "job_id": 126805406191,
+        "conclusion": "success",
+        "artifact": "metrics-4c7b76de54964f66bc746b85f710e89d",
+        "cache": "primed",
+        "workers": 4,
+        "repeat": 2,
+        "distribution": "worksteal",
+        "prepare_seconds": 4.0,
+        "pytest_seconds": 74.0,
+        "combined_seconds": 78.0,
+        "cpu_percent": 73.07067446141424,
+        "test_ids": 86,
+        "http_seconds": 0.20137909999999692,
+        "max_worker_lock_wait_seconds": 0.004053800000008323,
+        "spans": [
+          {
+            "kind": "lock",
+            "worker": "controller",
+            "pid": 5108,
+            "test": null,
+            "start": 1793820107.978425,
+            "stop": 1793820107.97942,
+            "seconds": 0.000994999999988977,
+            "trace": "mapping-prepare-5108.jsonl"
+          },
+          {
+            "kind": "http",
+            "worker": "controller",
+            "pid": 5108,
+            "test": null,
+            "start": 1793820107.9799116,
+            "stop": 1793820108.181293,
+            "seconds": 0.20137909999999692,
+            "trace": "mapping-prepare-5108.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "controller",
+            "pid": 5108,
+            "test": null,
+            "start": 1793820108.1834195,
+            "stop": 1793820108.1964111,
+            "seconds": 0.012991300000010142,
+            "trace": "mapping-prepare-5108.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw3",
+            "pid": 4260,
+            "test": "tests/test_regression.py::test_pr_436[osx-arm64]",
+            "start": 1793820118.5243986,
+            "stop": 1793820118.5277696,
+            "seconds": 0.0033704999999883967,
+            "trace": "mapping-gw3-4260.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw3",
+            "pid": 4260,
+            "test": "tests/test_regression.py::test_pr_436[osx-arm64]",
+            "start": 1793820118.5298193,
+            "stop": 1793820118.5525596,
+            "seconds": 0.022739800000010746,
+            "trace": "mapping-gw3-4260.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw2",
+            "pid": 4956,
+            "test": "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+            "start": 1793820130.5729315,
+            "stop": 1793820130.575415,
+            "seconds": 0.002482399999962581,
+            "trace": "mapping-gw2-4956.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw2",
+            "pid": 4956,
+            "test": "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+            "start": 1793820130.5773015,
+            "stop": 1793820130.597034,
+            "seconds": 0.019731700000022556,
+            "trace": "mapping-gw2-4956.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw1",
+            "pid": 5156,
+            "test": "tests/test_conda_lock.py::test_os_name_marker[conda]",
+            "start": 1793820118.5904772,
+            "stop": 1793820118.5934467,
+            "seconds": 0.002968999999978905,
+            "trace": "mapping-gw1-5156.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw1",
+            "pid": 5156,
+            "test": "tests/test_conda_lock.py::test_os_name_marker[conda]",
+            "start": 1793820118.5954323,
+            "stop": 1793820118.619232,
+            "seconds": 0.023799099999990858,
+            "trace": "mapping-gw1-5156.jsonl"
+          },
+          {
+            "kind": "lock",
+            "worker": "gw0",
+            "pid": 6852,
+            "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+            "start": 1793820118.38808,
+            "stop": 1793820118.3921342,
+            "seconds": 0.004053800000008323,
+            "trace": "mapping-gw0-6852.jsonl"
+          },
+          {
+            "kind": "parse",
+            "worker": "gw0",
+            "pid": 6852,
+            "test": "tests/test-v2-to-v3-upgrade/test_v2_to_v3_upgrade.py::test_v3_0_2_hash_compatibility",
+            "start": 1793820118.3948984,
+            "stop": 1793820118.4183342,
+            "seconds": 0.02343490000001225,
+            "trace": "mapping-gw0-6852.jsonl"
+          }
+        ],
+        "worker_schedule": {
+          "gw3": {
+            "test_ids": 29,
+            "first_test_seconds": 0.004302978515625,
+            "last_test_seconds": 58.750909090042114,
+            "occupied_seconds": 58.63368689999996
+          },
+          "gw2": {
+            "test_ids": 36,
+            "first_test_seconds": 0.003329753875732422,
+            "last_test_seconds": 62.24019145965576,
+            "occupied_seconds": 62.1081797999999
+          },
+          "gw1": {
+            "test_ids": 10,
+            "first_test_seconds": 0.005287885665893555,
+            "last_test_seconds": 45.59889483451843,
+            "occupied_seconds": 45.55129820000002
+          },
+          "gw0": {
+            "test_ids": 11,
+            "first_test_seconds": 0.0,
+            "last_test_seconds": 43.008158683776855,
+            "occupied_seconds": 42.93880690000003
+          }
+        },
+        "single_worker_tail_seconds": 3.4892823696136475,
+        "slowest_tests": [
+          [
+            "tests/test_conda_lock.py::test_lock_poetry_ibis",
+            38.34781639999997
+          ],
+          [
+            "tests/test_regression.py::test_conda_pip_regressions_gh290[test_dir2-environment.yaml]",
+            28.961603200000013
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock[conda]",
+            19.759819300000004
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_uppercase_pip[conda]",
+            12.997973100000024
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_with_git_metadata[mamba]",
+            12.618949200000031
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_channel_toml[mamba]",
+            10.533237899999904
+          ],
+          [
+            "tests/test_conda_lock.py::test_os_name_marker[conda]",
+            10.268726000000015
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_blas_mkl[conda]",
+            10.114850400000023
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_with_channel_inversion",
+            9.469531799999999
+          ],
+          [
+            "tests/test_conda_lock.py::test_run_lock_with_pip_hash_checking[mamba]",
+            7.780487400000027
+          ]
+        ]
+      }
+    ],
+    "summaries": [
+      {
+        "cache": "primed",
+        "workers": 4,
+        "distribution": "load",
+        "repetitions": 2,
+        "prepare_seconds": 3.5,
+        "pytest_seconds": 83.0,
+        "combined_seconds": 86.5,
+        "http_seconds": 0.18805489999999736
+      },
+      {
+        "cache": "primed",
+        "workers": 4,
+        "distribution": "worksteal",
+        "repetitions": 2,
+        "prepare_seconds": 4.5,
+        "pytest_seconds": 73.0,
+        "combined_seconds": 77.5,
+        "http_seconds": 0.12307574999999815
+      }
+    ],
+    "timing_note": "HTTP spans run from the Requesting log to Downloaded (including response handling and cache write). Lock spans include all timeout/retry cycles until acquisition."
+  },
+  "worker_matrices": {
+    "summaries": [
+      {
+        "run_id": "41896572018",
+        "workers": 2,
+        "distribution": "load",
+        "jobs": 8,
+        "step_seconds_sum": 977.0,
+        "step_seconds_max": 158.0,
+        "cpu_percent": 39.282319304944195,
+        "busy_cpu_seconds": 1532.5239122047424,
+        "test_ids_per_python": 344
+      },
+      {
+        "run_id": "41896572018",
+        "workers": 4,
+        "distribution": "load",
+        "jobs": 8,
+        "step_seconds_sum": 773.0,
+        "step_seconds_max": 125.0,
+        "cpu_percent": 65.87914789474031,
+        "busy_cpu_seconds": 2032.2392054817678,
+        "test_ids_per_python": 344
+      },
+      {
+        "run_id": "41896915856",
+        "workers": 4,
+        "distribution": "worksteal",
+        "jobs": 8,
+        "step_seconds_sum": 710.0,
+        "step_seconds_max": 118.0,
+        "cpu_percent": 71.73956451395853,
+        "busy_cpu_seconds": 2032.1140899612906,
+        "test_ids_per_python": 344
+      }
+    ],
+    "trials": [
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684444,
+        "artifact": "metrics-3d0ced8ed0d04588a399516377ea21ab",
+        "python": "3.11",
+        "group": 1,
+        "workers": 2,
+        "distribution": "load",
+        "step_seconds": 138.0,
+        "cpu_percent": 37.23622867667969,
+        "sampled_seconds": 137.9913592338562,
+        "busy_cpu_seconds": 205.531112313509,
+        "test_ids": 87,
+        "test_ids_sha256": "ac779521b0d8f3fefd88479c90b4f47660dd06d6bf110cb1083d56844b3e49a9"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684612,
+        "artifact": "metrics-d25caf8066b348ea82f7e637cec4f6f9",
+        "python": "3.11",
+        "group": 2,
+        "workers": 2,
+        "distribution": "load",
+        "step_seconds": 122.0,
+        "cpu_percent": 46.47018430640167,
+        "sampled_seconds": 122.00526690483093,
+        "busy_cpu_seconds": 226.78428957676886,
+        "test_ids": 86,
+        "test_ids_sha256": "d464e10e493c5a8e04a87691b5fe56942d0dfe2ea6ef04da2630de1d6d34d081"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684231,
+        "artifact": "metrics-cfd99a1a697548bc845e659216a0e6f3",
+        "python": "3.11",
+        "group": 3,
+        "workers": 2,
+        "distribution": "load",
+        "step_seconds": 158.0,
+        "cpu_percent": 38.87824789588831,
+        "sampled_seconds": 157.38872933387756,
+        "busy_cpu_seconds": 244.75992140245438,
+        "test_ids": 86,
+        "test_ids_sha256": "599a37449e7b014417ad813305b8fb5bd1546af2b0e670c4b55530acbf694162"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807685992,
+        "artifact": "metrics-9ac08f8ab3c74b659a498a932c6b99b4",
+        "python": "3.11",
+        "group": 4,
+        "workers": 2,
+        "distribution": "load",
+        "step_seconds": 120.0,
+        "cpu_percent": 36.10284492153942,
+        "sampled_seconds": 119.89890646934509,
+        "busy_cpu_seconds": 173.14766506099704,
+        "test_ids": 85,
+        "test_ids_sha256": "4affffbcde454faa681968d972d307e24ad717b7f9987e93eba494b836e64e7c"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684408,
+        "artifact": "metrics-11764795c0504047a2f6190d848f5b51",
+        "python": "3.14",
+        "group": 1,
+        "workers": 2,
+        "distribution": "load",
+        "step_seconds": 111.0,
+        "cpu_percent": 38.76409729512781,
+        "sampled_seconds": 110.14000058174133,
+        "busy_cpu_seconds": 170.7791079454422,
+        "test_ids": 85,
+        "test_ids_sha256": "accfc32e0fcd6e6de05dbae5ff113469ec5bcf897755c28e9ac585c3df03ae6f"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684689,
+        "artifact": "metrics-038737e376e343fbbe3dee76b8a31b73",
+        "python": "3.14",
+        "group": 2,
+        "workers": 2,
+        "distribution": "load",
+        "step_seconds": 109.0,
+        "cpu_percent": 38.82252768043446,
+        "sampled_seconds": 108.99789309501648,
+        "busy_cpu_seconds": 169.26294887161254,
+        "test_ids": 86,
+        "test_ids_sha256": "206eb30c78a0d0383a8e39a2f0aaecdba844d4d41ffc9c8a327fa68802117253"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684787,
+        "artifact": "metrics-e1aab2373a214e10a3de0f005224d7c9",
+        "python": "3.14",
+        "group": 3,
+        "workers": 2,
+        "distribution": "load",
+        "step_seconds": 139.0,
+        "cpu_percent": 34.98186643072759,
+        "sampled_seconds": 138.9945137500763,
+        "busy_cpu_seconds": 194.49150058436396,
+        "test_ids": 86,
+        "test_ids_sha256": "9b7f17fd5deab6592556495d48210f5badf05cf2961b355e5ac98c488a666cbb"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684513,
+        "artifact": "metrics-7c1963e1c3f247fca860c5fcccecfaf3",
+        "python": "3.14",
+        "group": 4,
+        "workers": 2,
+        "distribution": "load",
+        "step_seconds": 80.0,
+        "cpu_percent": 46.229248837004604,
+        "sampled_seconds": 79.91010570526123,
+        "busy_cpu_seconds": 147.7673664495945,
+        "test_ids": 87,
+        "test_ids_sha256": "dfa5c8f83a77494d6e2b0d77c98b80a97fbfae145ce4073abe2ef26b805f0053"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684972,
+        "artifact": "metrics-8c73ede3f6b84dc0a3c64cd990bdb6d4",
+        "python": "3.11",
+        "group": 1,
+        "workers": 4,
+        "distribution": "load",
+        "step_seconds": 118.0,
+        "cpu_percent": 64.02435531536509,
+        "sampled_seconds": 117.90792560577393,
+        "busy_cpu_seconds": 301.95915693926815,
+        "test_ids": 87,
+        "test_ids_sha256": "ac779521b0d8f3fefd88479c90b4f47660dd06d6bf110cb1083d56844b3e49a9"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684743,
+        "artifact": "metrics-4f4cd8765339499582b2102e9814dda3",
+        "python": "3.11",
+        "group": 2,
+        "workers": 4,
+        "distribution": "load",
+        "step_seconds": 113.0,
+        "cpu_percent": 71.23358979328579,
+        "sampled_seconds": 112.94569420814514,
+        "busy_cpu_seconds": 321.8210900056362,
+        "test_ids": 86,
+        "test_ids_sha256": "d464e10e493c5a8e04a87691b5fe56942d0dfe2ea6ef04da2630de1d6d34d081"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684549,
+        "artifact": "metrics-d6578e9b75c242aa8f8f5bdb52cc0f72",
+        "python": "3.11",
+        "group": 3,
+        "workers": 4,
+        "distribution": "load",
+        "step_seconds": 125.0,
+        "cpu_percent": 55.38076155805368,
+        "sampled_seconds": 124.23400092124939,
+        "busy_cpu_seconds": 275.20694329690934,
+        "test_ids": 86,
+        "test_ids_sha256": "599a37449e7b014417ad813305b8fb5bd1546af2b0e670c4b55530acbf694162"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684422,
+        "artifact": "metrics-b711da65321d44ddaf5bdde3a44add72",
+        "python": "3.11",
+        "group": 4,
+        "workers": 4,
+        "distribution": "load",
+        "step_seconds": 89.0,
+        "cpu_percent": 74.62800936947669,
+        "sampled_seconds": 88.96270632743835,
+        "busy_cpu_seconds": 265.5643872535229,
+        "test_ids": 85,
+        "test_ids_sha256": "4affffbcde454faa681968d972d307e24ad717b7f9987e93eba494b836e64e7c"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684293,
+        "artifact": "metrics-ff76a56f0b664a039748b49f3c1ecea4",
+        "python": "3.14",
+        "group": 1,
+        "workers": 4,
+        "distribution": "load",
+        "step_seconds": 68.0,
+        "cpu_percent": 76.03596435711556,
+        "sampled_seconds": 67.84206175804138,
+        "busy_cpu_seconds": 206.3374635899067,
+        "test_ids": 85,
+        "test_ids_sha256": "accfc32e0fcd6e6de05dbae5ff113469ec5bcf897755c28e9ac585c3df03ae6f"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684263,
+        "artifact": "metrics-d410b8111c344375aee155e8cb4e3287",
+        "python": "3.14",
+        "group": 2,
+        "workers": 4,
+        "distribution": "load",
+        "step_seconds": 92.0,
+        "cpu_percent": 64.54821750749231,
+        "sampled_seconds": 91.31300091743469,
+        "busy_cpu_seconds": 235.76365777921677,
+        "test_ids": 86,
+        "test_ids_sha256": "206eb30c78a0d0383a8e39a2f0aaecdba844d4d41ffc9c8a327fa68802117253"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684487,
+        "artifact": "metrics-25adc7ceb2774d219467b35171a5bc24",
+        "python": "3.14",
+        "group": 3,
+        "workers": 4,
+        "distribution": "load",
+        "step_seconds": 95.0,
+        "cpu_percent": 51.62053191433399,
+        "sampled_seconds": 94.99610948562622,
+        "busy_cpu_seconds": 196.14998805761337,
+        "test_ids": 86,
+        "test_ids_sha256": "9b7f17fd5deab6592556495d48210f5badf05cf2961b355e5ac98c488a666cbb"
+      },
+      {
+        "run_id": "41896572018",
+        "job_id": 126807684445,
+        "artifact": "metrics-53a8ddb12659497aac3a2c07514f2e5d",
+        "python": "3.14",
+        "group": 4,
+        "workers": 4,
+        "distribution": "load",
+        "step_seconds": 73.0,
+        "cpu_percent": 78.57606978457918,
+        "sampled_seconds": 72.99821662902832,
+        "busy_cpu_seconds": 229.4365185596943,
+        "test_ids": 87,
+        "test_ids_sha256": "dfa5c8f83a77494d6e2b0d77c98b80a97fbfae145ce4073abe2ef26b805f0053"
+      },
+      {
+        "run_id": "41896915856",
+        "job_id": 126808941234,
+        "artifact": "metrics-39ef8aab17a0484ebedadb798058f125",
+        "python": "3.11",
+        "group": 1,
+        "workers": 4,
+        "distribution": "worksteal",
+        "step_seconds": 101.0,
+        "cpu_percent": 71.35221973776888,
+        "sampled_seconds": 100.36000084877014,
+        "busy_cpu_seconds": 286.43635333776473,
+        "test_ids": 87,
+        "test_ids_sha256": "ac779521b0d8f3fefd88479c90b4f47660dd06d6bf110cb1083d56844b3e49a9"
+      },
+      {
+        "run_id": "41896915856",
+        "job_id": 126808941147,
+        "artifact": "metrics-67d9d82eedd344a098222d79896b7809",
+        "python": "3.11",
+        "group": 2,
+        "workers": 4,
+        "distribution": "worksteal",
+        "step_seconds": 118.0,
+        "cpu_percent": 71.80737822107344,
+        "sampled_seconds": 118.00031328201294,
+        "busy_cpu_seconds": 338.93172504186634,
+        "test_ids": 86,
+        "test_ids_sha256": "d464e10e493c5a8e04a87691b5fe56942d0dfe2ea6ef04da2630de1d6d34d081"
+      },
+      {
+        "run_id": "41896915856",
+        "job_id": 126808941185,
+        "artifact": "metrics-7ed4dfda022e420285ac21f2b313de23",
+        "python": "3.11",
+        "group": 3,
+        "workers": 4,
+        "distribution": "worksteal",
+        "step_seconds": 109.0,
+        "cpu_percent": 78.96687496350944,
+        "sampled_seconds": 108.85970449447632,
+        "busy_cpu_seconds": 343.8524269351959,
+        "test_ids": 86,
+        "test_ids_sha256": "599a37449e7b014417ad813305b8fb5bd1546af2b0e670c4b55530acbf694162"
+      },
+      {
+        "run_id": "41896915856",
+        "job_id": 126808941427,
+        "artifact": "metrics-1e48524c52f8483084bd79cc15902ab2",
+        "python": "3.11",
+        "group": 4,
+        "workers": 4,
+        "distribution": "worksteal",
+        "step_seconds": 84.0,
+        "cpu_percent": 70.44580962707067,
+        "sampled_seconds": 83.99608397483826,
+        "busy_cpu_seconds": 236.6868856444359,
+        "test_ids": 85,
+        "test_ids_sha256": "4affffbcde454faa681968d972d307e24ad717b7f9987e93eba494b836e64e7c"
+      },
+      {
+        "run_id": "41896915856",
+        "job_id": 126808941327,
+        "artifact": "metrics-db3567a5bd674835bb31ed7a603937b7",
+        "python": "3.14",
+        "group": 1,
+        "workers": 4,
+        "distribution": "worksteal",
+        "step_seconds": 63.0,
+        "cpu_percent": 62.78275397004176,
+        "sampled_seconds": 62.15600061416626,
+        "busy_cpu_seconds": 156.0929957728386,
+        "test_ids": 85,
+        "test_ids_sha256": "accfc32e0fcd6e6de05dbae5ff113469ec5bcf897755c28e9ac585c3df03ae6f"
+      },
+      {
+        "run_id": "41896915856",
+        "job_id": 126808941151,
+        "artifact": "metrics-702a8247db554fe48d40c6d18335292f",
+        "python": "3.14",
+        "group": 2,
+        "workers": 4,
+        "distribution": "worksteal",
+        "step_seconds": 78.0,
+        "cpu_percent": 66.78616142726841,
+        "sampled_seconds": 77.9869749546051,
+        "busy_cpu_seconds": 208.33802794170379,
+        "test_ids": 86,
+        "test_ids_sha256": "206eb30c78a0d0383a8e39a2f0aaecdba844d4d41ffc9c8a327fa68802117253"
+      },
+      {
+        "run_id": "41896915856",
+        "job_id": 126808941279,
+        "artifact": "metrics-c87caacc377a4c9ba6c942f388c7b91d",
+        "python": "3.14",
+        "group": 3,
+        "workers": 4,
+        "distribution": "worksteal",
+        "step_seconds": 87.0,
+        "cpu_percent": 71.88913993546127,
+        "sampled_seconds": 87.00041699409485,
+        "busy_cpu_seconds": 250.17540606927872,
+        "test_ids": 86,
+        "test_ids_sha256": "9b7f17fd5deab6592556495d48210f5badf05cf2961b355e5ac98c488a666cbb"
+      },
+      {
+        "run_id": "41896915856",
+        "job_id": 126808941236,
+        "artifact": "metrics-0dbc3326200b4f34a3f7beef8e348871",
+        "python": "3.14",
+        "group": 4,
+        "workers": 4,
+        "distribution": "worksteal",
+        "step_seconds": 70.0,
+        "cpu_percent": 75.79111250701092,
+        "sampled_seconds": 69.79719066619873,
+        "busy_cpu_seconds": 211.60026921820645,
+        "test_ids": 87,
+        "test_ids_sha256": "dfa5c8f83a77494d6e2b0d77c98b80a97fbfae145ce4073abe2ef26b805f0053"
+      }
+    ]
+  },
+  "validation": [
+    {
+      "job_id": 126807684231,
+      "cache_hit": true,
+      "workers": "2",
+      "summary": "2026-11-04T19:28:30.1910683Z =========== 69 passed, 17 skipped, 15 warnings in 149.96s (0:02:29) ===========",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684263,
+      "cache_hit": true,
+      "workers": "4",
+      "summary": "2026-11-04T19:27:07.8632951Z =========== 67 passed, 19 skipped, 14 warnings in 83.14s (0:01:23) ============",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684293,
+      "cache_hit": true,
+      "workers": "4",
+      "summary": "2026-11-04T19:26:50.0032605Z ============ 69 passed, 16 skipped, 1 warning in 60.75s (0:01:00) =============",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684408,
+      "cache_hit": true,
+      "workers": "2",
+      "summary": "2026-11-04T19:27:46.3523463Z ============ 69 passed, 16 skipped, 1 warning in 101.28s (0:01:41) ============",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684422,
+      "cache_hit": true,
+      "workers": "4",
+      "summary": "2026-11-04T19:27:09.7722892Z ============ 71 passed, 14 skipped, 6 warnings in 81.38s (0:01:21) ============",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684444,
+      "cache_hit": true,
+      "workers": "2",
+      "summary": "2026-11-04T19:28:26.4752549Z =========== 71 passed, 16 skipped, 9 warnings in 130.02s (0:02:10) ============",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684445,
+      "cache_hit": true,
+      "workers": "4",
+      "summary": "2026-11-04T19:26:58.2903448Z ============ 72 passed, 15 skipped, 1 warning in 65.32s (0:01:05) =============",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684487,
+      "cache_hit": true,
+      "workers": "4",
+      "summary": "2026-11-04T19:27:42.1286123Z ============ 73 passed, 13 skipped, 1 warning in 88.24s (0:01:28) =============",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684513,
+      "cache_hit": true,
+      "workers": "2",
+      "summary": "2026-11-04T19:26:59.9067927Z ============ 72 passed, 15 skipped, 1 warning in 73.16s (0:01:13) =============",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684549,
+      "cache_hit": true,
+      "workers": "4",
+      "summary": "2026-11-04T19:28:01.1260321Z =========== 69 passed, 17 skipped, 17 warnings in 116.80s (0:01:56) ===========",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684612,
+      "cache_hit": true,
+      "workers": "2",
+      "summary": "2026-11-04T19:27:50.5500832Z =========== 70 passed, 16 skipped, 4 warnings in 115.06s (0:01:55) ============",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684689,
+      "cache_hit": true,
+      "workers": "2",
+      "summary": "2026-11-04T19:27:33.1363143Z =========== 67 passed, 19 skipped, 14 warnings in 101.42s (0:01:41) ===========",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684743,
+      "cache_hit": true,
+      "workers": "4",
+      "summary": "2026-11-04T19:27:47.0749905Z =========== 70 passed, 16 skipped, 6 warnings in 105.96s (0:01:45) ============",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684787,
+      "cache_hit": true,
+      "workers": "2",
+      "summary": "2026-11-04T19:27:55.6549772Z ============ 73 passed, 13 skipped, 1 warning in 130.90s (0:02:10) ============",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807684972,
+      "cache_hit": true,
+      "workers": "4",
+      "summary": "2026-11-04T19:27:41.6716385Z =========== 71 passed, 16 skipped, 11 warnings in 109.46s (0:01:49) ===========",
+      "run_id": 41896572018
+    },
+    {
+      "job_id": 126807685992,
+      "cache_hit": true,
+      "workers": "2",
+      "summary": "2026-11-04T19:28:00.0303411Z =========== 71 passed, 14 skipped, 4 warnings in 111.60s (0:01:51) ============",
+      "run_id": 41896572018
+    },
+    {
+      "run_id": 41894213367,
+      "job_id": 126799416369,
+      "cache_hit": true,
+      "workers": "2",
+      "worksteal": false
+    },
+    {
+      "run_id": 41894213367,
+      "job_id": 126799416373,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": false
+    },
+    {
+      "run_id": 41894213367,
+      "job_id": 126799416374,
+      "cache_hit": true,
+      "workers": "2",
+      "worksteal": false
+    },
+    {
+      "run_id": 41894213367,
+      "job_id": 126799416467,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": false
+    },
+    {
+      "run_id": 41894213367,
+      "job_id": 126799416473,
+      "cache_hit": true,
+      "workers": "2",
+      "worksteal": false
+    },
+    {
+      "run_id": 41894213367,
+      "job_id": 126799416486,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": false
+    },
+    {
+      "run_id": 41894213367,
+      "job_id": 126799416510,
+      "cache_hit": true,
+      "workers": "2",
+      "worksteal": false
+    },
+    {
+      "run_id": 41894213367,
+      "job_id": 126799416629,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": false
+    },
+    {
+      "run_id": 41895411327,
+      "job_id": 126803792212,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": false
+    },
+    {
+      "run_id": 41895411327,
+      "job_id": 126803792256,
+      "cache_hit": true,
+      "workers": "2",
+      "worksteal": false
+    },
+    {
+      "run_id": 41895411327,
+      "job_id": 126803792296,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": false
+    },
+    {
+      "run_id": 41895411327,
+      "job_id": 126803792380,
+      "cache_hit": true,
+      "workers": "2",
+      "worksteal": false
+    },
+    {
+      "run_id": 41895411327,
+      "job_id": 126803792393,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": false
+    },
+    {
+      "run_id": 41895411327,
+      "job_id": 126803792426,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": false
+    },
+    {
+      "run_id": 41895411327,
+      "job_id": 126803792430,
+      "cache_hit": true,
+      "workers": "2",
+      "worksteal": false
+    },
+    {
+      "run_id": 41895411327,
+      "job_id": 126803792504,
+      "cache_hit": true,
+      "workers": "2",
+      "worksteal": false
+    },
+    {
+      "run_id": 41895926559,
+      "job_id": 126805406176,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": false
+    },
+    {
+      "run_id": 41895926559,
+      "job_id": 126805406191,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": true
+    },
+    {
+      "run_id": 41895926559,
+      "job_id": 126805406325,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": true
+    },
+    {
+      "run_id": 41895926559,
+      "job_id": 126805406690,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": false
+    },
+    {
+      "run_id": 41896915856,
+      "job_id": 126808941147,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": true
+    },
+    {
+      "run_id": 41896915856,
+      "job_id": 126808941151,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": true
+    },
+    {
+      "run_id": 41896915856,
+      "job_id": 126808941185,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": true
+    },
+    {
+      "run_id": 41896915856,
+      "job_id": 126808941234,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": true
+    },
+    {
+      "run_id": 41896915856,
+      "job_id": 126808941236,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": true
+    },
+    {
+      "run_id": 41896915856,
+      "job_id": 126808941279,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": true
+    },
+    {
+      "run_id": 41896915856,
+      "job_id": 126808941327,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": true
+    },
+    {
+      "run_id": 41896915856,
+      "job_id": 126808941427,
+      "cache_hit": true,
+      "workers": "4",
+      "worksteal": true
+    }
+  ],
+  "macos_probe": {
+    "run_id": 41894213367,
+    "job_id": 126799415452,
+    "conclusion": "cancelled",
+    "runner_acquired": false,
+    "annotations": [
+      "The job was not acquired by Runner of type hosted even after multiple attempts",
+      "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times."
+    ]
+  }
+}

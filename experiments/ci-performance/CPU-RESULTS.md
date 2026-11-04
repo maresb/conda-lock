@@ -1,5 +1,10 @@
 # Runner CPU and I/O experiments — November 4, 2026
 
+**Follow-up:** [Additional tracing and full Windows matrices](FOLLOWUP-RESULTS.md)
+now support four Windows workers with `--dist=worksteal`. They locate the
+observed Ibis bottleneck in Mamba and supersede the provisional Windows
+recommendation below. This document preserves the initial experiment results.
+
 These measurements use PR #972 at `b32d4e58b909cc9011684970f621f64f9fe73506`.
 Product code, dependency locks, test coverage, and action pins are unchanged.
 The experiment branch is `maresb/conda-lock:experiment/ci-performance-20261104`.

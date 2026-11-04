@@ -1,5 +1,9 @@
 # CI performance experiments
 
+Latest: [Windows tracing, scheduler trials, and full-matrix validation](FOLLOWUP-RESULTS.md)
+support four workers with `--dist=worksteal`, while locating a remaining serial
+Mamba bottleneck. They extend the initial utilization investigation below.
+
 See [the CPU and I/O experiment results](CPU-RESULTS.md) for direct runner
 utilization measurements, Linux/Windows worker-count trials, and installation
 concurrency controls. The timings below are the earlier uninstrumented trials.
