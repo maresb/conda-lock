@@ -45,21 +45,25 @@ def main():
     (root / "cache").mkdir()
     (root / "env").mkdir()
     cached, installed = root / "cache/file", root / "env/file"
-    cases = [
-        (m, t)
-        for m in ["baseline", "read", "refresh", "control"]
-        for t in range(args.trials)
+    cells = [
+        ("baseline", 0),
+        ("read", 0),
+        ("refresh", 0),
+        ("control", 0),
+        ("read", 200),
+        ("read", 1000),
     ]
+    cases = [(m, ms, t) for m, ms in cells for t in range(args.trials)]
     random.Random(974).shuffle(cases)
     counts = collections.defaultdict(collections.Counter)
     with (root / "events.jsonl").open("w", buffering=1) as events:
-        for mode, trial in cases:
+        for mode, sleep_ms, trial in cases:
             installed.unlink(missing_ok=True)
             cached.unlink(missing_ok=True)
             cached.write_text("data, not an executable\n")
             os.link(cached, installed)
             result = subprocess.run(
-                [str(binary), str(cached), str(installed), mode],
+                [str(binary), str(cached), str(installed), mode, str(sleep_ms)],
                 capture_output=True,
                 text=True,
                 check=True,
@@ -74,7 +78,8 @@ def main():
                 "env",
                 "none",
             }, values
-            c = counts[mode]
+            key = mode if not sleep_ms else f"{mode}/sleep{sleep_ms}ms"
+            c = counts[key]
             c["trials"] += 1
             c["x_cache"] += values["x"] == "cache"
             c["y_cache"] += values["y"] == "cache"
@@ -84,7 +89,7 @@ def main():
             c["y_env_given_x_cache"] += values["x"] == "cache" and values["y"] == "env"
             events.write(
                 json.dumps(
-                    {"event": "trial", "case": mode, "trial": trial, "values": values}
+                    {"event": "trial", "case": key, "trial": trial, "values": values}
                 )
                 + "\n"
             )
