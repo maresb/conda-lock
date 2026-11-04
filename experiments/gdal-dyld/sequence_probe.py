@@ -20,7 +20,10 @@ def main():
     parser.add_argument("--root-prefix", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--prime", action="store_true")
+    parser.add_argument("--lifecycle", action="store_true")
     args = parser.parse_args()
+    if args.lifecycle:
+        args.prime = True
     if (
         os.environ.get("GITHUB_ACTIONS") != "true"
         or os.environ.get("GITHUB_REPOSITORY") != "maresb/conda-lock"
@@ -82,6 +85,15 @@ def main():
             for trial in range(20)
         ]
         random.Random(967).shuffle(cases)
+    if args.lifecycle:
+        cases = [
+            (mode, state, method, "1", trial)
+            for mode in ["hardlink", "copy"]
+            for state in ["cache-dead", "cache-alive", "env-dead", "env-alive"]
+            for method in ["exec", "spawn"]
+            for trial in range(40)
+        ]
+        random.Random(968).shuffle(cases)
     template = output / "original-gdalinfo"
     shutil.copy2(cached, template)
     counts = collections.defaultdict(collections.Counter)

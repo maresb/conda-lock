@@ -24,7 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - label: installer-thread-lifecycle
+          - label: live-versus-exited-worker
             timeout: 1200
     name: ${{ matrix.label }}
     steps:
@@ -46,7 +46,7 @@ jobs:
         run: |
           /usr/bin/python3 experiments/gdal-dyld/trace_probe.py \
             --output "$RUNNER_TEMP/gdal-dyld/trace" --timeout "$TRACE_TIMEOUT" --launch-windows -- \
-            /usr/bin/python3 experiments/gdal-dyld/sequence_probe.py --prime \
+            /usr/bin/python3 experiments/gdal-dyld/sequence_probe.py --lifecycle \
             --micromamba "$MAMBA_EXE" --root-prefix "$MAMBA_ROOT_PREFIX" \
             --output "$RUNNER_TEMP/gdal-dyld/probe"
       - name: Collect evidence
