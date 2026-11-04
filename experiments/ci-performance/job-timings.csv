@@ -1,0 +1,45 @@
+run,case,job_id,job,conclusion,runner_seconds,start_offset,completion_offset,environment_setup,miniconda_post,test_seconds,python,os,shards
+41870597877,windows-install-controls,126716275489,configure,success,26.0,12.0,38.0,0,0,0,,,
+41870597877,windows-install-controls,126716674832,"windows-control / lock-gdal (windows-latest, 3.14)",success,85.0,50.0,135.0,0,0,32.0,,,
+41870597877,windows-install-controls,126717717159,"windows-control / parallel (1, explicit)",success,246.0,137.0,383.0,72.0,0.0,94.0,,,
+41870597877,windows-install-controls,126717717179,windows-control / serial control (2),success,384.0,138.0,522.0,62.0,15.0,253.0,,,
+41870597877,windows-install-controls,126717717207,windows-control / serial control (1),success,491.0,137.0,628.0,69.0,25.0,341.0,,,
+41870597877,windows-install-controls,126717717220,"windows-control / parallel (2, lock)",success,256.0,138.0,394.0,65.0,0.0,138.0,,,
+41870597877,windows-install-controls,126717717232,"windows-control / parallel (2, explicit)",success,242.0,139.0,381.0,63.0,0.0,126.0,,,
+41870597877,windows-install-controls,126717717356,"windows-control / parallel (1, lock)",success,252.0,139.0,391.0,65.0,0.0,134.0,,,
+41870597877,windows-install-controls,126717717377,"windows-control / parallel (1, env)",success,206.0,137.0,343.0,53.0,0.0,106.0,,,
+41870597877,windows-install-controls,126717717606,"windows-control / parallel (2, env)",success,246.0,138.0,384.0,56.0,0.0,145.0,,,
+41872657150,windows-baseline-warm-1,126723649720,configure,success,8.0,3.0,11.0,0,0,0,,,
+41872657150,windows-baseline-warm-1,126723762850,windows-baseline-pytest / pytest py3.11 on windows-latest (5/10),success,153.0,14.0,167.0,43.0,0,77.0,3.11,windows-latest,10
+41872657150,windows-baseline-warm-1,126723762976,windows-baseline-pytest / pytest py3.14 on windows-latest (3/10),success,138.0,15.0,153.0,46.0,0,58.0,3.14,windows-latest,10
+41872657150,windows-baseline-warm-1,126723762987,windows-baseline-pytest / pytest py3.11 on windows-latest (6/10),success,120.0,14.0,134.0,43.0,0,47.0,3.11,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763000,windows-baseline-pytest / pytest py3.11 on windows-latest (8/10),success,135.0,14.0,149.0,41.0,0,60.0,3.11,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763014,windows-baseline-pytest / pytest py3.14 on windows-latest (8/10),success,119.0,14.0,133.0,39.0,0,41.0,3.14,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763026,windows-baseline-pytest / pytest py3.11 on windows-latest (4/10),success,135.0,14.0,149.0,45.0,0,40.0,3.11,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763042,windows-baseline-pytest / pytest py3.11 on windows-latest (2/10),success,142.0,14.0,156.0,33.0,0,78.0,3.11,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763045,windows-baseline-pytest / pytest py3.14 on windows-latest (9/10),success,134.0,14.0,148.0,44.0,0,58.0,3.14,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763066,windows-baseline-pytest / pytest py3.11 on windows-latest (1/10),success,143.0,15.0,158.0,41.0,0,70.0,3.11,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763082,windows-baseline-pytest / pytest py3.11 on windows-latest (10/10),success,121.0,15.0,136.0,38.0,0,56.0,3.11,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763101,windows-baseline-pytest / pytest py3.11 on windows-latest (7/10),success,111.0,14.0,125.0,31.0,0,53.0,3.11,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763115,windows-baseline-pytest / pytest py3.14 on windows-latest (10/10),success,119.0,17.0,136.0,42.0,0,46.0,3.14,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763148,windows-baseline-pytest / pytest py3.14 on windows-latest (4/10),success,115.0,14.0,129.0,41.0,0,43.0,3.14,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763203,windows-baseline-pytest / pytest py3.14 on windows-latest (7/10),success,133.0,14.0,147.0,45.0,0,57.0,3.14,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763208,windows-baseline-pytest / pytest py3.14 on windows-latest (1/10),success,137.0,15.0,152.0,46.0,0,56.0,3.14,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763229,windows-baseline-pytest / pytest py3.14 on windows-latest (6/10),success,193.0,14.0,207.0,83.0,0,74.0,3.14,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763262,windows-baseline-pytest / pytest py3.11 on windows-latest (9/10),success,131.0,20.0,151.0,41.0,0,61.0,3.11,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763314,windows-baseline-pytest / pytest py3.14 on windows-latest (2/10),success,99.0,14.0,113.0,37.0,0,36.0,3.14,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763342,windows-baseline-pytest / pytest py3.11 on windows-latest (3/10),success,164.0,15.0,179.0,48.0,0,79.0,3.11,windows-latest,10
+41872657150,windows-baseline-warm-1,126723763411,windows-baseline-pytest / pytest py3.14 on windows-latest (5/10),success,129.0,14.0,143.0,55.0,0,41.0,3.14,windows-latest,10
+41872657150,windows-baseline-warm-1,126725710179,windows-baseline-pytest / Aggregate test durations,success,6.0,209.0,215.0,0,0,0,,,
+41872657150,windows-baseline-warm-1,126725791904,windows-baseline-pytest / test-status,success,10.0,223.0,233.0,0,0,0,,,
+41873484019,windows-candidate-warm-1,126726574950,configure,success,22.0,8.0,30.0,0,0,0,,,
+41873484019,windows-candidate-warm-1,126726868857,windows-candidate-pytest / pytest py3.11 on windows-latest (4/4),success,181.0,32.0,213.0,32.0,0,121.0,3.11,windows-latest,4
+41873484019,windows-candidate-warm-1,126726868878,windows-candidate-pytest / pytest py3.11 on windows-latest (3/4),success,232.0,32.0,264.0,43.0,0,159.0,3.11,windows-latest,4
+41873484019,windows-candidate-warm-1,126726868904,windows-candidate-pytest / pytest py3.14 on windows-latest (4/4),success,151.0,32.0,183.0,39.0,0,82.0,3.14,windows-latest,4
+41873484019,windows-candidate-warm-1,126726869116,windows-candidate-pytest / pytest py3.11 on windows-latest (1/4),success,245.0,32.0,277.0,48.0,0,145.0,3.11,windows-latest,4
+41873484019,windows-candidate-warm-1,126726869265,windows-candidate-pytest / pytest py3.14 on windows-latest (1/4),success,165.0,33.0,198.0,40.0,0,94.0,3.14,windows-latest,4
+41873484019,windows-candidate-warm-1,126726869327,windows-candidate-pytest / pytest py3.14 on windows-latest (2/4),success,176.0,33.0,209.0,44.0,0,98.0,3.14,windows-latest,4
+41873484019,windows-candidate-warm-1,126726869379,windows-candidate-pytest / pytest py3.11 on windows-latest (2/4),success,198.0,32.0,230.0,38.0,0,126.0,3.11,windows-latest,4
+41873484019,windows-candidate-warm-1,126726869408,windows-candidate-pytest / pytest py3.14 on windows-latest (3/4),success,192.0,44.0,236.0,36.0,0,128.0,3.14,windows-latest,4
+41873484019,windows-candidate-warm-1,126729371642,windows-candidate-pytest / Aggregate test durations,success,8.0,279.0,287.0,0,0,0,,,
+41873484019,windows-candidate-warm-1,126729472428,windows-candidate-pytest / test-status,success,11.0,290.0,301.0,0,0,0,,,

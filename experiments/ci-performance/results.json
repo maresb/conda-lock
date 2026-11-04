@@ -1,0 +1,78 @@
+[
+  {
+    "id": 41870597877,
+    "case": "windows-install-controls",
+    "conclusion": "success",
+    "wall_seconds": 628.0,
+    "runner_minutes": 40.56666666666667,
+    "pytest_seconds": null,
+    "integration_seconds": null,
+    "platforms": {},
+    "install_repeats": [
+      {
+        "repeat": 1,
+        "serial_seconds": 491.0,
+        "serial_install_step": 341.0,
+        "serial_cleanup": 25.0,
+        "parallel_span": 254.0,
+        "parallel_runner_seconds": 704.0,
+        "parallel_max_install_step": 134.0,
+        "parallel_cleanup": 0.0
+      },
+      {
+        "repeat": 2,
+        "serial_seconds": 384.0,
+        "serial_install_step": 253.0,
+        "serial_cleanup": 15.0,
+        "parallel_span": 256.0,
+        "parallel_runner_seconds": 744.0,
+        "parallel_max_install_step": 145.0,
+        "parallel_cleanup": 0.0
+      }
+    ]
+  },
+  {
+    "id": 41872657150,
+    "case": "windows-baseline-warm-1",
+    "conclusion": "success",
+    "wall_seconds": 233.0,
+    "runner_minutes": 44.916666666666664,
+    "pytest_seconds": 233.0,
+    "integration_seconds": null,
+    "platforms": {
+      "windows-latest": {
+        "shards": 20,
+        "completion": 207.0,
+        "runner_minutes": 44.516666666666666,
+        "setup_seconds": 882.0,
+        "test_seconds": 1131.0,
+        "latest_start": 20.0,
+        "matrix_span": 193.0
+      }
+    },
+    "cache_hits": 20,
+    "timed_test_ids_per_python": 344
+  },
+  {
+    "id": 41873484019,
+    "case": "windows-candidate-warm-1",
+    "conclusion": "success",
+    "wall_seconds": 301.0,
+    "runner_minutes": 26.35,
+    "pytest_seconds": 301.0,
+    "integration_seconds": null,
+    "platforms": {
+      "windows-latest": {
+        "shards": 8,
+        "completion": 277.0,
+        "runner_minutes": 25.666666666666668,
+        "setup_seconds": 320.0,
+        "test_seconds": 953.0,
+        "latest_start": 44.0,
+        "matrix_span": 245.0
+      }
+    },
+    "cache_hits": 8,
+    "timed_test_ids_per_python": 344
+  }
+]
