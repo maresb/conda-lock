@@ -344,7 +344,11 @@ per cell, fresh inode each, two runs; the first
 ([run 41891781416](https://github.com/maresb/conda-lock/actions/runs/41891781416))
 checked only the last reset of each trial and had no `oppose` cells, the
 second ([run 41901920446](https://github.com/maresb/conda-lock/actions/runs/41901920446))
-checks every reset in the probe itself:
+checks every reset in the probe itself. The second run's probe also
+creates the helper and verifier threads in every cell, not only the
+`oppose` cells, and other live threads are known to affect inheritance, so
+the two runs replicate the same qualitative behavior under slightly
+different thread populations; the pooled totals below describe both:
 
 | Cell | Trials | X first read cache | X second read cache, given first cache | X second read env, given first cache | Y read cache, given X second read cache | Y read cache, given X second read env | Y read cache, given X first read env | Verifier read cache |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -432,10 +436,11 @@ values per run:
 
 The reader, which cannot hold the worker's record, read the cache path in
 every trial after the worker had exited, and the environment path in every
-trial after the main thread had built the path. In the first run the
-live-worker cells waited 20 ms for the worker's lookup rather than for its
-completion and had a few exceptions; the second run waits for the lookup
-to return and the reader read the cache path in every trial there too. The
+trial after the main thread had built the path. In the first run the live-worker cells waited 20 ms for the worker's
+lookup rather than for its completion and had a few exceptions; the second
+run waits for the lookup to return and had none, which is consistent with
+the race explaining them, though the cause of each earlier exception
+cannot be identified after the fact. The
 fallback therefore follows the most recent lookup
 whether or not the looking-up thread is still alive, and a path build by a
 thread with its own record resets it to that thread's answer. The two
