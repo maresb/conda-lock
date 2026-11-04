@@ -20,5 +20,11 @@ Codecov upload; coverage generation, duration uploads, aggregation, and status
 checks remain. Queue time and runner execution time must be reported separately.
 Fork queue behavior is not assumed to match the conda organization.
 
+GitHub reported an Actions outage starting at 16:05 UTC on November 4. The first
+baseline run completed its Linux/Windows jobs while all macOS jobs stayed queued.
+The candidate was therefore started as a correctness diagnostic before that
+baseline finished. Neither outage-era run provides a clean end-to-end speed
+comparison. Performance repetitions must run sequentially after recovery.
+
 Generate the reusable benchmark workflows with `python experiments/ci-performance/generate.py`
 (requires PyYAML). Only `case.env` changes between repeat runs.

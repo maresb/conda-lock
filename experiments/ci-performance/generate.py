@@ -223,7 +223,10 @@ top = {
     "name": "CI performance experiment",
     "on": {"push": {"branches": [BRANCH]}},
     "permissions": {},
-    "concurrency": {"group": "ci-performance-experiment", "cancel-in-progress": False},
+    "concurrency": {
+        "group": "ci-performance-${{ github.sha }}",
+        "cancel-in-progress": False,
+    },
     "jobs": {
         "configure": {
             "if": "github.repository == 'maresb/conda-lock'",
