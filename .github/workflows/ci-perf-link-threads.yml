@@ -1,0 +1,120 @@
+name: Measure Windows Conda linking threads
+'on':
+  workflow_call: {}
+permissions: {}
+defaults:
+  run:
+    shell: bash -elx {0}
+jobs:
+  link-threads:
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - windows-latest
+        python-version:
+        - '3.14'
+        repeat:
+        - 1
+        - 2
+        execute-threads:
+        - 1
+        - 4
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        persist-credentials: false
+    - name: Set up telemetry Python
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      with:
+        python-version: '3.11'
+    - name: Start resource sampler
+      id: metrics
+      shell: bash -eo pipefail {0}
+      run: |
+        python -m venv "$RUNNER_TEMP/ci-metrics-venv"
+        if [[ "$RUNNER_OS" == Windows ]]; then
+          metrics_python="$RUNNER_TEMP/ci-metrics-venv/Scripts/python.exe"
+        else
+          metrics_python="$RUNNER_TEMP/ci-metrics-venv/bin/python"
+        fi
+        "$metrics_python" -m pip install --disable-pip-version-check psutil==7.1.0
+        echo "MONITOR_PY=$metrics_python" >> "$GITHUB_ENV"
+        "$metrics_python" experiments/ci-performance/telemetry.py start
+    - name: Measure conda-incubator/setup-miniconda
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: conda-incubator/setup-miniconda
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
+    - uses: conda-incubator/setup-miniconda@fc2d68f6413eb2d87b895e92f8584b5b94a10167
+      with:
+        auto-activate-base: true
+        python-version: ${{ matrix.python-version }}
+        run-post: false
+    - name: Measure install conda-lock
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: install conda-lock
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
+    - name: install conda-lock
+      run: |
+        pip install pipx
+        pipx install -e .
+    - name: Measure Download lockfiles
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: Download lockfiles
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
+    - name: Download lockfiles
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+      with:
+        name: conda-lock-${{ matrix.os }}-${{ matrix.python-version }}
+        path: lockfiles
+        run-id: 41885415752
+        github-token: ${{ github.token }}
+    - name: Measure Install GDAL with conda-lock
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: Install GDAL with conda-lock
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
+    - name: Install GDAL with conda-lock
+      run: |
+        conda config --show execute_threads
+        conda-lock install --log-level=DEBUG -n gdal-test-cl-lock lockfiles/conda-lock.yml
+        conda-lock install --log-level=DEBUG -n gdal-test-cl-explicit lockfiles/conda-*.lock
+        conda-lock install --log-level=DEBUG -n gdal-test-cl-env lockfiles/conda-*.lock.yml
+
+        conda list -n gdal-test-cl-lock
+        conda run -n gdal-test-cl-lock gdalinfo --version
+
+        conda list -n gdal-test-cl-explicit
+        conda run -n gdal-test-cl-explicit gdalinfo --version
+
+        conda list -n gdal-test-cl-env
+        conda run -n gdal-test-cl-env gdalinfo --version
+
+        conda run -n gdal-test-cl-lock python -c 'import toolz; print(toolz.__version__)'
+        conda run -n gdal-test-cl-explicit python -c 'import toolz; print(toolz.__version__)'
+        conda run -n gdal-test-cl-env python -c 'import toolz; print(toolz.__version__)'
+      env:
+        CONDA_EXECUTE_THREADS: ${{ matrix.execute-threads }}
+    - name: Stop resource sampler
+      if: always() && steps.metrics.outcome == 'success'
+      shell: bash -eo pipefail {0}
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py stop'
+    - name: Upload resource measurements
+      if: always() && steps.metrics.outcome == 'success'
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      with:
+        name: metrics-${{ env.METRICS_ID }}
+        path: ${{ runner.temp }}/ci-metrics
+        if-no-files-found: error
+    timeout-minutes: 25
+    name: Link threads (${{ matrix.execute-threads }}, ${{ matrix.repeat }})
+    env:
+      METRICS_MATRIX: ${{ toJSON(matrix) }}
+      METRICS_INPUTS: ${{ toJSON(inputs) }}

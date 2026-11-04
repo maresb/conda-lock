@@ -99,6 +99,32 @@ for step in unit["jobs"]["aggregate-durations"]["steps"]:
 generator.save("ci-perf-pytest.yml", unit)
 
 windows = generator.load("ci-perf-windows-control.yml")
+link_threads = copy.deepcopy(windows["jobs"]["serial"])
+link_threads.pop("needs")
+link_threads["name"] = (
+    "Link threads (${{ matrix.execute-threads }}, ${{ matrix.repeat }})"
+)
+link_threads["strategy"]["matrix"]["execute-threads"] = [1, 4]
+generator.disable_conda_cleanup(link_threads)
+for step in link_threads["steps"]:
+    if step.get("name") == "Download lockfiles":
+        step["with"].update(
+            {"run-id": 41885415752, "github-token": "${{ github.token }}"}
+        )
+    if step.get("name") == "Install GDAL with conda-lock":
+        step["env"] = {"CONDA_EXECUTE_THREADS": "${{ matrix.execute-threads }}"}
+        step["run"] = "conda config --show execute_threads\n" + step["run"]
+instrument(link_threads)
+generator.save(
+    "ci-perf-link-threads.yml",
+    {
+        "name": "Measure Windows Conda linking threads",
+        "on": {"workflow_call": {}},
+        "permissions": {},
+        "defaults": windows["defaults"],
+        "jobs": {"link-threads": link_threads},
+    },
+)
 local_concurrency = copy.deepcopy(windows["jobs"]["parallel"])
 local_concurrency.pop("needs")
 local_concurrency["name"] = "Three formats on one runner (${{ matrix.repeat }})"
@@ -152,6 +178,12 @@ for job in windows["jobs"].values():
 generator.save("ci-perf-windows-control.yml", windows)
 
 top = generator.load("ci-performance-experiment.yml")
+top["jobs"]["windows-link-threads"] = {
+    "needs": "configure",
+    "if": "needs.configure.outputs.mode == 'windows-workers4'",
+    "permissions": {"contents": "read", "actions": "read"},
+    "uses": "./.github/workflows/ci-perf-link-threads.yml",
+}
 top["jobs"]["windows-local-concurrency"] = {
     "needs": "configure",
     "if": "needs.configure.outputs.mode == 'windows-local-concurrency'",

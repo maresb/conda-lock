@@ -234,6 +234,13 @@ jobs:
         "pytest-split-group-index": 3, "pytest-split-group-size": 4}, {"os": "macos-latest", "python-version": "3.14", "pytest-split-group-index":
         4, "pytest-split-group-size": 4}]}'
       cache-group: candidate
+  windows-link-threads:
+    needs: configure
+    if: needs.configure.outputs.mode == 'windows-workers4'
+    permissions:
+      contents: read
+      actions: read
+    uses: ./.github/workflows/ci-perf-link-threads.yml
   windows-local-concurrency:
     needs: configure
     if: needs.configure.outputs.mode == 'windows-local-concurrency'
