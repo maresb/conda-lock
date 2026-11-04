@@ -205,18 +205,37 @@ def print_route2(runs):
     print(f"| Any, copied executable | {copies} total over {len(r2)} runs | | |")
 
 
+def host(runs, job):
+    """macOS version, dyld project, and architecture recorded for a job."""
+    for run in runs:
+        lines = run["hosts"].get(job)
+        if lines:
+            version = next(
+                line.split()[-1] for line in lines if line.startswith("ProductVersion")
+            )
+            dyld = next(
+                line.split("dyld-")[-1] for line in lines if "PROJECT:dyld" in line
+            )
+            return version, dyld, lines[-1]
+    return "?", "?", "?"
+
+
 def print_images(runs):
     print(
         "\n## Runner images (exited-cache-worker cells, out of 40; range over runs)\n"
     )
-    print("| Image | Runs | `spawn` | `exec` | Nonzero elsewhere |")
-    print("|---|---:|---:|---:|---|")
+    print(
+        "| Image | macOS | dyld | Arch | Runs | `spawn` | `exec` | Nonzero elsewhere |"
+    )
+    print("|---|---|---|---|---:|---:|---:|---|")
     for os_ in ["macos-15", "macos-15-intel", "macos-26", "macos-26-intel"]:
         job = f"thread-exit-{os_}"
         spawn = values(runs, job, "hardlink/cache-dead/spawn")
         exec_ = values(runs, job, "hardlink/cache-dead/exec")
+        version, dyld, arch = host(runs, job)
         print(
-            f"| `{os_}` | {len(spawn)} | {fmt_range(spawn)} | {fmt_range(exec_)} | {nonzero_elsewhere(runs, job, 'hardlink/cache-dead')} |"
+            f"| `{os_}` | {version} | {dyld} | {arch} | {len(spawn)} | {fmt_range(spawn)} "
+            f"| {fmt_range(exec_)} | {nonzero_elsewhere(runs, job, 'hardlink/cache-dead')} |"
         )
     total = dead = paths = 0
     for r in runs:
