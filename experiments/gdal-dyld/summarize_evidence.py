@@ -293,7 +293,10 @@ def print_record(runs):
         "| Mode | Trials | X read cache | Y read cache | Y cache given X cache | Y env given X cache |"
     )
     print("|---|---:|---:|---:|---:|---:|")
-    for mode in ["baseline", "read", "refresh", "control"]:
+    modes = sorted(
+        {k for r in runs for k in (r["summaries"].get("record-probe") or {})}
+    )
+    for mode in modes:
         agg = {}
         for r in runs:
             cell = (r["summaries"].get("record-probe") or {}).get(mode)
@@ -305,6 +308,17 @@ def print_record(runs):
                 f"| {mode} | {agg['trials']} | {agg['x_cache']} | {agg['y_cache']} "
                 f"| {agg['y_cache_given_x_cache']} | {agg['y_env_given_x_cache']} |"
             )
+
+
+def print_respawn(runs):
+    print("\n## Repeated spawns from one process (cache paths / launches, per run)\n")
+    for r in runs:
+        s = r["summaries"].get("respawn-probe")
+        if s:
+            cells = [
+                f"{k}: {v['cache_path']}/{v['launches']}" for k, v in sorted(s.items())
+            ]
+            print(f"- run {r['id']}: " + "; ".join(cells))
 
 
 def print_delay(runs):
@@ -332,6 +346,7 @@ def main():
         print_retry,
         print_record,
         print_delay,
+        print_respawn,
     ]:
         section(runs)
 
