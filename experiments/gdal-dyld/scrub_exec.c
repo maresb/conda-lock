@@ -1,7 +1,9 @@
 /* Exited cache worker, then idle dead or live threads or live environment
  * lookups before launching the hardlinked executable.
  *
- * scrub_exec CACHED INSTALLED exec|spawn STALE DUMMIES HOLDERS EVICTORS
+ * scrub_exec CACHED INSTALLED exec|spawn STALE DUMMIES HOLDERS EVICTORS [EVICTOR_PATH]
+ *   EVICTOR_PATH  what each evictor looks up: INSTALLED by default, "none" for
+ *            no lookup, or any other path (an unrelated file).
  *   STALE    1: a worker looks up CACHED and exits before launch; 0: no worker.
  *   DUMMIES  threads created and joined after that exit; no filesystem activity.
  *   HOLDERS  threads created after that exit and kept alive through the launch;
@@ -61,15 +63,17 @@ static void release(int *flag, pthread_t *threads, int count) {
     for (int i = 0; i < count; ++i) if (pthread_join(threads[i], NULL)) exit(2);
 }
 int main(int argc, char **argv) {
-    if (argc != 8) return 2;
+    if (argc != 8 && argc != 9) return 2;
     const char *cached = argv[1], *installed = argv[2], *method = argv[3];
+    const char *evictor_path = argc == 9 ? argv[8] : installed;
+    if (!strcmp(evictor_path, "none")) evictor_path = NULL;
     int stale = atoi(argv[4]), dummies = atoi(argv[5]);
     int holders = atoi(argv[6]), evictors = atoi(argv[7]);
     if (stale < 0 || stale > 1 || dummies < 0 || dummies > 64) return 2;
     if (holders < 0 || holders > 64 || evictors < 0 || evictors > 64) return 2;
     int release_stale = 0, release_rest = 0, expected = 0, count = 0;
     struct job stale_job = {cached, &release_stale};
-    struct job evict_job = {installed, &release_rest};
+    struct job evict_job = {evictor_path, &release_rest};
     struct job hold_job = {NULL, &release_rest};
     pthread_t stale_thread, others[128];
     memset(&stale_thread, 0, sizeof stale_thread);

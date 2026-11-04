@@ -61,22 +61,31 @@ def main():
     (root / "cache").mkdir()
     (root / "env").mkdir()
     cached, installed = root / "cache/app", root / "env/app"
-    # (mode, stale, dummies, holders, evictors, method)
+    other = root / "other-file"
+    other.write_text("unrelated\n")
+    # (mode, stale, dummies, holders, evictors, evictor target, method)
     cells = [
-        ("hardlink", 1, 0, 0, 0, "spawn"),
-        ("hardlink", 1, 0, 0, 0, "exec"),
-        ("hardlink", 0, 0, 0, 0, "spawn"),
-        ("copy", 1, 0, 0, 0, "spawn"),
+        ("hardlink", 1, 0, 0, 0, "installed", "spawn"),
+        ("hardlink", 1, 0, 0, 0, "installed", "exec"),
+        ("hardlink", 0, 0, 0, 0, "installed", "spawn"),
+        ("copy", 1, 0, 0, 0, "installed", "spawn"),
     ]
-    cells += [("hardlink", 1, d, 0, 0, "spawn") for d in [1, 2, 4, 8]]
-    cells += [("hardlink", 1, 0, h, 0, "spawn") for h in [1, 2, 4]]
-    cells += [("hardlink", 1, 0, 0, e, "spawn") for e in [1, 3, 5, 6, 7, 8, 10]]
+    cells += [("hardlink", 1, d, 0, 0, "installed", "spawn") for d in [1, 2, 4, 8]]
+    cells += [("hardlink", 1, 0, h, 0, "installed", "spawn") for h in [1, 2, 4]]
+    cells += [
+        ("hardlink", 1, 0, 0, e, "installed", "spawn") for e in [1, 3, 5, 6, 7, 8, 10]
+    ]
+    # Matched controls: the same live threads, created before the worker exits,
+    # that look up nothing or an unrelated file instead of the environment alias.
+    cells += [
+        ("hardlink", 1, 0, 0, e, t, "spawn") for e in [7, 10] for t in ["none", "other"]
+    ]
     cases = [(*cell, trial) for cell in cells for trial in range(args.trials)]
     random.Random(971).shuffle(cases)
     counts = collections.defaultdict(collections.Counter)
     env = {k: v for k, v in os.environ.items() if not k.startswith("DYLD_")}
     with (root / "events.jsonl").open("w", buffering=1) as events:
-        for mode, stale, dummies, holders, evictors, method, trial in cases:
+        for mode, stale, dummies, holders, evictors, target, method, trial in cases:
             installed.unlink(missing_ok=True)
             cached.unlink(missing_ok=True)
             shutil.copy2(template, cached)
@@ -91,6 +100,9 @@ def main():
                     str(dummies),
                     str(holders),
                     str(evictors),
+                    {"installed": str(installed), "none": "none", "other": str(other)}[
+                        target
+                    ],
                 ],
                 capture_output=True,
                 text=True,
@@ -103,7 +115,8 @@ def main():
             )
             assert values["launch_path"] == str(installed), values
             assert values["main_image"] in {str(cached), str(installed)}, values
-            key = f"{mode}/stale{stale}/dummies{dummies}/holders{holders}/evictors{evictors}/{method}"
+            suffix = "" if target == "installed" else f"-{target}"
+            key = f"{mode}/stale{stale}/dummies{dummies}/holders{holders}/evictors{evictors}{suffix}/{method}"
             counts[key]["launches"] += 1
             counts[key]["cache_path"] += values["main_image"] == str(cached)
             counts[key]["env_path"] += values["main_image"] == str(installed)
