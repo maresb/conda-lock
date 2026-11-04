@@ -65,13 +65,14 @@ def main():
             }
         )
     installed = identity(executable)
+    cached_identities = [identity(p) for p in cached]
     record = {
         "label": args.label,
         "installed": installed,
-        "cached": [identity(p) for p in cached],
+        "cached": cached_identities,
         "shares_inode_with_cache": any(
             c["inode"] == installed["inode"] and c["device"] == installed["device"]
-            for c in cached
+            for c in cached_identities
         ),
         "launches": len(launches),
         "failures": sum(1 for item in launches if item["returncode"] != 0),
