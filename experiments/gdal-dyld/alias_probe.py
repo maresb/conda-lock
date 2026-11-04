@@ -14,6 +14,7 @@ from pathlib import Path
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--probe", choices=["alias", "origin"], default="alias")
     args = parser.parse_args()
     if (
         os.environ.get("GITHUB_ACTIONS") != "true"
@@ -22,7 +23,7 @@ def main():
         parser.error("Requires this experiment's authorized GitHub runner")
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
-    source = Path(__file__).with_name("alias_state.c")
+    source = Path(__file__).with_name(args.probe + "_state.c")
     shutil.copy2(source, output / source.name)
     binary = output / "alias_state"
     subprocess.run(
@@ -117,6 +118,25 @@ def main():
                         {"key": k, "count": v} for k, v in sorted(counts.items())
                     ],
                 }
+                if args.probe == "origin":
+                    counts = collections.Counter(
+                        (
+                            e["workers"],
+                            e["before"],
+                            e["parent_fd"],
+                            e["parent_id"],
+                            e["cache_linkid_path"],
+                            e["env_linkid_path"],
+                        )
+                        for e in rows
+                        if e["event"] == "origin"
+                    )
+                    summaries[label] = {
+                        "identities": rows[:3],
+                        "counts": [
+                            {"key": k, "count": v} for k, v in sorted(counts.items())
+                        ],
+                    }
                 (output / "summary.json").write_text(
                     json.dumps(summaries, indent=2) + "\n"
                 )

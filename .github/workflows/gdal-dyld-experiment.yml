@@ -24,7 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - label: dyld-boundary
+          - label: origin-eviction
             timeout: 900
     name: ${{ matrix.label }}
     steps:
@@ -40,9 +40,9 @@ jobs:
           test "$(uname -m)" = arm64
           mkdir -p "$RUNNER_TEMP/gdal-dyld"
           { sw_vers; uname -m; /usr/bin/what /usr/lib/dyld; xcrun clang --version; } > "$RUNNER_TEMP/gdal-dyld/host.log"
-      - name: Probe dyld startup state
+      - name: Probe thread origin eviction and link IDs
         run: |
-          /usr/bin/python3 experiments/gdal-dyld/boundary_probe.py \
+          /usr/bin/python3 experiments/gdal-dyld/alias_probe.py --probe origin \
             --output "$RUNNER_TEMP/gdal-dyld/probe"
       - name: Collect evidence
         if: ${{ !cancelled() }}
