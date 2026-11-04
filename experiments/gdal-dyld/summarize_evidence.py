@@ -467,6 +467,69 @@ def print_record(runs):
             )
 
 
+FALLBACK_CELLS = [
+    ("reader-pre/worker-none/mainread-0", "No worker"),
+    ("reader-pre/worker-none/mainread-1", "No worker, main thread reads"),
+    ("reader-pre/worker-alive/mainread-0", "Worker alive"),
+    ("reader-pre/worker-alive/mainread-1", "Worker alive, main thread reads"),
+    ("reader-pre/worker-exited/mainread-0", "Worker exited"),
+    ("reader-pre/worker-exited/mainread-1", "Worker exited, main thread reads"),
+    (
+        "reader-none/worker-exited/mainread-0",
+        "No reader, worker exited (superseded design's sequence)",
+    ),
+    (
+        "reader-none/worker-exited/mainread-1",
+        "No reader, worker exited, main thread reads (`norestore`'s sequence)",
+    ),
+]
+
+
+def print_fallback(runs):
+    print("\n## Fallback after an exited thread's lookup (totals over runs)\n")
+    print(
+        "| Cell | Trials | Reader read cache | X first read cache | X first read cache, given reader cache "
+        "| X first read cache, given reader env | Y read cache |"
+    )
+    print("|---|---:|---:|---:|---:|---:|---:|")
+    for key, label in FALLBACK_CELLS:
+        agg = aggregate(runs, "fallback-probe", key)
+        if not agg:
+            continue
+        reader = agg.get("r_cache", "") if key.startswith("reader-pre") else ""
+        print(
+            f"| {label} | {agg['trials']} | {reader} | {agg.get('x1_cache', 0)} "
+            f"| {agg.get('x1_cache_given_r_cache', '') if reader != '' else ''} "
+            f"| {agg.get('x1_cache_given_r_env', '') if reader != '' else ''} | {agg.get('y_cache', 0)} |"
+        )
+    present = [r["id"] for r in runs if "fallback-probe" in r["summaries"]]
+    print(f"\nRuns with this job: {len(present)}")
+
+
+def print_churn(runs):
+    print(
+        "\n## Thread turnover during a pause (X first read cache / trials, per run)\n"
+    )
+    keys = [
+        f"read/sleep{ms}ms/churn-{c}" for c in ["off", "on"] for ms in [0, 200, 1000]
+    ]
+    labels = [
+        f"{'With' if c == 'on' else 'Without'} a churning process, {ms / 1000:g} s pause"
+        for c in ["off", "on"]
+        for ms in [0, 200, 1000]
+    ]
+    present = [r for r in runs if "churn-probe" in r["summaries"]]
+    print("| Cell | " + " | ".join(f"Run {r['id']}" for r in present) + " |")
+    print("|---|" + "---:|" * len(present))
+    for key, label in zip(keys, labels):
+        cells = []
+        for r in present:
+            v = r["summaries"]["churn-probe"].get(key)
+            cells.append(f"{v['x1_cache']}/{v['trials']}" if v else "")
+        if any(cells):
+            print(f"| {label} | " + " | ".join(cells) + " |")
+
+
 def per_run_table(runs, job, row_keys, row_labels):
     """Rows of cache_path/launches per run for the given cell keys."""
     present = [r for r in runs if job in r["summaries"]]
@@ -526,6 +589,8 @@ def main():
         print_record,
         print_delay,
         print_respawn,
+        print_fallback,
+        print_churn,
     ]:
         section(runs)
 
