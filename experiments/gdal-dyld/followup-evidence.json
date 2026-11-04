@@ -13115,6 +13115,132 @@
     }
    },
    "note": "eight queued arm64 replication jobs were cancelled between 15:11 and 15:19 UTC by someone other than me; the seven completed jobs are recorded"
+  },
+  {
+   "conclusion": "cancelled",
+   "created_at": "2026-11-04T16:52:37Z",
+   "head_sha": "f0edbc319bc3c601cace104209f85e09bd217ebb",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/41871894842",
+   "id": 41871894842,
+   "jobs": [
+    {
+     "conclusion": "success",
+     "id": 126720923507,
+     "name": "plan"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720998909,
+     "name": "workaround-validation"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720998995,
+     "name": "installer-identity"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720999177,
+     "name": "thread-exit-macos-26"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720999191,
+     "name": "route2-images"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720999240,
+     "name": "respawn-probe"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720999242,
+     "name": "delay-probe"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720999246,
+     "name": "cross-process"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720999256,
+     "name": "retained-inode-retry"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720999293,
+     "name": "link-cost"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720999361,
+     "name": "thread-exit-macos-15"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720999381,
+     "name": "filesystem-images"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720999460,
+     "name": "thread-scrub"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720999485,
+     "name": "thread-exit-macos-15-intel"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126720999775,
+     "name": "record-probe-v2"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126721000609,
+     "name": "thread-exit-macos-26-intel"
+    }
+   ],
+   "artifacts": [],
+   "hosts": {},
+   "summaries": {},
+   "note": "push-triggered duplicate of dispatched run 41871897236, cancelled by me before any job started"
+  },
+  {
+   "conclusion": "failure",
+   "created_at": "2026-11-04T16:52:38Z",
+   "head_sha": "f0edbc319bc3c601cace104209f85e09bd217ebb",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/41871897236",
+   "id": 41871897236,
+   "jobs": [
+    {
+     "conclusion": "success",
+     "id": 126720942156,
+     "name": "plan"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126721057504,
+     "name": "workaround-validation"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126721057601,
+     "name": "record-probe-v2"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126721057771,
+     "name": "installer-identity"
+    }
+   ],
+   "artifacts": [],
+   "hosts": {},
+   "summaries": {},
+   "note": "dispatched with only=record-probe-v2,installer-identity,workaround-validation (the corrected record probe and extent-based storage measurement); its three queued macOS jobs were cancelled together at 17:08:05 UTC by someone other than me, during a series of cancelled CI performance experiment runs in the same fork; no results"
   }
  ]
 }

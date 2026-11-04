@@ -246,23 +246,46 @@ def print_images(runs):
                     total += v["launches"]
                     paths += v["cache_path"]
                     dead += v["launches"] if "cache-dead" in k else 0
-    print(
-        f"\nClone launches: {total} total, {dead} in exited-cache-worker cells, {paths} cache paths."
-    )
+    print("\n| Clone launches | In exited-cache-worker cells | Resolved to the cache |")
+    print("|---:|---:|---:|")
+    print(f"| {total} | {dead} | {paths} |")
 
 
 def print_link_cost(runs):
     print(
         "\n## Link cost (median seconds per run; clone_per_file used cp before run 41829764653)\n"
     )
-    for method in [
-        "hardlink",
-        "clone_per_file",
-        "copy_per_file",
-        "clone_tree",
-        "copy_tree",
-    ]:
+    methods = [
+        ("hardlink", "`os.link` per file from Python"),
+        ("clone_per_file", "`clonefile(2)` per file from Python"),
+        ("copy_per_file", "`shutil.copyfile` per file from Python"),
+        ("clone_tree", "`cp -Rc` (clone tree)"),
+        ("copy_tree", "`cp -R` (copy tree)"),
+    ]
+    for method, _ in methods:
         print(f"- {method}: {values(runs, 'link-cost', method, 'median_seconds')}")
+    print(
+        "\n| Method | Median seconds, range over runs | Runs | Runs faster than `os.link` |"
+    )
+    print("|---|---:|---:|---:|")
+    for method, label in methods:
+        pairs = []
+        for r in runs:
+            cell = r["summaries"].get("link-cost") or {}
+            if method in cell and "hardlink" in cell:
+                if method == "clone_per_file" and r["id"] < 41829764653:
+                    continue
+                pairs.append(
+                    (cell[method]["median_seconds"], cell["hardlink"]["median_seconds"])
+                )
+        if not pairs:
+            continue
+        vals = [p[0] for p in pairs]
+        faster = sum(1 for own, link in pairs if own < link)
+        print(
+            f"| {label} | {min(vals):.2f} to {max(vals):.2f} | {len(vals)} "
+            f"| {'' if method == 'hardlink' else faster} |"
+        )
 
 
 def storage_text(v):
@@ -323,8 +346,14 @@ def latest_with_extents(runs, job):
 def identity_table(runs, heading, job, rows):
     print(f"\n## {heading}\n")
     r, s = latest_with_extents(runs, job)
+    measured = s is not None
+    if not measured:
+        r, s = next(
+            ((r, r["summaries"][job]) for r in reversed(runs) if job in r["summaries"]),
+            (None, None),
+        )
     if not s:
-        print("No run with extent measurements yet.")
+        print("No run with this job yet.")
         return
     print(
         "| Installed file | Link count | Shares inode with cache or original "
@@ -337,8 +366,8 @@ def identity_table(runs, heading, job, rows):
             continue
         shared = (
             f"{v['shared_bytes']:,} of {v['size']:,} bytes"
-            if v["storage_complete"]
-            else "unknown"
+            if v.get("storage_complete")
+            else "not measured"
         )
         launches = (
             f"{v['launches'] - v['failures']}/{v['launches']} pass"
@@ -349,7 +378,14 @@ def identity_table(runs, heading, job, rows):
             f"| {label} | {v['nlink']} | {'yes' if v['shares_inode_with_cache'] else 'no'} "
             f"| {shared} | {launches} |"
         )
-    print(f"\nFrom run {r['id']}.")
+    print(
+        f"\nFrom run {r['id']}"
+        + (
+            "."
+            if measured
+            else "; storage not measured (first-block decode was wrong)."
+        )
+    )
 
 
 def print_installer_table(runs):
