@@ -134,6 +134,22 @@ generator.save(
 )
 
 mapping_control = copy.deepcopy(worker_control)
+worker_matrix = copy.deepcopy(worker_control)
+worker_matrix["name"] = (
+    "Worker matrix (py${{ matrix.python-version }}, group ${{ matrix.pytest-split-group-index }}, workers ${{ matrix.pytest-workers }})"
+)
+worker_matrix["strategy"]["matrix"]["python-version"] = ["3.11", "3.14"]
+worker_matrix["strategy"]["matrix"]["pytest-split-group-index"] = [1, 2, 3, 4]
+worker_matrix["strategy"]["matrix"].pop("repeat")
+generator.save(
+    "ci-perf-worker-matrix.yml",
+    {
+        "name": "Validate worker counts across the full Windows matrix",
+        "on": {"workflow_call": {}},
+        "permissions": {},
+        "jobs": {"worker-matrix": worker_matrix},
+    },
+)
 mapping_control["name"] = (
     "Mapping control (${{ matrix.mapping-cache }}, ${{ matrix.pytest-workers }}, ${{ matrix.repeat }})"
 )
@@ -282,6 +298,12 @@ for job in windows["jobs"].values():
 generator.save("ci-perf-windows-control.yml", windows)
 
 top = generator.load("ci-performance-experiment.yml")
+top["jobs"]["worker-matrix"] = {
+    "needs": "configure",
+    "if": "needs.configure.outputs.mode == 'windows-worker-matrix'",
+    "permissions": {"contents": "read", "actions": "write"},
+    "uses": "./.github/workflows/ci-perf-worker-matrix.yml",
+}
 top["jobs"]["scheduling-control"] = {
     "needs": "configure",
     "if": "needs.configure.outputs.mode == 'scheduling-investigation'",

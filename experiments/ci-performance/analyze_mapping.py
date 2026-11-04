@@ -18,12 +18,14 @@ def elapsed(step):
 def trace_spans(directory):
     spans = []
     reports = defaultdict(float)
+    workers = defaultdict(list)
     for path in directory.glob("mapping-*.jsonl"):
         pending = {}
         for line in path.read_text().splitlines():
             row = json.loads(line)
             if row["event"] == "test-report" and row["worker"] != "controller":
                 reports[row["nodeid"]] += row["duration"]
+                workers[row["worker"]].append(row)
             if row["event"] != "cache":
                 continue
             message = row["message"]
@@ -56,7 +58,17 @@ def trace_spans(directory):
                 )
         if pending:
             raise ValueError(f"Unfinished cache operations in {path}: {pending}")
-    return spans, reports
+    first = min(r["start"] for rows in workers.values() for r in rows)
+    schedule = {
+        name: {
+            "test_ids": len({r["nodeid"] for r in rows}),
+            "first_test_seconds": min(r["start"] for r in rows) - first,
+            "last_test_seconds": max(r["stop"] for r in rows) - first,
+            "occupied_seconds": sum(r["duration"] for r in rows),
+        }
+        for name, rows in workers.items()
+    }
+    return spans, reports, schedule
 
 
 def main():
@@ -69,7 +81,8 @@ def main():
     trials = []
     for path in sorted((args.root / args.run_id).glob("metrics-*/metadata.json")):
         metadata = json.loads(path.read_text())
-        if metadata["context"]["GITHUB_JOB"] != "mapping-control":
+        kind = metadata["context"]["GITHUB_JOB"]
+        if kind not in ["mapping-control", "scheduling-control"]:
             continue
         matrix = json.loads(metadata["context"]["METRICS_MATRIX"])
         state, workers, repeat = (
@@ -77,13 +90,15 @@ def main():
             matrix["pytest-workers"],
             matrix["repeat"],
         )
-        job = next(
-            j
-            for j in snapshot["jobs"]
-            if j["name"].endswith(f"Mapping control ({state}, {workers}, {repeat})")
+        distribution = matrix.get("distribution", "load")
+        suffix = (
+            f"Mapping control ({state}, {workers}, {repeat})"
+            if kind == "mapping-control"
+            else f"Scheduling control ({distribution}, {repeat})"
         )
+        job = next(j for j in snapshot["jobs"] if j["name"].endswith(suffix))
         steps = {s["name"]: s for s in job["steps"]}
-        spans, reports = trace_spans(path.parent)
+        spans, reports, schedule = trace_spans(path.parent)
         cpu = next(
             r
             for r in resources
@@ -99,6 +114,7 @@ def main():
                 "cache": state,
                 "workers": int(workers),
                 "repeat": repeat,
+                "distribution": distribution,
                 "prepare_seconds": prepare,
                 "pytest_seconds": test,
                 "combined_seconds": prepare + test,
@@ -114,19 +130,27 @@ def main():
                     default=0,
                 ),
                 "spans": spans,
+                "worker_schedule": schedule,
+                "single_worker_tail_seconds": sorted(
+                    w["last_test_seconds"] for w in schedule.values()
+                )[-1]
+                - sorted(w["last_test_seconds"] for w in schedule.values())[-2],
                 "slowest_tests": sorted(
                     reports.items(), key=lambda item: item[1], reverse=True
                 )[:10],
             }
         )
-    trials.sort(key=lambda t: (t["cache"], t["workers"], t["repeat"]))
+    trials.sort(
+        key=lambda t: (t["cache"], t["workers"], t["distribution"], t["repeat"])
+    )
     groups = defaultdict(list)
     for trial in trials:
-        groups[(trial["cache"], trial["workers"])].append(trial)
+        groups[(trial["cache"], trial["workers"], trial["distribution"])].append(trial)
     summaries = [
         {
             "cache": state,
             "workers": workers,
+            "distribution": distribution,
             "repetitions": len(values),
             **{
                 name: sum(v[name] for v in values) / len(values)
@@ -138,7 +162,7 @@ def main():
                 ]
             },
         }
-        for (state, workers), values in sorted(groups.items())
+        for (state, workers, distribution), values in sorted(groups.items())
     ]
     result = {
         "run_id": args.run_id,
@@ -152,7 +176,11 @@ def main():
     for trial in trials:
         print(
             json.dumps(
-                {k: v for k, v in trial.items() if k not in ["spans", "slowest_tests"]}
+                {
+                    k: v
+                    for k, v in trial.items()
+                    if k not in ["spans", "slowest_tests", "worker_schedule"]
+                }
             )
         )
     for summary in summaries:

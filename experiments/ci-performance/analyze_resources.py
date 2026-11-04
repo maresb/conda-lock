@@ -29,6 +29,7 @@ def workflow_steps(directory, metadata):
         "local-concurrency": f"Three formats on one runner ({matrix.get('repeat')})",
         "link-threads": f"Link threads ({matrix.get('execute-threads')}, {matrix.get('repeat')})",
         "worker-control": f"Worker control ({matrix.get('pytest-workers')}, {matrix.get('repeat')})",
+        "worker-matrix": f"Worker matrix (py{matrix.get('python-version')}, group {matrix.get('pytest-split-group-index')}, workers {matrix.get('pytest-workers')})",
         "mapping-control": f"Mapping control ({matrix.get('mapping-cache')}, {matrix.get('pytest-workers')}, {matrix.get('repeat')})",
         "scheduling-control": f"Scheduling control ({matrix.get('distribution')}, {matrix.get('repeat')})",
         "lock-gdal": f"lock-gdal ({matrix.get('os')}, {matrix.get('python-version')})",
