@@ -54,6 +54,12 @@ jobs:
           - label: retained-inode-retry
             os: macos-26
             script: retry_probe.py
+          - label: record-probe
+            os: macos-26
+            script: record_probe.py
+          - label: delay-probe
+            os: macos-26
+            script: delay_probe.py
     name: ${{ matrix.label }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -129,5 +135,48 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: gdal-trigger-installer-identity
+          path: ${{ runner.temp }}/gdal-dyld/evidence
+          retention-days: 30
+
+  workaround-validation:
+    if: github.repository == 'maresb/conda-lock'
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - name: Record runner
+        run: |
+          mkdir -p "$RUNNER_TEMP/gdal-dyld"
+          { sw_vers; uname -m; /usr/bin/what /usr/lib/dyld; } > "$RUNNER_TEMP/gdal-dyld/host.log"
+      - uses: mamba-org/setup-micromamba@add3a49764cedee8ee24e82dfde87f5bc2914462 # v2.0.7
+        with:
+          init-shell: none
+          micromamba-version: 2.10.0-0
+      - name: Create the integration-test environments with --always-copy, plus a hardlink baseline
+        run: |
+          cd experiments/gdal-dyld/fixtures
+          LOG="$RUNNER_TEMP/gdal-dyld/create.log"
+          "$MAMBA_EXE" -r "$MAMBA_ROOT_PREFIX" create -y --always-copy -n gdal-test-mm-lock -f conda-lock.yml >> "$LOG" 2>&1
+          "$MAMBA_EXE" -r "$MAMBA_ROOT_PREFIX" create -y --always-copy -n gdal-test-mm-explicit -f conda-osx-arm64.lock >> "$LOG" 2>&1
+          "$MAMBA_EXE" -r "$MAMBA_ROOT_PREFIX" create -y --always-copy -n gdal-test-mm-env -f conda-osx-arm64.lock.yml >> "$LOG" 2>&1
+          "$MAMBA_EXE" -r "$MAMBA_ROOT_PREFIX" create -y -n gdal-test-mm-hardlink -f conda-osx-arm64.lock >> "$LOG" 2>&1
+      - name: Record executable identities and launch each environment
+        run: |
+          for env in lock explicit env hardlink; do
+            /usr/bin/python3 experiments/gdal-dyld/installer_identity.py --output "$RUNNER_TEMP/gdal-dyld/probe" \
+              --label "micromamba-$env" --executable "$MAMBA_ROOT_PREFIX/envs/gdal-test-mm-$env/bin/gdalinfo" \
+              --cache-root "$MAMBA_ROOT_PREFIX/pkgs"
+            "$MAMBA_EXE" -r "$MAMBA_ROOT_PREFIX" run -n "gdal-test-mm-$env" gdalinfo --version >> "$RUNNER_TEMP/gdal-dyld/run.log" 2>&1
+          done
+          cat "$RUNNER_TEMP/gdal-dyld/run.log"
+      - name: Collect evidence
+        if: ${{ !cancelled() }}
+        run: /usr/bin/python3 experiments/gdal-dyld/collect_evidence.py "$RUNNER_TEMP/gdal-dyld"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: ${{ !cancelled() }}
+        with:
+          name: gdal-trigger-workaround-validation
           path: ${{ runner.temp }}/gdal-dyld/evidence
           retention-days: 30
