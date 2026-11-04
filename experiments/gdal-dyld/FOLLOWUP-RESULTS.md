@@ -268,23 +268,26 @@ shares an inode or storage with the package cache. Storage is compared extent
 by extent with [log2phys.c](log2phys.c), which uses Apple's packed `struct
 log2phys` directly; the first version of this probe decoded that structure at
 the wrong offset and recorded only the high half of the first block's address,
-so the storage columns of the earlier runs are not used. The three controls
-apply the same measurement to a hardlink, a `clonefile` clone, and a byte copy
-of a fresh file. The corrected job was dispatched three times (runs
-41871897236, 41876823641, and 41880415154) and each time was cancelled about
-fifteen minutes after queueing with the annotation "The job was not acquired by
-Runner of type hosted even after multiple attempts" and macOS arm64 capacity
-notices, so its storage column is still unmeasured; the controls and the
-workaround job below ran the same measurement on the same runner image:
+so the storage columns of the earlier runs are not used. The three controls apply the same measurement to a hardlink, a `clonefile`
+clone, and a byte copy of a fresh file. The corrected job was cancelled in
+the queue four times (runs 41871897236, 41876823641, 41880415154, and
+41885808126), each about fifteen minutes after queueing with the annotation
+"The job was not acquired by Runner of type hosted even after multiple
+attempts" and macOS arm64 capacity notices, and ran on the fifth dispatch
+([run 41888487799](https://github.com/maresb/conda-lock/actions/runs/41888487799)):
 
 | Installed file | Link count | Shares inode with cache or original | Storage shared with cache or original | Launches |
 |---|---:|---|---|---:|
-| micromamba 2.10.0 | 2 | yes | not measured | 20/20 pass |
-| conda (Miniconda latest) | 2 | yes | not measured | 20/20 pass |
-| pixi (rattler) | 1 | no | not measured | 20/20 pass |
+| micromamba 2.10.0 | 2 | yes | 69,424 of 69,424 bytes | 20/20 pass |
+| conda (Miniconda latest) | 2 | yes | 69,424 of 69,424 bytes | 20/20 pass |
+| pixi (rattler) | 1 | no | 277,200 of 277,200 bytes | 20/20 pass |
+| Control: hardlink of a fresh 1 MiB file | 2 | yes | 1,048,576 of 1,048,576 bytes |  |
+| Control: `cp -c` clone of it | 1 | no | 1,048,576 of 1,048,576 bytes |  |
+| Control: byte copy of it | 1 | no | 0 of 1,048,576 bytes |  |
 
-Inode identity and link counts do not depend on the storage measurement.
-Twenty launches per installer all passed, which is consistent with the
+The pixi executable has its own inode and shares every byte of its storage
+with the cache copy, exactly like the clone control, so rattler's reflink
+produced a clone here. Twenty launches per installer all passed, which is consistent with the
 roughly 4 percent first-launch rate of the natural runs; this job measures
 identity, not rates. Rattler tries a reflink first and falls back to a
 hardlink where reflinks are unsupported, so this executable on this APFS runner
@@ -327,18 +330,18 @@ previous thread's identity. In the `read` cells X reads twice, with an optional
 pause before X is created; in `refresh` it reads, looks up the environment
 alias itself, and reads again; in `norestore` the main thread's restoring
 lookup is omitted, which was the first design of this probe; `control` has no
-worker. Forty trials per cell, fresh inode each, one run
-([run 41876823641](https://github.com/maresb/conda-lock/actions/runs/41876823641)):
+worker. Forty trials per cell, fresh inode each, two runs
+([first run 41876823641](https://github.com/maresb/conda-lock/actions/runs/41876823641)):
 
 | Cell | Trials | X first read cache | X second read cache, given first cache | X second read env, given first cache | Y read cache, given X second read cache | Y read cache, given X second read env | Y read cache, given X first read env |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| baseline | 40 |  |  |  |  |  |  |
-| control | 40 | 0 |  |  |  | 0 | 0 |
-| norestore | 40 | 29 | 29 | 0 | 29 | 3 | 3 |
-| read | 40 | 30 | 30 | 0 | 30 | 6 | 6 |
-| read/sleep1000ms | 40 | 0 |  |  |  | 0 | 0 |
-| read/sleep200ms | 40 | 6 | 6 | 0 | 6 | 1 | 1 |
-| refresh | 40 | 24 | 0 | 24 |  | 12 | 12 |
+| baseline | 80 |  |  |  |  |  |  |
+| control | 80 | 0 |  |  |  | 0 | 0 |
+| norestore | 80 | 48 | 48 | 0 | 48 | 16 | 16 |
+| read | 80 | 64 | 64 | 0 | 64 | 12 | 12 |
+| read/sleep1000ms | 80 | 0 |  |  |  | 0 | 0 |
+| read/sleep200ms | 80 | 11 | 11 | 0 | 11 | 3 | 3 |
+| refresh | 80 | 59 | 0 | 59 |  | 16 | 16 |
 
 In the `hold` cells a holder thread is created right after the restoring
 lookup, reads the path, sleeps with no filesystem activity, reads again, and
@@ -346,8 +349,8 @@ exits before X runs:
 
 | Hold cell | Trials | Holder's first read cache | Second read cache, given first cache | Second read env, given first cache | X first read cache, given holder's first cache | X first read cache, given holder's first env |
 |---|---:|---:|---:|---:|---:|---:|
-| hold/sleep1000ms | 40 | 32 | 32 | 0 | 32 | 0 |
-| hold/sleep5000ms | 40 | 33 | 33 | 0 | 33 | 0 |
+| hold/sleep1000ms | 80 | 61 | 61 | 0 | 61 | 0 |
+| hold/sleep5000ms | 80 | 66 | 66 | 0 | 66 | 0 |
 
 The fallback test below shows that a path build by a thread with its own
 record sets the fallback to that thread's answer. Nothing in this design
@@ -364,7 +367,7 @@ survive that:
   the fallback, the stale answer was gone for X and for Y.
 - **After the identity is freed, the cache answer disappears within a
   second.** With no holder, X read the cache path in a few trials after
-  200 ms, and neither X nor Y did after one second. A first read follows
+  200 ms, and neither X nor Y did after one second, in both runs. A first read follows
   the main thread's restoring lookup, so these are records, not fallback
   answers.
 
