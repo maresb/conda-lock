@@ -184,6 +184,8 @@ def main():
         "python",
         "shards",
         "group",
+        "workers",
+        "execute_threads",
         "format",
         "repeat",
         "logical_cpus",

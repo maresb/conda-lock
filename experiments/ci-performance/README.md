@@ -1,5 +1,9 @@
 # CI performance experiments
 
+See [the CPU and I/O experiment results](CPU-RESULTS.md) for direct runner
+utilization measurements, Linux/Windows worker-count trials, and installation
+concurrency controls. The timings below are the earlier uninstrumented trials.
+
 All product code, test code, dependency locks, and action pins are from PR #972
 at b32d4e58b909cc9011684970f621f64f9fe73506. The original workflows are unchanged.
 

@@ -1,0 +1,1375 @@
+{
+  "product_revision": "b32d4e58b909cc9011684970f621f64f9fe73506",
+  "measurement_date": "2026-11-04",
+  "logical_cpus": 4,
+  "physical_cores": 2,
+  "cpu_percentage_basis": "time-weighted system utilization across all four logical CPUs",
+  "notes": [
+    "Step elapsed times come from GitHub; CPU is sampled approximately once per second.",
+    "Same-runner cross-volume concurrency is a diagnostic, not a fair candidate comparison.",
+    "Focus repeats contain only Python 3.14 shard 2/4, with 86 IDs each.",
+    "No macOS measurements or new complete-CI latency result were obtained."
+  ],
+  "cases": {
+    "linux_2": {
+      "run_id": 41885415752,
+      "url": "https://github.com/maresb/conda-lock/actions/runs/41885415752",
+      "phase": "run-test",
+      "trials": [
+        {
+          "job_id": 126768616271,
+          "job_name": "linux-pytest / pytest py3.11 on ubuntu-latest (1/3)",
+          "artifact": "metrics-f616cc9cf3814fbf890c04fa224e1b47",
+          "matrix": {
+            "os": "ubuntu-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 1,
+            "pytest-split-group-size": 3
+          },
+          "step_seconds": 143.0,
+          "sampled_seconds": 142.58199095726013,
+          "cpu_percent": 46.139394090960465,
+          "busy_cpu_seconds": 263.14586684203147,
+          "disk_write_bytes": 7227387761.645326,
+          "network_received_bytes": 2300524141.6234307
+        },
+        {
+          "job_id": 126768616439,
+          "job_name": "linux-pytest / pytest py3.11 on ubuntu-latest (2/3)",
+          "artifact": "metrics-3391dca05d194fcbbeba175a5c65fe6a",
+          "matrix": {
+            "os": "ubuntu-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 3
+          },
+          "step_seconds": 158.0,
+          "sampled_seconds": 158.0,
+          "cpu_percent": 46.21665974066982,
+          "busy_cpu_seconds": 292.08928956103324,
+          "disk_write_bytes": 10527071714.676264,
+          "network_received_bytes": 3566626099.7444067
+        },
+        {
+          "job_id": 126768616316,
+          "job_name": "linux-pytest / pytest py3.11 on ubuntu-latest (3/3)",
+          "artifact": "metrics-e5c9b02d1e664839922e82ccf55e376e",
+          "matrix": {
+            "os": "ubuntu-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 3,
+            "pytest-split-group-size": 3
+          },
+          "step_seconds": 183.0,
+          "sampled_seconds": 182.02247643470764,
+          "cpu_percent": 36.70703853290996,
+          "busy_cpu_seconds": 267.26024225378035,
+          "disk_write_bytes": 7599107974.935215,
+          "network_received_bytes": 2876816811.3167405
+        },
+        {
+          "job_id": 126768616438,
+          "job_name": "linux-pytest / pytest py3.14 on ubuntu-latest (1/3)",
+          "artifact": "metrics-9a8f0cb0fe9142e6a53a0fee379e0dcd",
+          "matrix": {
+            "os": "ubuntu-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 1,
+            "pytest-split-group-size": 3
+          },
+          "step_seconds": 139.0,
+          "sampled_seconds": 138.99769496917725,
+          "cpu_percent": 38.02545797816752,
+          "busy_cpu_seconds": 211.41804036450387,
+          "disk_write_bytes": 11921353133.163675,
+          "network_received_bytes": 3481374679.4866667
+        },
+        {
+          "job_id": 126768616249,
+          "job_name": "linux-pytest / pytest py3.14 on ubuntu-latest (2/3)",
+          "artifact": "metrics-41637a6264dd49dc97fbe3ed6d31153d",
+          "matrix": {
+            "os": "ubuntu-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 3
+          },
+          "step_seconds": 131.0,
+          "sampled_seconds": 130.74899911880493,
+          "cpu_percent": 35.44712385452216,
+          "busy_cpu_seconds": 185.3870386247635,
+          "disk_write_bytes": 11251407290.381363,
+          "network_received_bytes": 3593571407.1049137
+        },
+        {
+          "job_id": 126768616326,
+          "job_name": "linux-pytest / pytest py3.14 on ubuntu-latest (3/3)",
+          "artifact": "metrics-0d5f69bdd7a845b8a413b643c2209439",
+          "matrix": {
+            "os": "ubuntu-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 3,
+            "pytest-split-group-size": 3
+          },
+          "step_seconds": 127.0,
+          "sampled_seconds": 126.99999856948853,
+          "cpu_percent": 42.80024424979342,
+          "busy_cpu_seconds": 217.42523833990097,
+          "disk_write_bytes": 5406335405.877428,
+          "network_received_bytes": 1544294960.1794739
+        }
+      ],
+      "summary": {
+        "jobs": 6,
+        "step_seconds_sum": 881.0,
+        "step_seconds_max": 183.0,
+        "step_seconds_mean": 146.83333333333334,
+        "sampled_seconds": 879.3511600494385,
+        "busy_cpu_seconds": 1436.7257159860135,
+        "cpu_percent": 40.84618811173339
+      }
+    },
+    "linux_4": {
+      "run_id": 41886256501,
+      "url": "https://github.com/maresb/conda-lock/actions/runs/41886256501",
+      "phase": "run-test",
+      "trials": [
+        {
+          "job_id": 126771539636,
+          "job_name": "linux-workers4 / pytest py3.11 on ubuntu-latest (1/3)",
+          "artifact": "metrics-c2670e486f1b47b5a4913d2483e7c1e7",
+          "matrix": {
+            "os": "ubuntu-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 1,
+            "pytest-split-group-size": 3,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 119.0,
+          "sampled_seconds": 118.0764992237091,
+          "cpu_percent": 73.03821439145408,
+          "busy_cpu_seconds": 344.96386659574506,
+          "disk_write_bytes": 8113672156.499205,
+          "network_received_bytes": 2485956615.781536
+        },
+        {
+          "job_id": 126771539345,
+          "job_name": "linux-workers4 / pytest py3.11 on ubuntu-latest (2/3)",
+          "artifact": "metrics-e6b28e851b87457aaf35f203c54f1b40",
+          "matrix": {
+            "os": "ubuntu-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 3,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 127.0,
+          "sampled_seconds": 126.84943461418152,
+          "cpu_percent": 73.02029794684263,
+          "busy_cpu_seconds": 370.50334039664267,
+          "disk_write_bytes": 10370835197.17527,
+          "network_received_bytes": 3578317858.613379
+        },
+        {
+          "job_id": 126771539252,
+          "job_name": "linux-workers4 / pytest py3.11 on ubuntu-latest (3/3)",
+          "artifact": "metrics-7eb0a46b84d34a9c99ee5691247c236e",
+          "matrix": {
+            "os": "ubuntu-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 3,
+            "pytest-split-group-size": 3,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 91.0,
+          "sampled_seconds": 90.47655248641968,
+          "cpu_percent": 58.75090708642591,
+          "busy_cpu_seconds": 212.62318114519118,
+          "disk_write_bytes": 16570291650.182663,
+          "network_received_bytes": 1475340276.200455
+        },
+        {
+          "job_id": 126771539658,
+          "job_name": "linux-workers4 / pytest py3.14 on ubuntu-latest (1/3)",
+          "artifact": "metrics-7d85dff31e72406095b6290c30cf7341",
+          "matrix": {
+            "os": "ubuntu-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 1,
+            "pytest-split-group-size": 3,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 103.0,
+          "sampled_seconds": 102.80535435676575,
+          "cpu_percent": 71.19704218137147,
+          "busy_cpu_seconds": 292.7774860243797,
+          "disk_write_bytes": 10796565923.184282,
+          "network_received_bytes": 3632691836.3092074
+        },
+        {
+          "job_id": 126771539305,
+          "job_name": "linux-workers4 / pytest py3.14 on ubuntu-latest (2/3)",
+          "artifact": "metrics-7d305a32b8274e62b4a92eeb70557d85",
+          "matrix": {
+            "os": "ubuntu-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 3,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 123.0,
+          "sampled_seconds": 122.89447832107544,
+          "cpu_percent": 62.93618737962643,
+          "busy_cpu_seconds": 309.38039662146565,
+          "disk_write_bytes": 11813686217.331406,
+          "network_received_bytes": 3870132524.0501285
+        },
+        {
+          "job_id": 126771539316,
+          "job_name": "linux-workers4 / pytest py3.14 on ubuntu-latest (3/3)",
+          "artifact": "metrics-b5acbaa732d941ed9cc6df8dee1add43",
+          "matrix": {
+            "os": "ubuntu-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 3,
+            "pytest-split-group-size": 3,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 96.0,
+          "sampled_seconds": 95.4887387752533,
+          "cpu_percent": 77.44185918971533,
+          "busy_cpu_seconds": 295.7930184974671,
+          "disk_write_bytes": 5726292551.831234,
+          "network_received_bytes": 1563010526.5450346
+        }
+      ],
+      "summary": {
+        "jobs": 6,
+        "step_seconds_sum": 659.0,
+        "step_seconds_max": 127.0,
+        "step_seconds_mean": 109.83333333333333,
+        "sampled_seconds": 656.5910577774048,
+        "busy_cpu_seconds": 1826.0412892808913,
+        "cpu_percent": 69.52734383339521
+      }
+    },
+    "windows_10shards_2": {
+      "run_id": 41888476427,
+      "url": "https://github.com/maresb/conda-lock/actions/runs/41888476427",
+      "phase": "run-test",
+      "trials": [
+        {
+          "job_id": 126779355315,
+          "job_name": "windows-baseline-pytest / pytest py3.11 on windows-latest (1/10)",
+          "artifact": "metrics-85a3399968884c4ea2bacd8047c05c6c",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 1,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 81.0,
+          "sampled_seconds": 81.0069088935852,
+          "cpu_percent": 34.634349924643494,
+          "busy_cpu_seconds": 112.2248651573658,
+          "disk_write_bytes": 290684690.5896122,
+          "network_received_bytes": 40304588.30039692
+        },
+        {
+          "job_id": 126779355629,
+          "job_name": "windows-baseline-pytest / pytest py3.11 on windows-latest (10/10)",
+          "artifact": "metrics-10e8fc2c68af427b980c222a0bd11dc2",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 10,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 69.0,
+          "sampled_seconds": 68.84476518630981,
+          "cpu_percent": 35.22471779924726,
+          "busy_cpu_seconds": 97.00149702572821,
+          "disk_write_bytes": 539941883.8806301,
+          "network_received_bytes": 62936624.75789732
+        },
+        {
+          "job_id": 126779355581,
+          "job_name": "windows-baseline-pytest / pytest py3.11 on windows-latest (2/10)",
+          "artifact": "metrics-46cb84b9733f40fd9fbe4f6d247d3570",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 79.0,
+          "sampled_seconds": 78.9955530166626,
+          "cpu_percent": 36.06318670023342,
+          "busy_cpu_seconds": 113.95325507712364,
+          "disk_write_bytes": 734332511.3410219,
+          "network_received_bytes": 69509675.95459111
+        },
+        {
+          "job_id": 126779355450,
+          "job_name": "windows-baseline-pytest / pytest py3.11 on windows-latest (3/10)",
+          "artifact": "metrics-e395c5056c5141f3a1a3675ebbc448f0",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 3,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 96.0,
+          "sampled_seconds": 95.85073137283325,
+          "cpu_percent": 27.326198117410023,
+          "busy_cpu_seconds": 104.7694430077076,
+          "disk_write_bytes": 807489721.1391786,
+          "network_received_bytes": 95315859.47518356
+        },
+        {
+          "job_id": 126779355238,
+          "job_name": "windows-baseline-pytest / pytest py3.11 on windows-latest (4/10)",
+          "artifact": "metrics-6429d1b230624307bfb519a927fde6ad",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 4,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 49.0,
+          "sampled_seconds": 48.83983778953552,
+          "cpu_percent": 36.75620771635019,
+          "busy_cpu_seconds": 71.8066889050007,
+          "disk_write_bytes": 443606254.1221238,
+          "network_received_bytes": 38707860.517816216
+        },
+        {
+          "job_id": 126779355522,
+          "job_name": "windows-baseline-pytest / pytest py3.11 on windows-latest (5/10)",
+          "artifact": "metrics-1d8e45ce3b944bbd9dd7d3655eb2b682",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 5,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 59.0,
+          "sampled_seconds": 58.997631788253784,
+          "cpu_percent": 37.797856412328876,
+          "busy_cpu_seconds": 89.19936059999465,
+          "disk_write_bytes": 624486277.7688669,
+          "network_received_bytes": 72161926.54844841
+        },
+        {
+          "job_id": 126779355455,
+          "job_name": "windows-baseline-pytest / pytest py3.11 on windows-latest (6/10)",
+          "artifact": "metrics-54c0417a282c4b0bafaaa8128d0f0619",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 6,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 51.0,
+          "sampled_seconds": 50.71657729148865,
+          "cpu_percent": 36.61500400703753,
+          "busy_cpu_seconds": 74.27950723004341,
+          "disk_write_bytes": 702070705.7471577,
+          "network_received_bytes": 68118209.4521437
+        },
+        {
+          "job_id": 126779355296,
+          "job_name": "windows-baseline-pytest / pytest py3.11 on windows-latest (7/10)",
+          "artifact": "metrics-61d32bac8a8c44a0961197a0fad493ac",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 7,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 62.0,
+          "sampled_seconds": 61.99043941497803,
+          "cpu_percent": 41.71832291262302,
+          "busy_cpu_seconds": 103.44548676037789,
+          "disk_write_bytes": 1178000431.6839194,
+          "network_received_bytes": 137075124.29961127
+        },
+        {
+          "job_id": 126779355343,
+          "job_name": "windows-baseline-pytest / pytest py3.11 on windows-latest (8/10)",
+          "artifact": "metrics-b459fba8b93940b2af5319297586798e",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 8,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 69.0,
+          "sampled_seconds": 68.84133005142212,
+          "cpu_percent": 39.00880840015891,
+          "busy_cpu_seconds": 107.4167301595211,
+          "disk_write_bytes": 752791965.2133636,
+          "network_received_bytes": 93945682.7195789
+        },
+        {
+          "job_id": 126779355348,
+          "job_name": "windows-baseline-pytest / pytest py3.11 on windows-latest (9/10)",
+          "artifact": "metrics-baafa7209aa34cec9bdf0718b8d138b4",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 9,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 67.0,
+          "sampled_seconds": 67.00075793266296,
+          "cpu_percent": 38.62079122904408,
+          "busy_cpu_seconds": 103.50489137220382,
+          "disk_write_bytes": 729937210.7627206,
+          "network_received_bytes": 88177925.83491378
+        },
+        {
+          "job_id": 126779355536,
+          "job_name": "windows-baseline-pytest / pytest py3.14 on windows-latest (1/10)",
+          "artifact": "metrics-d7aa2eb4b41e432a93e943fa5b36d6f2",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 1,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 49.0,
+          "sampled_seconds": 48.8207950592041,
+          "cpu_percent": 43.14253901523186,
+          "busy_cpu_seconds": 84.25012222385408,
+          "disk_write_bytes": 318982658.3156141,
+          "network_received_bytes": 20755500.10230252
+        },
+        {
+          "job_id": 126779355474,
+          "job_name": "windows-baseline-pytest / pytest py3.14 on windows-latest (10/10)",
+          "artifact": "metrics-eacbd9484f834652821457bc1c6895ae",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 10,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 50.0,
+          "sampled_seconds": 49.979862451553345,
+          "cpu_percent": 49.25285625301694,
+          "busy_cpu_seconds": 98.46603923487662,
+          "disk_write_bytes": 752078402.4511867,
+          "network_received_bytes": 71489840.7149256
+        },
+        {
+          "job_id": 126779355459,
+          "job_name": "windows-baseline-pytest / pytest py3.14 on windows-latest (2/10)",
+          "artifact": "metrics-1a7aabad87004c5bb2f079ddbea245c1",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 41.0,
+          "sampled_seconds": 40.91363835334778,
+          "cpu_percent": 38.799259359196355,
+          "busy_cpu_seconds": 63.49675463199615,
+          "disk_write_bytes": 873109423.8853192,
+          "network_received_bytes": 82085843.42161544
+        },
+        {
+          "job_id": 126779355385,
+          "job_name": "windows-baseline-pytest / pytest py3.14 on windows-latest (3/10)",
+          "artifact": "metrics-1a312c2b3ccd41ed8fba337f775e4583",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 3,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 65.0,
+          "sampled_seconds": 64.96190643310547,
+          "cpu_percent": 35.492008564418605,
+          "busy_cpu_seconds": 92.22514157938957,
+          "disk_write_bytes": 758269939.9817708,
+          "network_received_bytes": 72275534.27296159
+        },
+        {
+          "job_id": 126779355415,
+          "job_name": "windows-baseline-pytest / pytest py3.14 on windows-latest (4/10)",
+          "artifact": "metrics-09defdefff6d4b8da3cd79fef6459588",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 4,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 45.0,
+          "sampled_seconds": 44.66723322868347,
+          "cpu_percent": 37.191092282806075,
+          "busy_cpu_seconds": 66.44892772102357,
+          "disk_write_bytes": 723405297.6915592,
+          "network_received_bytes": 70570037.51469761
+        },
+        {
+          "job_id": 126779355485,
+          "job_name": "windows-baseline-pytest / pytest py3.14 on windows-latest (5/10)",
+          "artifact": "metrics-b8f23a2cc2b847e294d347fcfee41068",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 5,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 43.0,
+          "sampled_seconds": 42.55334138870239,
+          "cpu_percent": 40.83953111342259,
+          "busy_cpu_seconds": 69.51434038496018,
+          "disk_write_bytes": 811567572.3046875,
+          "network_received_bytes": 88648282.0
+        },
+        {
+          "job_id": 126779355332,
+          "job_name": "windows-baseline-pytest / pytest py3.14 on windows-latest (6/10)",
+          "artifact": "metrics-d35770b0fa5d43cf8bd508d17a7316a9",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 6,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 76.0,
+          "sampled_seconds": 75.99334621429443,
+          "cpu_percent": 44.73066966825128,
+          "busy_cpu_seconds": 135.96933065986633,
+          "disk_write_bytes": 1271395971.4898133,
+          "network_received_bytes": 154976144.30643052
+        },
+        {
+          "job_id": 126779355685,
+          "job_name": "windows-baseline-pytest / pytest py3.14 on windows-latest (7/10)",
+          "artifact": "metrics-13775377d4e14de389bb5c63606ad1f0",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 7,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 68.0,
+          "sampled_seconds": 67.07800030708313,
+          "cpu_percent": 36.73065647249943,
+          "busy_cpu_seconds": 98.55275944566728,
+          "disk_write_bytes": 777144322.9419345,
+          "network_received_bytes": 81421554.75301981
+        },
+        {
+          "job_id": 126779355408,
+          "job_name": "windows-baseline-pytest / pytest py3.14 on windows-latest (8/10)",
+          "artifact": "metrics-abd5d47c5cf8487b8b38eac7ec7a4fc1",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 8,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 44.0,
+          "sampled_seconds": 43.99611854553223,
+          "cpu_percent": 46.97369796093379,
+          "busy_cpu_seconds": 82.66641536045074,
+          "disk_write_bytes": 1033869178.4388639,
+          "network_received_bytes": 134902697.92753404
+        },
+        {
+          "job_id": 126779355524,
+          "job_name": "windows-baseline-pytest / pytest py3.14 on windows-latest (9/10)",
+          "artifact": "metrics-1120e6fa2a424254aab2addf4d491a8d",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 9,
+            "pytest-split-group-size": 10
+          },
+          "step_seconds": 68.0,
+          "sampled_seconds": 67.78482723236084,
+          "cpu_percent": 38.96483569852717,
+          "busy_cpu_seconds": 105.64898623847961,
+          "disk_write_bytes": 734337898.5719234,
+          "network_received_bytes": 94225262.0546499
+        }
+      ],
+      "summary": {
+        "jobs": 20,
+        "step_seconds_sum": 1231.0,
+        "step_seconds_max": 96.0,
+        "step_seconds_mean": 61.55,
+        "sampled_seconds": 1227.8336019515991,
+        "busy_cpu_seconds": 1874.8405427756309,
+        "cpu_percent": 38.17375049427782
+      }
+    },
+    "windows_4shards_2": {
+      "run_id": 41889214378,
+      "url": "https://github.com/maresb/conda-lock/actions/runs/41889214378",
+      "phase": "run-test",
+      "trials": [
+        {
+          "job_id": 126781884843,
+          "job_name": "windows-candidate-pytest / pytest py3.11 on windows-latest (1/4)",
+          "artifact": "metrics-f0dcde9368b54f6884eef2b34738782f",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 1,
+            "pytest-split-group-size": 4
+          },
+          "step_seconds": 102.0,
+          "sampled_seconds": 101.92102789878845,
+          "cpu_percent": 34.98882986484233,
+          "busy_cpu_seconds": 142.6439001920223,
+          "disk_write_bytes": 1513988511.8814328,
+          "network_received_bytes": 167723186.6084741
+        },
+        {
+          "job_id": 126781884795,
+          "job_name": "windows-candidate-pytest / pytest py3.11 on windows-latest (2/4)",
+          "artifact": "metrics-d0e2bd4768cc4a0fa21de19589345d9e",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 4
+          },
+          "step_seconds": 114.0,
+          "sampled_seconds": 113.90167689323425,
+          "cpu_percent": 49.0136077451984,
+          "busy_cpu_seconds": 223.30928451061249,
+          "disk_write_bytes": 1674084558.4398186,
+          "network_received_bytes": 176128179.7282442
+        },
+        {
+          "job_id": 126781884686,
+          "job_name": "windows-candidate-pytest / pytest py3.11 on windows-latest (3/4)",
+          "artifact": "metrics-f423e99e3a1a4c578fafe66ef17bbc83",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 3,
+            "pytest-split-group-size": 4
+          },
+          "step_seconds": 161.0,
+          "sampled_seconds": 160.7900390625,
+          "cpu_percent": 35.82746227432076,
+          "busy_cpu_seconds": 230.4279623439312,
+          "disk_write_bytes": 1441577222.7923434,
+          "network_received_bytes": 170727375.4289304
+        },
+        {
+          "job_id": 126781884724,
+          "job_name": "windows-candidate-pytest / pytest py3.11 on windows-latest (4/4)",
+          "artifact": "metrics-5150666ecb864d8dacaf628825579e7f",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 4,
+            "pytest-split-group-size": 4
+          },
+          "step_seconds": 102.0,
+          "sampled_seconds": 101.01600003242493,
+          "cpu_percent": 32.773105253334215,
+          "busy_cpu_seconds": 132.424320053339,
+          "disk_write_bytes": 944245248.0934654,
+          "network_received_bytes": 98023067.05976488
+        },
+        {
+          "job_id": 126781884665,
+          "job_name": "windows-candidate-pytest / pytest py3.14 on windows-latest (1/4)",
+          "artifact": "metrics-8f3009d0e8cc45b2baa18a6b4e31fad0",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 1,
+            "pytest-split-group-size": 4
+          },
+          "step_seconds": 96.0,
+          "sampled_seconds": 95.9966869354248,
+          "cpu_percent": 43.71949162993751,
+          "busy_cpu_seconds": 167.87705403900145,
+          "disk_write_bytes": 1276112853.6877859,
+          "network_received_bytes": 128392099.21865045
+        },
+        {
+          "job_id": 126781884581,
+          "job_name": "windows-candidate-pytest / pytest py3.14 on windows-latest (2/4)",
+          "artifact": "metrics-dfdff2c60c0b40b496b717eac5e3d566",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 4
+          },
+          "step_seconds": 104.0,
+          "sampled_seconds": 103.89704012870789,
+          "cpu_percent": 38.24046004866113,
+          "busy_cpu_seconds": 158.92282448863983,
+          "disk_write_bytes": 1395081814.7004027,
+          "network_received_bytes": 175881085.6145923
+        },
+        {
+          "job_id": 126781884623,
+          "job_name": "windows-candidate-pytest / pytest py3.14 on windows-latest (3/4)",
+          "artifact": "metrics-c2adb771947e4bd0b7902d594a515ff3",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 3,
+            "pytest-split-group-size": 4
+          },
+          "step_seconds": 123.0,
+          "sampled_seconds": 123.0058319568634,
+          "cpu_percent": 40.066308864963446,
+          "busy_cpu_seconds": 197.1355862150192,
+          "disk_write_bytes": 1127987337.6214209,
+          "network_received_bytes": 135417691.3319458
+        },
+        {
+          "job_id": 126781884823,
+          "job_name": "windows-candidate-pytest / pytest py3.14 on windows-latest (4/4)",
+          "artifact": "metrics-3398c4d5cfc94e02a60ef1cb5f37b0ed",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 4,
+            "pytest-split-group-size": 4
+          },
+          "step_seconds": 79.0,
+          "sampled_seconds": 78.04700016975403,
+          "cpu_percent": 45.623590929612966,
+          "busy_cpu_seconds": 142.43137636113167,
+          "disk_write_bytes": 1182788108.5810854,
+          "network_received_bytes": 125559602.62056392
+        }
+      ],
+      "summary": {
+        "jobs": 8,
+        "step_seconds_sum": 881.0,
+        "step_seconds_max": 161.0,
+        "step_seconds_mean": 110.125,
+        "sampled_seconds": 878.5753030776978,
+        "busy_cpu_seconds": 1395.1723082036972,
+        "cpu_percent": 39.69984995356492
+      }
+    },
+    "windows_4shards_4": {
+      "run_id": 41890163071,
+      "url": "https://github.com/maresb/conda-lock/actions/runs/41890163071",
+      "phase": "run-test",
+      "trials": [
+        {
+          "job_id": 126785250873,
+          "job_name": "windows-workers4 / pytest py3.11 on windows-latest (1/4)",
+          "artifact": "metrics-259a2a8b129e4b47844e98276585ad55",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 1,
+            "pytest-split-group-size": 4,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 87.0,
+          "sampled_seconds": 87.00226974487305,
+          "cpu_percent": 56.690067891700984,
+          "busy_cpu_seconds": 197.2865831427574,
+          "disk_write_bytes": 1561709423.0879152,
+          "network_received_bytes": 180223418.45373625
+        },
+        {
+          "job_id": 126785250889,
+          "job_name": "windows-workers4 / pytest py3.11 on windows-latest (2/4)",
+          "artifact": "metrics-f30ef8e698944da6ae6e71b1ba670074",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 4,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 114.0,
+          "sampled_seconds": 113.31593608856201,
+          "cpu_percent": 70.8626274992337,
+          "busy_cpu_seconds": 321.1945987508297,
+          "disk_write_bytes": 2006805312.6629698,
+          "network_received_bytes": 189988646.43429756
+        },
+        {
+          "job_id": 126785251865,
+          "job_name": "windows-workers4 / pytest py3.11 on windows-latest (3/4)",
+          "artifact": "metrics-1252ad57edd84249a607ea9b81c957f9",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 3,
+            "pytest-split-group-size": 4,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 136.0,
+          "sampled_seconds": 135.3440010547638,
+          "cpu_percent": 56.58647784317223,
+          "busy_cpu_seconds": 306.3456126756668,
+          "disk_write_bytes": 1796811280.1943593,
+          "network_received_bytes": 237976202.90530318
+        },
+        {
+          "job_id": 126785251433,
+          "job_name": "windows-workers4 / pytest py3.11 on windows-latest (4/4)",
+          "artifact": "metrics-a400d6245187402184f36b4c8faba66a",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.11",
+            "pytest-split-group-index": 4,
+            "pytest-split-group-size": 4,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 89.0,
+          "sampled_seconds": 88.29700112342834,
+          "cpu_percent": 73.17930383615968,
+          "busy_cpu_seconds": 258.4605229213238,
+          "disk_write_bytes": 1465368592.8648567,
+          "network_received_bytes": 171024541.49803934
+        },
+        {
+          "job_id": 126785251117,
+          "job_name": "windows-workers4 / pytest py3.14 on windows-latest (1/4)",
+          "artifact": "metrics-71a33d9464d5412c96d1998d8d679d90",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 1,
+            "pytest-split-group-size": 4,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 79.0,
+          "sampled_seconds": 78.37500071525574,
+          "cpu_percent": 75.37262470659724,
+          "busy_cpu_seconds": 236.2931806116104,
+          "disk_write_bytes": 1121124354.6140316,
+          "network_received_bytes": 136964290.3089129
+        },
+        {
+          "job_id": 126785251082,
+          "job_name": "windows-workers4 / pytest py3.14 on windows-latest (2/4)",
+          "artifact": "metrics-1de2ccf1e3974699a71ffbe47f858c37",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 4,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 171.0,
+          "sampled_seconds": 170.597731590271,
+          "cpu_percent": 53.14082979252579,
+          "busy_cpu_seconds": 362.6282006971836,
+          "disk_write_bytes": 2690276878.674392,
+          "network_received_bytes": 324128885.09075785
+        },
+        {
+          "job_id": 126785251198,
+          "job_name": "windows-workers4 / pytest py3.14 on windows-latest (3/4)",
+          "artifact": "metrics-2b902976920c49dda0082c76fc4cb747",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 3,
+            "pytest-split-group-size": 4,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 94.0,
+          "sampled_seconds": 93.26600074768066,
+          "cpu_percent": 66.39800290205967,
+          "busy_cpu_seconds": 247.70704753232002,
+          "disk_write_bytes": 1082874376.8750284,
+          "network_received_bytes": 131595522.07121384
+        },
+        {
+          "job_id": 126785251255,
+          "job_name": "windows-workers4 / pytest py3.14 on windows-latest (4/4)",
+          "artifact": "metrics-3d4cb05d8a324e0ea53fdb47586d5bfc",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 4,
+            "pytest-split-group-size": 4,
+            "pytest-workers": "4"
+          },
+          "step_seconds": 93.0,
+          "sampled_seconds": 92.94637894630432,
+          "cpu_percent": 66.1789756149444,
+          "busy_cpu_seconds": 246.0438458313942,
+          "disk_write_bytes": 1527888567.8813303,
+          "network_received_bytes": 193273003.68235633
+        }
+      ],
+      "summary": {
+        "jobs": 8,
+        "step_seconds_sum": 863.0,
+        "step_seconds_max": 171.0,
+        "step_seconds_mean": 107.875,
+        "sampled_seconds": 859.1443200111389,
+        "busy_cpu_seconds": 2175.9595921630857,
+        "cpu_percent": 63.31763888443312
+      }
+    },
+    "windows_repeat_2": {
+      "run_id": 41891570593,
+      "url": "https://github.com/maresb/conda-lock/actions/runs/41891570593",
+      "phase": "run-test",
+      "trials": [
+        {
+          "job_id": 126790176824,
+          "job_name": "windows-worker-control / Worker control (2, 1)",
+          "artifact": "metrics-a2e594c5138843dc94a99f895f3aeef8",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 4,
+            "pytest-workers": "2",
+            "repeat": 1
+          },
+          "step_seconds": 93.0,
+          "sampled_seconds": 92.9259397983551,
+          "cpu_percent": 36.5760842039697,
+          "busy_cpu_seconds": 135.9546799519062,
+          "disk_write_bytes": 1572698628.0334804,
+          "network_received_bytes": 176359733.8954364
+        },
+        {
+          "job_id": 126790176612,
+          "job_name": "windows-worker-control / Worker control (2, 2)",
+          "artifact": "metrics-7d267f2d18654a56b2e63fb58dcc08f7",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 4,
+            "pytest-workers": "2",
+            "repeat": 2
+          },
+          "step_seconds": 104.0,
+          "sampled_seconds": 104.00542187690735,
+          "cpu_percent": 41.92679074034502,
+          "busy_cpu_seconds": 174.42454235577586,
+          "disk_write_bytes": 1544776259.289847,
+          "network_received_bytes": 175046582.5937572
+        }
+      ],
+      "summary": {
+        "jobs": 2,
+        "step_seconds_sum": 197.0,
+        "step_seconds_max": 104.0,
+        "step_seconds_mean": 98.5,
+        "sampled_seconds": 196.93136167526245,
+        "busy_cpu_seconds": 310.3792223076821,
+        "cpu_percent": 39.40195452711765
+      }
+    },
+    "windows_repeat_4": {
+      "run_id": 41891570593,
+      "url": "https://github.com/maresb/conda-lock/actions/runs/41891570593",
+      "phase": "run-test",
+      "trials": [
+        {
+          "job_id": 126790176516,
+          "job_name": "windows-worker-control / Worker control (4, 1)",
+          "artifact": "metrics-71321d9ffa8a4770a4bae4b6cbf18aca",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 4,
+            "pytest-workers": "4",
+            "repeat": 1
+          },
+          "step_seconds": 130.0,
+          "sampled_seconds": 129.62050104141235,
+          "cpu_percent": 44.25990242237748,
+          "busy_cpu_seconds": 229.47962912130356,
+          "disk_write_bytes": 1391257682.8190072,
+          "network_received_bytes": 182125142.91965842
+        },
+        {
+          "job_id": 126790176734,
+          "job_name": "windows-worker-control / Worker control (4, 2)",
+          "artifact": "metrics-11b54c0a4fd4489b8375a960fee64019",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "pytest-split-group-index": 2,
+            "pytest-split-group-size": 4,
+            "pytest-workers": "4",
+            "repeat": 2
+          },
+          "step_seconds": 66.0,
+          "sampled_seconds": 65.20300078392029,
+          "cpu_percent": 64.18873221442232,
+          "busy_cpu_seconds": 167.4119182758331,
+          "disk_write_bytes": 2435498001.8055925,
+          "network_received_bytes": 326086016.37310374
+        }
+      ],
+      "summary": {
+        "jobs": 2,
+        "step_seconds_sum": 196.0,
+        "step_seconds_max": 130.0,
+        "step_seconds_mean": 98.0,
+        "sampled_seconds": 194.82350182533264,
+        "busy_cpu_seconds": 396.89154739713666,
+        "cpu_percent": 50.929629084606844
+      }
+    },
+    "serial_install": {
+      "run_id": 41885415752,
+      "url": "https://github.com/maresb/conda-lock/actions/runs/41885415752",
+      "phase": "Install GDAL with conda-lock",
+      "trials": [
+        {
+          "job_id": 126769807535,
+          "job_name": "windows-control / serial control (1)",
+          "artifact": "metrics-346c4539a83640619316bddf7e288a37",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "repeat": 1
+          },
+          "step_seconds": 241.0,
+          "sampled_seconds": 240.99752378463745,
+          "cpu_percent": 25.28878758049883,
+          "busy_cpu_seconds": 243.78140745663643,
+          "disk_write_bytes": 3355728448.289884,
+          "network_received_bytes": 330611257.14593256
+        },
+        {
+          "job_id": 126769807755,
+          "job_name": "windows-control / serial control (2)",
+          "artifact": "metrics-7185ed13e5eb4e6180ce390584ff3e38",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "repeat": 2
+          },
+          "step_seconds": 161.0,
+          "sampled_seconds": 160.99453473091125,
+          "cpu_percent": 20.135916698487616,
+          "busy_cpu_seconds": 129.670901610136,
+          "disk_write_bytes": 3282635091.381785,
+          "network_received_bytes": 330581640.04920584
+        }
+      ],
+      "summary": {
+        "jobs": 2,
+        "step_seconds_sum": 402.0,
+        "step_seconds_max": 241.0,
+        "step_seconds_mean": 201.0,
+        "sampled_seconds": 401.9920585155487,
+        "busy_cpu_seconds": 373.45230906677244,
+        "cpu_percent": 23.22510489671325
+      }
+    },
+    "separate_format_install": {
+      "run_id": 41885415752,
+      "url": "https://github.com/maresb/conda-lock/actions/runs/41885415752",
+      "phase": "Install GDAL with conda-lock",
+      "trials": [
+        {
+          "job_id": 126769807990,
+          "job_name": "windows-control / parallel (1, env)",
+          "artifact": "metrics-22383eb025e04df48b8b5b1b77e9550d",
+          "matrix": {
+            "format": "env",
+            "repeat": 1
+          },
+          "step_seconds": 137.0,
+          "sampled_seconds": 136.6253638267517,
+          "cpu_percent": 24.47841584782791,
+          "busy_cpu_seconds": 133.77489884448053,
+          "disk_write_bytes": 2769688651.039818,
+          "network_received_bytes": 330608309.0187913
+        },
+        {
+          "job_id": 126769807682,
+          "job_name": "windows-control / parallel (1, explicit)",
+          "artifact": "metrics-de533b969a2e4982a2db7aeabdff7905",
+          "matrix": {
+            "format": "explicit",
+            "repeat": 1
+          },
+          "step_seconds": 122.0,
+          "sampled_seconds": 121.99638247489929,
+          "cpu_percent": 25.632170273133095,
+          "busy_cpu_seconds": 125.08128193211554,
+          "disk_write_bytes": 2732233508.242599,
+          "network_received_bytes": 325418227.42312557
+        },
+        {
+          "job_id": 126769807641,
+          "job_name": "windows-control / parallel (1, lock)",
+          "artifact": "metrics-77cc5b91cf0b47acb412f829427fa639",
+          "matrix": {
+            "format": "lock",
+            "repeat": 1
+          },
+          "step_seconds": 161.0,
+          "sampled_seconds": 161.0028145313263,
+          "cpu_percent": 21.960597600026652,
+          "busy_cpu_seconds": 141.4287208957672,
+          "disk_write_bytes": 2735423428.2571964,
+          "network_received_bytes": 325115954.0432385
+        },
+        {
+          "job_id": 126769807800,
+          "job_name": "windows-control / parallel (2, env)",
+          "artifact": "metrics-93a486fefc5945f4b47bbc64f744f2e7",
+          "matrix": {
+            "format": "env",
+            "repeat": 2
+          },
+          "step_seconds": 130.0,
+          "sampled_seconds": 129.59924244880676,
+          "cpu_percent": 23.334127539206513,
+          "busy_cpu_seconds": 120.96341009140014,
+          "disk_write_bytes": 2763503496.307711,
+          "network_received_bytes": 329574813.74464244
+        },
+        {
+          "job_id": 126769807724,
+          "job_name": "windows-control / parallel (2, explicit)",
+          "artifact": "metrics-287ed2bcea8e4039a5cefbd331468973",
+          "matrix": {
+            "format": "explicit",
+            "repeat": 2
+          },
+          "step_seconds": 166.0,
+          "sampled_seconds": 165.77300143241882,
+          "cpu_percent": 22.507945995467587,
+          "busy_cpu_seconds": 149.24839054989815,
+          "disk_write_bytes": 2760819609.616667,
+          "network_received_bytes": 325916182.64858526
+        },
+        {
+          "job_id": 126769808076,
+          "job_name": "windows-control / parallel (2, lock)",
+          "artifact": "metrics-63ef7d46a43b47fead192c62a2e4b20b",
+          "matrix": {
+            "format": "lock",
+            "repeat": 2
+          },
+          "step_seconds": 106.0,
+          "sampled_seconds": 105.64975476264954,
+          "cpu_percent": 26.369467087021828,
+          "busy_cpu_seconds": 111.4371092386246,
+          "disk_write_bytes": 2741464269.576185,
+          "network_received_bytes": 335115132.5803886
+        }
+      ],
+      "summary": {
+        "jobs": 6,
+        "step_seconds_sum": 822.0,
+        "step_seconds_max": 166.0,
+        "step_seconds_mean": 137.0,
+        "sampled_seconds": 820.6465594768524,
+        "busy_cpu_seconds": 781.9338115522862,
+        "cpu_percent": 23.82066318692529
+      }
+    },
+    "local_concurrency_cross_volume": {
+      "run_id": 41886981578,
+      "url": "https://github.com/maresb/conda-lock/actions/runs/41886981578",
+      "phase": "Install GDAL with conda-lock",
+      "trials": [
+        {
+          "job_id": 126774161197,
+          "job_name": "windows-local-concurrency / Three formats on one runner (1)",
+          "artifact": "metrics-463aa1b371784a7daa84f5cb42f3ee7a",
+          "matrix": {
+            "repeat": 1
+          },
+          "step_seconds": 190.0,
+          "sampled_seconds": 189.37647032737732,
+          "cpu_percent": 53.934765020602285,
+          "busy_cpu_seconds": 408.55901710152625,
+          "disk_write_bytes": 13607386425.635605,
+          "network_received_bytes": 1009395650.2785432
+        },
+        {
+          "job_id": 126774160908,
+          "job_name": "windows-local-concurrency / Three formats on one runner (2)",
+          "artifact": "metrics-111a4cc30f8d49c5bf43d175e58a9549",
+          "matrix": {
+            "repeat": 2
+          },
+          "step_seconds": 284.0,
+          "sampled_seconds": 283.9220013618469,
+          "cpu_percent": 65.73817076816677,
+          "busy_cpu_seconds": 746.5805204145909,
+          "disk_write_bytes": 14358081607.59511,
+          "network_received_bytes": 1013655989.9433143
+        }
+      ],
+      "summary": {
+        "jobs": 2,
+        "step_seconds_sum": 474.0,
+        "step_seconds_max": 284.0,
+        "step_seconds_mean": 237.0,
+        "sampled_seconds": 473.29847168922424,
+        "busy_cpu_seconds": 1155.1395375161171,
+        "cpu_percent": 61.015384932121705
+      }
+    },
+    "local_concurrency_same_volume": {
+      "run_id": 41888244372,
+      "url": "https://github.com/maresb/conda-lock/actions/runs/41888244372",
+      "phase": "Install GDAL with conda-lock",
+      "trials": [
+        {
+          "job_id": 126778575189,
+          "job_name": "windows-local-concurrency / Three formats on one runner (1)",
+          "artifact": "metrics-b62940af6a554fd9b8dbadd856ab62e0",
+          "matrix": {
+            "repeat": 1
+          },
+          "step_seconds": 276.0,
+          "sampled_seconds": 276.0024163722992,
+          "cpu_percent": 38.27159973761885,
+          "busy_cpu_seconds": 422.5221602406502,
+          "disk_write_bytes": 8836146863.317753,
+          "network_received_bytes": 1009314179.4946107
+        },
+        {
+          "job_id": 126778575464,
+          "job_name": "windows-local-concurrency / Three formats on one runner (2)",
+          "artifact": "metrics-d5c1255bd6674c47af367dcf08aad81d",
+          "matrix": {
+            "repeat": 2
+          },
+          "step_seconds": 493.0,
+          "sampled_seconds": 492.9974982738495,
+          "cpu_percent": 27.580796654506965,
+          "busy_cpu_seconds": 543.8905500428677,
+          "disk_write_bytes": 9990320128.017464,
+          "network_received_bytes": 1011898146.9077537
+        }
+      ],
+      "summary": {
+        "jobs": 2,
+        "step_seconds_sum": 769.0,
+        "step_seconds_max": 493.0,
+        "step_seconds_mean": 384.5,
+        "sampled_seconds": 768.9999146461487,
+        "busy_cpu_seconds": 966.412710283518,
+        "cpu_percent": 31.41784192291516
+      }
+    },
+    "link_threads_1": {
+      "run_id": 41890163071,
+      "url": "https://github.com/maresb/conda-lock/actions/runs/41890163071",
+      "phase": "Install GDAL with conda-lock",
+      "trials": [
+        {
+          "job_id": 126785251973,
+          "job_name": "windows-link-threads / Link threads (1, 1)",
+          "artifact": "metrics-82bc574cd42442dd9f937dcfb143f896",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "repeat": 1,
+            "execute-threads": 1
+          },
+          "step_seconds": 275.0,
+          "sampled_seconds": 274.92053961753845,
+          "cpu_percent": 20.94742183093178,
+          "busy_cpu_seconds": 230.35506053423882,
+          "disk_write_bytes": 3373520281.7407455,
+          "network_received_bytes": 330843638.29164624
+        },
+        {
+          "job_id": 126785251103,
+          "job_name": "windows-link-threads / Link threads (1, 2)",
+          "artifact": "metrics-2105c54a0a9f40f3b4bf70594ff2da6d",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "repeat": 2,
+            "execute-threads": 1
+          },
+          "step_seconds": 220.0,
+          "sampled_seconds": 219.98315906524658,
+          "cpu_percent": 16.8434246788736,
+          "busy_cpu_seconds": 148.21079081344604,
+          "disk_write_bytes": 3312851801.6449738,
+          "network_received_bytes": 331016225.3851298
+        }
+      ],
+      "summary": {
+        "jobs": 2,
+        "step_seconds_sum": 495.0,
+        "step_seconds_max": 275.0,
+        "step_seconds_mean": 247.5,
+        "sampled_seconds": 494.90369868278503,
+        "busy_cpu_seconds": 378.5658513476849,
+        "cpu_percent": 19.12320782584874
+      }
+    },
+    "link_threads_4": {
+      "run_id": 41890163071,
+      "url": "https://github.com/maresb/conda-lock/actions/runs/41890163071",
+      "phase": "Install GDAL with conda-lock",
+      "trials": [
+        {
+          "job_id": 126785251447,
+          "job_name": "windows-link-threads / Link threads (4, 1)",
+          "artifact": "metrics-78606e90ac21475c8a30d836ba5e21d9",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "repeat": 1,
+            "execute-threads": 4
+          },
+          "step_seconds": 262.0,
+          "sampled_seconds": 261.9923801422119,
+          "cpu_percent": 29.198736849909267,
+          "busy_cpu_seconds": 305.9938625781536,
+          "disk_write_bytes": 3666446111.427331,
+          "network_received_bytes": 333374609.8753115
+        },
+        {
+          "job_id": 126785251592,
+          "job_name": "windows-link-threads / Link threads (4, 2)",
+          "artifact": "metrics-f73931542a0e44ebb5e0a0ffbc0e5c57",
+          "matrix": {
+            "os": "windows-latest",
+            "python-version": "3.14",
+            "repeat": 2,
+            "execute-threads": 4
+          },
+          "step_seconds": 245.0,
+          "sampled_seconds": 244.42286920547485,
+          "cpu_percent": 28.9433614374754,
+          "busy_cpu_seconds": 282.9767778799534,
+          "disk_write_bytes": 3364621443.6423273,
+          "network_received_bytes": 330853403.19029
+        }
+      ],
+      "summary": {
+        "jobs": 2,
+        "step_seconds_sum": 507.0,
+        "step_seconds_max": 262.0,
+        "step_seconds_mean": 253.5,
+        "sampled_seconds": 506.41524934768677,
+        "busy_cpu_seconds": 588.970640458107,
+        "cpu_percent": 29.075479125912963
+      }
+    }
+  }
+}
