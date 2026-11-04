@@ -5,6 +5,8 @@ Run: python3 link_cost_probe.py --output /tmp/dyld-link-cost
 """
 
 import argparse
+import ctypes
+import ctypes.util
 import json
 import os
 import shutil
@@ -46,11 +48,23 @@ def main():
     def copy(target):
         subprocess.run(["cp", "-R", str(source), str(target)], check=True)
 
+    libc = ctypes.CDLL(ctypes.util.find_library("c"), use_errno=True)
+    libc.clonefile.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_uint32]
+    libc.clonefile.restype = ctypes.c_int
+
     def clone_per_file(target):
+        """Per-file clonefile(2) from Python, comparable to the os.link loop."""
         for p in files:
             q = target / p.relative_to(source)
             q.parent.mkdir(parents=True, exist_ok=True)
-            subprocess.run(["cp", "-c", str(p), str(q)], check=True)
+            if libc.clonefile(os.fsencode(p), os.fsencode(q), 0):
+                raise OSError(ctypes.get_errno(), "clonefile", str(q))
+
+    def copy_per_file(target):
+        for p in files:
+            q = target / p.relative_to(source)
+            q.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(p, q)
 
     results = {}
     for name, action in [
@@ -58,6 +72,7 @@ def main():
         ("clone_tree", clone),
         ("copy_tree", copy),
         ("clone_per_file", clone_per_file),
+        ("copy_per_file", copy_per_file),
     ]:
         seconds = []
         for round_ in range(args.rounds):
