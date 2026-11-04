@@ -436,7 +436,8 @@ values per run:
 
 The reader, which cannot hold the worker's record, read the cache path in
 every trial after the worker had exited, and the environment path in every
-trial after the main thread had built the path. In the first run the live-worker cells waited 20 ms for the worker's
+trial after the main thread had built the path. In the first run the live-
+worker cells waited 20 ms for the worker's
 lookup rather than for its completion and had a few exceptions; the second
 run waits for the lookup to return and had none, which is consistent with
 the race explaining them, though the cause of each earlier exception
