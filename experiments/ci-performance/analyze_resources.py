@@ -29,6 +29,7 @@ def workflow_steps(directory, metadata):
         "local-concurrency": f"Three formats on one runner ({matrix.get('repeat')})",
         "link-threads": f"Link threads ({matrix.get('execute-threads')}, {matrix.get('repeat')})",
         "worker-control": f"Worker control ({matrix.get('pytest-workers')}, {matrix.get('repeat')})",
+        "mapping-control": f"Mapping control ({matrix.get('mapping-cache')}, {matrix.get('pytest-workers')}, {matrix.get('repeat')})",
         "lock-gdal": f"lock-gdal ({matrix.get('os')}, {matrix.get('python-version')})",
     }.get(job)
     if suffix is None:
@@ -117,6 +118,7 @@ def summarize(directory):
                 "group": matrix.get("pytest-split-group-index"),
                 "workers": matrix.get("pytest-workers", "auto"),
                 "execute_threads": matrix.get("execute-threads"),
+                "mapping_cache": matrix.get("mapping-cache"),
                 "format": matrix.get("format"),
                 "repeat": matrix.get("repeat"),
                 "logical_cpus": metadata["logical_cpus"],
@@ -186,6 +188,7 @@ def main():
         "group",
         "workers",
         "execute_threads",
+        "mapping_cache",
         "format",
         "repeat",
         "logical_cpus",

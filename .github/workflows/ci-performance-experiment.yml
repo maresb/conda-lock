@@ -234,6 +234,13 @@ jobs:
         "pytest-split-group-index": 3, "pytest-split-group-size": 4}, {"os": "macos-latest", "python-version": "3.14", "pytest-split-group-index":
         4, "pytest-split-group-size": 4}]}'
       cache-group: candidate
+  mapping-control:
+    needs: configure
+    if: needs.configure.outputs.mode == 'mapping-investigation'
+    permissions:
+      contents: read
+      actions: write
+    uses: ./.github/workflows/ci-perf-mapping-control.yml
   windows-worker-control:
     needs: configure
     if: needs.configure.outputs.mode == 'windows-worker-control'
@@ -268,6 +275,58 @@ jobs:
         os:
         - ubuntu-latest
         - windows-latest
+        - macos-latest
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+    - name: Set up telemetry Python
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      with:
+        python-version: '3.11'
+    - name: Start resource sampler
+      id: metrics
+      shell: bash -eo pipefail {0}
+      run: |
+        python -m venv "$RUNNER_TEMP/ci-metrics-venv"
+        if [[ "$RUNNER_OS" == Windows ]]; then
+          metrics_python="$RUNNER_TEMP/ci-metrics-venv/Scripts/python.exe"
+        else
+          metrics_python="$RUNNER_TEMP/ci-metrics-venv/bin/python"
+        fi
+        "$metrics_python" -m pip install --disable-pip-version-check psutil==7.1.0
+        echo "MONITOR_PY=$metrics_python" >> "$GITHUB_ENV"
+        "$metrics_python" experiments/ci-performance/telemetry.py start
+    - name: Measure Known CPU load
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: Known CPU load
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
+    - name: Known CPU load
+      shell: bash -eo pipefail {0}
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py calibrate'
+    - name: Upload resource measurements
+      if: always() && steps.metrics.outcome == 'success'
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      with:
+        name: metrics-${{ env.METRICS_ID }}
+        path: ${{ runner.temp }}/ci-metrics
+        if-no-files-found: error
+    env:
+      METRICS_MATRIX: ${{ toJSON(matrix) }}
+      METRICS_INPUTS: ${{ toJSON(inputs) }}
+  macos-recovery-probe:
+    needs: configure
+    if: needs.configure.outputs.mode == 'mapping-investigation'
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
         - macos-latest
     steps:
     - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803

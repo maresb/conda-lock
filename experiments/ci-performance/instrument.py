@@ -133,6 +133,52 @@ generator.save(
     },
 )
 
+mapping_control = copy.deepcopy(worker_control)
+mapping_control["name"] = (
+    "Mapping control (${{ matrix.mapping-cache }}, ${{ matrix.pytest-workers }}, ${{ matrix.repeat }})"
+)
+mapping_control["strategy"]["matrix"]["mapping-cache"] = ["cold", "primed"]
+mapping_steps = []
+for step in mapping_control["steps"]:
+    if step.get("name") == "Measure run-test":
+        mapping_steps.extend(
+            [
+                {
+                    "name": "Measure Prepare mapping cache",
+                    "shell": "bash -eo pipefail {0}",
+                    "env": {"METRICS_PHASE": "Prepare mapping cache"},
+                    "run": f'{COMMAND} mark --label "$METRICS_PHASE"',
+                },
+                {
+                    "name": "Prepare mapping cache",
+                    "env": {
+                        "MAPPING_CACHE_STATE": "${{ matrix.mapping-cache }}",
+                        "MAPPING_TRACE_DIR": "${{ runner.temp }}/ci-metrics",
+                    },
+                    "run": 'python experiments/ci-performance/mapping_probe.py prepare --state "$MAPPING_CACHE_STATE"',
+                },
+            ]
+        )
+    if step.get("name") == "run-test":
+        step.setdefault("env", {})["MAPPING_TRACE_DIR"] = (
+            "${{ runner.temp }}/ci-metrics"
+        )
+        step["run"] = step["run"].replace(
+            "pytest --numprocesses=",
+            "python experiments/ci-performance/mapping_probe.py pytest --numprocesses=",
+        )
+    mapping_steps.append(step)
+mapping_control["steps"] = mapping_steps
+generator.save(
+    "ci-perf-mapping-control.yml",
+    {
+        "name": "Observe mapping downloads and worker waits",
+        "on": {"workflow_call": {}},
+        "permissions": {},
+        "jobs": {"mapping-control": mapping_control},
+    },
+)
+
 windows = generator.load("ci-perf-windows-control.yml")
 link_threads = copy.deepcopy(windows["jobs"]["serial"])
 link_threads.pop("needs")
@@ -213,6 +259,12 @@ for job in windows["jobs"].values():
 generator.save("ci-perf-windows-control.yml", windows)
 
 top = generator.load("ci-performance-experiment.yml")
+top["jobs"]["mapping-control"] = {
+    "needs": "configure",
+    "if": "needs.configure.outputs.mode == 'mapping-investigation'",
+    "permissions": {"contents": "read", "actions": "write"},
+    "uses": "./.github/workflows/ci-perf-mapping-control.yml",
+}
 top["jobs"]["windows-worker-control"] = {
     "needs": "configure",
     "if": "needs.configure.outputs.mode == 'windows-worker-control'",
@@ -257,6 +309,11 @@ top["jobs"]["cpu-probe"]["steps"] = [
     for step in top["jobs"]["cpu-probe"]["steps"]
     if step.get("name") != "Stop resource sampler"
 ]
+top["jobs"]["macos-recovery-probe"] = copy.deepcopy(top["jobs"]["cpu-probe"])
+top["jobs"]["macos-recovery-probe"]["if"] = (
+    "needs.configure.outputs.mode == 'mapping-investigation'"
+)
+top["jobs"]["macos-recovery-probe"]["strategy"]["matrix"]["os"] = ["macos-latest"]
 linux_entries = [
     entry
     for entry in json.loads(generator.matrix(10, 10))["include"]
