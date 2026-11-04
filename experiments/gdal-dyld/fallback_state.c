@@ -11,8 +11,9 @@
  *            none    no worker
  *   MAINREAD 1     the main thread calls fsgetpath after the worker step,
  *                  as record_state does; 0 omits it
- *   Sequence: main opens INSTALLED; [reader created]; [worker]; [main read];
- *   reader reads (r); X reads twice (x1, x2) and exits; Y reads (y).
+ *   Sequence: main opens INSTALLED; [reader created]; [worker, whose lookup
+ *   the main thread waits for before going on]; [main read]; reader reads
+ *   (r); X reads twice (x1, x2) and exits; Y reads (y).
  *   No thread looks up INSTALLED after the worker, so the most recent lookup
  *   of the inode is the worker's. */
 #include <fcntl.h>
@@ -31,6 +32,7 @@ static uint64_t inode;
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 static int phase; /* 0 wait, 1 reader may read, 2 reader has read, 3 everyone may exit */
+static int worker_looked_up; /* set by the live worker once its lookup has returned */
 static const char *which(const char *path) {
     return !strcmp(path, paths[0]) ? "cache" : !strcmp(path, paths[1]) ? "env" : "other";
 }
@@ -68,6 +70,10 @@ static void *worker_block(void *unused) {
     (void)unused;
     struct stat st;
     if (stat(paths[0], &st)) abort();
+    pthread_mutex_lock(&mutex);
+    worker_looked_up = 1;
+    pthread_cond_broadcast(&cond);
+    pthread_mutex_unlock(&mutex);
     wait_for(3);
     return NULL;
 }
@@ -102,7 +108,9 @@ int main(int argc, char **argv) {
         if (pthread_create(&worker_thread, NULL, worker_exit, NULL) || pthread_join(worker_thread, NULL)) return 2;
     } else if (worker_alive) {
         if (pthread_create(&worker_thread, NULL, worker_block, NULL)) return 2;
-        usleep(20000); /* let the worker's lookup happen before anyone reads */
+        pthread_mutex_lock(&mutex);
+        while (!worker_looked_up) pthread_cond_wait(&cond, &mutex);
+        pthread_mutex_unlock(&mutex);
     }
     if (mainread) printf("mainread=%s\n", resolve());
     if (have_reader) { advance(1); wait_for(2); }

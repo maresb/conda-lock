@@ -28,6 +28,8 @@ CELLS = [
     ("read", 1000),
     ("hold", 1000),
     ("hold", 5000),
+    ("oppose", 0),
+    ("oppose-control", 0),
 ]
 
 
@@ -75,11 +77,15 @@ def main():
                 check=True,
                 timeout=30,
             )
-            values = dict(
-                s.split("=", 1) for s in result.stdout.splitlines() if "=" in s
-            )
-            assert values["main"] == "env" and values["reset"] == "env", values
-            assert all(v in {"cache", "env"} for v in values.values()), values
+            pairs = [s.split("=", 1) for s in result.stdout.splitlines() if "=" in s]
+            resets = [v for k, v in pairs if k == "reset"]
+            values = dict(pair for pair in pairs if pair[0] != "reset")
+            values["resets"] = len(resets)
+            assert resets and all(r == "env" for r in resets), (resets, values)
+            assert values["main"] == "env", values
+            assert all(
+                v in {"cache", "env"} for k, v in values.items() if k != "resets"
+            ), values
             key = mode if not sleep_ms else f"{mode}/sleep{sleep_ms}ms"
             count(counts[key], values)
             events.write(

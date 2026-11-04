@@ -444,9 +444,10 @@ def print_record_design(runs, job, title):
     print(
         "| Cell | Trials | X first read cache | X second read cache, given first cache "
         "| X second read env, given first cache | Y read cache, given X second read cache "
-        "| Y read cache, given X second read env | Y read cache, given X first read env |"
+        "| Y read cache, given X second read env | Y read cache, given X first read env "
+        "| Verifier read cache |"
     )
-    print("|---|---:|---:|---:|---:|---:|---:|---:|")
+    print("|---|---:|---:|---:|---:|---:|---:|---:|---:|")
     for mode in modes:
         agg = aggregate(runs, job, mode)
         if agg and not mode.startswith("hold"):
@@ -454,7 +455,8 @@ def print_record_design(runs, job, title):
             print(
                 f"| {mode} | {agg['trials']} | {x1} | {agg.get('x2_cache_given_x1_cache', '')} "
                 f"| {agg.get('x2_env_given_x1_cache', '')} | {agg.get('y_cache_given_x2_cache', '')} "
-                f"| {agg.get('y_cache_given_x2_env', '')} | {agg.get('y_cache_given_x1_env', '')} |"
+                f"| {agg.get('y_cache_given_x2_env', '')} | {agg.get('y_cache_given_x1_env', '')} "
+                f"| {agg.get('v_cache', '')} |"
             )
     print(
         "\n| Hold cell | Trials | Holder's first read cache | Second read cache, given first cache "

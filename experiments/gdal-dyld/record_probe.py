@@ -33,7 +33,8 @@ CELLS = [
 def count(c, values):
     """Add one trial's readings to the cell's counters."""
     c["trials"] += 1
-    for field in ["x1", "x2", "y", "h1", "h2"]:
+    c["resets"] += values.get("resets", 0)
+    for field in ["x1", "x2", "y", "h1", "h2", "v"]:
         if field in values:
             c[f"{field}_cache"] += values[field] == "cache"
     if values.get("x1") == "cache":
