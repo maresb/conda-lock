@@ -234,6 +234,13 @@ jobs:
         "pytest-split-group-index": 3, "pytest-split-group-size": 4}, {"os": "macos-latest", "python-version": "3.14", "pytest-split-group-index":
         4, "pytest-split-group-size": 4}]}'
       cache-group: candidate
+  worksteal-matrix:
+    needs: configure
+    if: needs.configure.outputs.mode == 'windows-worksteal-matrix'
+    permissions:
+      contents: read
+      actions: write
+    uses: ./.github/workflows/ci-perf-worksteal-matrix.yml
   worker-matrix:
     needs: configure
     if: needs.configure.outputs.mode == 'windows-worker-matrix'

@@ -150,6 +150,23 @@ generator.save(
         "jobs": {"worker-matrix": worker_matrix},
     },
 )
+worksteal_matrix = copy.deepcopy(worker_matrix)
+worksteal_matrix["strategy"]["matrix"]["pytest-workers"] = ["4"]
+worksteal_matrix["strategy"]["matrix"]["distribution"] = ["worksteal"]
+for step in worksteal_matrix["steps"]:
+    if step.get("name") == "run-test":
+        step["run"] = step["run"].replace(
+            "pytest --numprocesses=", "pytest --dist=worksteal --numprocesses="
+        )
+generator.save(
+    "ci-perf-worksteal-matrix.yml",
+    {
+        "name": "Validate work stealing across the full Windows matrix",
+        "on": {"workflow_call": {}},
+        "permissions": {},
+        "jobs": {"worker-matrix": worksteal_matrix},
+    },
+)
 mapping_control["name"] = (
     "Mapping control (${{ matrix.mapping-cache }}, ${{ matrix.pytest-workers }}, ${{ matrix.repeat }})"
 )
@@ -298,6 +315,12 @@ for job in windows["jobs"].values():
 generator.save("ci-perf-windows-control.yml", windows)
 
 top = generator.load("ci-performance-experiment.yml")
+top["jobs"]["worksteal-matrix"] = {
+    "needs": "configure",
+    "if": "needs.configure.outputs.mode == 'windows-worksteal-matrix'",
+    "permissions": {"contents": "read", "actions": "write"},
+    "uses": "./.github/workflows/ci-perf-worksteal-matrix.yml",
+}
 top["jobs"]["worker-matrix"] = {
     "needs": "configure",
     "if": "needs.configure.outputs.mode == 'windows-worker-matrix'",
