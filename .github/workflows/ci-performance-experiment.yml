@@ -303,3 +303,37 @@ jobs:
         "python-version": "3.14", "pytest-split-group-index": 2, "pytest-split-group-size": 3}, {"os": "ubuntu-latest", "python-version":
         "3.14", "pytest-split-group-index": 3, "pytest-split-group-size": 3}]}'
       cache-group: baseline
+  linux-workers4:
+    needs: configure
+    if: needs.configure.outputs.mode == 'linux-workers4'
+    permissions:
+      contents: read
+      actions: write
+    uses: ./.github/workflows/ci-perf-pytest.yml
+    with:
+      matrix: '{"include": [{"os": "ubuntu-latest", "python-version": "3.11", "pytest-split-group-index": 1, "pytest-split-group-size":
+        3, "pytest-workers": "4"}, {"os": "ubuntu-latest", "python-version": "3.11", "pytest-split-group-index": 2, "pytest-split-group-size":
+        3, "pytest-workers": "4"}, {"os": "ubuntu-latest", "python-version": "3.11", "pytest-split-group-index": 3, "pytest-split-group-size":
+        3, "pytest-workers": "4"}, {"os": "ubuntu-latest", "python-version": "3.14", "pytest-split-group-index": 1, "pytest-split-group-size":
+        3, "pytest-workers": "4"}, {"os": "ubuntu-latest", "python-version": "3.14", "pytest-split-group-index": 2, "pytest-split-group-size":
+        3, "pytest-workers": "4"}, {"os": "ubuntu-latest", "python-version": "3.14", "pytest-split-group-index": 3, "pytest-split-group-size":
+        3, "pytest-workers": "4"}]}'
+      cache-group: baseline
+  windows-workers4:
+    needs: configure
+    if: needs.configure.outputs.mode == 'windows-workers4'
+    permissions:
+      contents: read
+      actions: write
+    uses: ./.github/workflows/ci-perf-pytest.yml
+    with:
+      matrix: '{"include": [{"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 1, "pytest-split-group-size":
+        4, "pytest-workers": "4"}, {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 2, "pytest-split-group-size":
+        4, "pytest-workers": "4"}, {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 3, "pytest-split-group-size":
+        4, "pytest-workers": "4"}, {"os": "windows-latest", "python-version": "3.11", "pytest-split-group-index": 4, "pytest-split-group-size":
+        4, "pytest-workers": "4"}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 1, "pytest-split-group-size":
+        4, "pytest-workers": "4"}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 2, "pytest-split-group-size":
+        4, "pytest-workers": "4"}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 3, "pytest-split-group-size":
+        4, "pytest-workers": "4"}, {"os": "windows-latest", "python-version": "3.14", "pytest-split-group-index": 4, "pytest-split-group-size":
+        4, "pytest-workers": "4"}]}'
+      cache-group: candidate

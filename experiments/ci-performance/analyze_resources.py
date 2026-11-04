@@ -69,6 +69,7 @@ def summarize(directory):
                 "python": matrix.get("python-version"),
                 "shards": matrix.get("pytest-split-group-size"),
                 "group": matrix.get("pytest-split-group-index"),
+                "workers": matrix.get("pytest-workers", "auto"),
                 "format": matrix.get("format"),
                 "repeat": matrix.get("repeat"),
                 "logical_cpus": metadata["logical_cpus"],

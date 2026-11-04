@@ -86,6 +86,12 @@ def instrument(job):
 
 
 unit = generator.load("ci-perf-pytest.yml")
+unit["jobs"]["test"]["env"]["PYTEST_WORKERS"] = "${{ matrix.pytest-workers || 'auto' }}"
+for step in unit["jobs"]["test"]["steps"]:
+    if step.get("name") == "run-test":
+        step["run"] = step["run"].replace(
+            "pytest \\\n", 'pytest --numprocesses="$PYTEST_WORKERS" \\\n'
+        )
 instrument(unit["jobs"]["test"])
 for step in unit["jobs"]["aggregate-durations"]["steps"]:
     if step.get("uses", "").startswith("actions/download-artifact@"):
@@ -139,4 +145,26 @@ top["jobs"]["linux-pytest"] = {
         "cache-group": "baseline",
     },
 }
+for platform, label, shards, cache_group in [
+    ("linux", "ubuntu-latest", 3, "baseline"),
+    ("windows", "windows-latest", 4, "candidate"),
+]:
+    entries = [
+        entry
+        for entry in json.loads(generator.matrix(shards, shards))["include"]
+        if entry["os"] == label
+    ]
+    for entry in entries:
+        entry["pytest-workers"] = "4"
+    case = platform + "-workers4"
+    top["jobs"][case] = {
+        "needs": "configure",
+        "if": f"needs.configure.outputs.mode == '{case}'",
+        "permissions": {"contents": "read", "actions": "write"},
+        "uses": "./.github/workflows/ci-perf-pytest.yml",
+        "with": {
+            "matrix": json.dumps({"include": entries}),
+            "cache-group": cache_group,
+        },
+    }
 generator.save("ci-performance-experiment.yml", top)

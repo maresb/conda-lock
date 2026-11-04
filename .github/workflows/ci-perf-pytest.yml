@@ -31,6 +31,7 @@ jobs:
       PYTEST_PYTHON: ${{ matrix.python-version }}
       PYTEST_SPLITS: ${{ matrix.pytest-split-group-size }}
       PYTEST_GROUP: ${{ matrix.pytest-split-group-index }}
+      PYTEST_WORKERS: ${{ matrix.pytest-workers || 'auto' }}
       METRICS_MATRIX: ${{ toJSON(matrix) }}
       METRICS_INPUTS: ${{ toJSON(inputs) }}
     steps:
@@ -128,7 +129,7 @@ jobs:
         mkdir -p tests/durations
         set -x
         which pytest
-        pytest \
+        pytest --numprocesses="$PYTEST_WORKERS" \
           --cov=conda_lock --cov-branch --cov-report=xml --cov-report=term \
           --store-durations \
           --clean-durations \
