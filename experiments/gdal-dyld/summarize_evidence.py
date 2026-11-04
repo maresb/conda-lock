@@ -265,15 +265,19 @@ def print_link_cost(runs):
 
 
 def print_installers(runs):
-    print("\n## Installers\n")
+    print("\n## Installers and workaround validation\n")
     for r in runs:
-        s = r["summaries"].get("installer-identity")
-        if s:
+        for job in ["installer-identity", "workaround-validation"]:
+            s = r["summaries"].get(job)
+            if not s:
+                continue
             cells = [
-                f"{k}: nlink {v['nlink']}, shares inode {bool(v['shares_inode_with_cache'])}, cache matches {v['cache_matches']}, failures {v['failures']}/{v['launches']}"
+                f"{k}: nlink {v['nlink']}, shares inode {bool(v['shares_inode_with_cache'])}, "
+                f"shares storage {v.get('shares_storage_with_cache', '?')}, cache matches {v['cache_matches']}, "
+                f"failures {v['failures']}/{v['launches']}"
                 for k, v in s.items()
             ]
-            print(f"- run {r['id']}: " + "; ".join(cells))
+            print(f"- run {r['id']} {job}: " + "; ".join(cells))
 
 
 def print_retry(runs):
@@ -281,6 +285,37 @@ def print_retry(runs):
     for r in runs:
         for k, v in (r["summaries"].get("retained-inode-retry") or {}).items():
             print(f"- run {r['id']} {k}: {json.dumps(v)}")
+
+
+def print_record(runs):
+    print("\n## Reading a stale record (per mode, over runs)\n")
+    print(
+        "| Mode | Trials | X read cache | Y read cache | Y cache given X cache | Y env given X cache |"
+    )
+    print("|---|---:|---:|---:|---:|---:|")
+    for mode in ["baseline", "read", "refresh", "control"]:
+        agg = {}
+        for r in runs:
+            cell = (r["summaries"].get("record-probe") or {}).get(mode)
+            if cell:
+                for k, v in cell.items():
+                    agg[k] = agg.get(k, 0) + v
+        if agg:
+            print(
+                f"| {mode} | {agg['trials']} | {agg['x_cache']} | {agg['y_cache']} "
+                f"| {agg['y_cache_given_x_cache']} | {agg['y_env_given_x_cache']} |"
+            )
+
+
+def print_delay(runs):
+    print("\n## Delay before the launch (cache paths / launches, per run)\n")
+    for r in runs:
+        s = r["summaries"].get("delay-probe")
+        if s:
+            cells = [
+                f"{k}: {v['cache_path']}/{v['launches']}" for k, v in sorted(s.items())
+            ]
+            print(f"- run {r['id']}: " + "; ".join(cells))
 
 
 def main():
@@ -295,6 +330,8 @@ def main():
         print_link_cost,
         print_installers,
         print_retry,
+        print_record,
+        print_delay,
     ]:
         section(runs)
 
