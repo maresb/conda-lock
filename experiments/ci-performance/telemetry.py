@@ -25,6 +25,14 @@ def counters(function):
         return {"error": str(error)}
 
 
+def total_counters(function):
+    try:
+        value = function()
+        return value._asdict() if value is not None else {}
+    except (OSError, psutil.Error) as error:
+        return {"error": str(error)}
+
+
 def processes():
     result = {}
     for process in psutil.process_iter(["pid", "name", "create_time", "cpu_times"]):
@@ -112,7 +120,9 @@ def sample(root):
                 "per_cpu_percent": per_cpu,
                 "cpu_times_percent": psutil.cpu_times_percent()._asdict(),
                 "disk": counters(lambda: psutil.disk_io_counters(perdisk=True)),
+                "disk_total": total_counters(psutil.disk_io_counters),
                 "network": counters(lambda: psutil.net_io_counters(pernic=True)),
+                "network_total": total_counters(psutil.net_io_counters),
                 "memory_available": psutil.virtual_memory().available,
                 "process_cpu_seconds": dict(
                     sorted(by_name.items(), key=lambda item: item[1], reverse=True)[:12]
