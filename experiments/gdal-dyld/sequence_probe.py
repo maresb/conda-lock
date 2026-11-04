@@ -19,6 +19,7 @@ def main():
     parser.add_argument("--micromamba", type=Path, required=True)
     parser.add_argument("--root-prefix", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--prime", action="store_true")
     args = parser.parse_args()
     if (
         os.environ.get("GITHUB_ACTIONS") != "true"
@@ -46,7 +47,7 @@ def main():
         / "pkgs/https/repo.anaconda.com/pkgs/main/osx-arm64/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo"
     )
     installed = root / "envs" / name / "bin/gdalinfo"
-    source = Path(__file__).with_name("stale_exec.c")
+    source = Path(__file__).with_name("prime_exec.c" if args.prime else "stale_exec.c")
     shutil.copy2(source, output / source.name)
     launcher = output / "stale_exec"
     subprocess.run(
@@ -71,9 +72,25 @@ def main():
         for trial in range(20)
     ]
     random.Random(966).shuffle(cases)
+    if args.prime:
+        cases = [
+            (mode, state, method, str(workers), trial)
+            for mode in ["hardlink", "copy"]
+            for state in ["cache", "env"]
+            for method in ["exec", "spawn"]
+            for workers in ([0, 1, 8, 32] if mode == "hardlink" else [8])
+            for trial in range(20)
+        ]
+        random.Random(967).shuffle(cases)
+    template = output / "original-gdalinfo"
+    shutil.copy2(cached, template)
     counts = collections.defaultdict(collections.Counter)
     with (output / "events.jsonl").open("w", buffering=1) as events:
         for mode, state, method, op, trial in cases:
+            if args.prime:
+                # Fresh inode prevents earlier cells from priming this cell's origin cache.
+                cached.unlink()
+                shutil.copy2(template, cached)
             installed.unlink()
             (os.link if mode == "hardlink" else shutil.copy2)(cached, installed)
             result = subprocess.run(
