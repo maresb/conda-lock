@@ -20,7 +20,7 @@ def cells(data, prefix=""):
     """Yield (name, cell) for every dict of integer counts, including nested ones."""
     if not isinstance(data, dict):
         return
-    if data and all(isinstance(v, int) for v in data.values()):
+    if data and all(isinstance(v, (int, float)) for v in data.values()):
         yield prefix, data
         return
     for key, value in data.items():
