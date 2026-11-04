@@ -178,6 +178,29 @@ generator.save(
         "jobs": {"mapping-control": mapping_control},
     },
 )
+scheduling_control = copy.deepcopy(mapping_control)
+scheduling_control["name"] = (
+    "Scheduling control (${{ matrix.distribution }}, ${{ matrix.repeat }})"
+)
+scheduling_control["strategy"]["matrix"]["pytest-workers"] = ["4"]
+scheduling_control["strategy"]["matrix"]["mapping-cache"] = ["primed"]
+scheduling_control["strategy"]["matrix"]["distribution"] = ["load", "worksteal"]
+for step in scheduling_control["steps"]:
+    if step.get("name") == "run-test":
+        step["env"]["PYTEST_DISTRIBUTION"] = "${{ matrix.distribution }}"
+        step["run"] = step["run"].replace(
+            "pytest --numprocesses=",
+            'pytest --dist="$PYTEST_DISTRIBUTION" --numprocesses=',
+        )
+generator.save(
+    "ci-perf-scheduling-control.yml",
+    {
+        "name": "Compare pytest scheduling of uneven tests",
+        "on": {"workflow_call": {}},
+        "permissions": {},
+        "jobs": {"scheduling-control": scheduling_control},
+    },
+)
 
 windows = generator.load("ci-perf-windows-control.yml")
 link_threads = copy.deepcopy(windows["jobs"]["serial"])
@@ -259,6 +282,12 @@ for job in windows["jobs"].values():
 generator.save("ci-perf-windows-control.yml", windows)
 
 top = generator.load("ci-performance-experiment.yml")
+top["jobs"]["scheduling-control"] = {
+    "needs": "configure",
+    "if": "needs.configure.outputs.mode == 'scheduling-investigation'",
+    "permissions": {"contents": "read", "actions": "write"},
+    "uses": "./.github/workflows/ci-perf-scheduling-control.yml",
+}
 top["jobs"]["mapping-control"] = {
     "needs": "configure",
     "if": "needs.configure.outputs.mode == 'mapping-investigation'",

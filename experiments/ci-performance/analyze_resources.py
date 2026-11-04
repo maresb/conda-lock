@@ -30,6 +30,7 @@ def workflow_steps(directory, metadata):
         "link-threads": f"Link threads ({matrix.get('execute-threads')}, {matrix.get('repeat')})",
         "worker-control": f"Worker control ({matrix.get('pytest-workers')}, {matrix.get('repeat')})",
         "mapping-control": f"Mapping control ({matrix.get('mapping-cache')}, {matrix.get('pytest-workers')}, {matrix.get('repeat')})",
+        "scheduling-control": f"Scheduling control ({matrix.get('distribution')}, {matrix.get('repeat')})",
         "lock-gdal": f"lock-gdal ({matrix.get('os')}, {matrix.get('python-version')})",
     }.get(job)
     if suffix is None:
@@ -119,6 +120,7 @@ def summarize(directory):
                 "workers": matrix.get("pytest-workers", "auto"),
                 "execute_threads": matrix.get("execute-threads"),
                 "mapping_cache": matrix.get("mapping-cache"),
+                "distribution": matrix.get("distribution", "load"),
                 "format": matrix.get("format"),
                 "repeat": matrix.get("repeat"),
                 "logical_cpus": metadata["logical_cpus"],
@@ -189,6 +191,7 @@ def main():
         "workers",
         "execute_threads",
         "mapping_cache",
+        "distribution",
         "format",
         "repeat",
         "logical_cpus",

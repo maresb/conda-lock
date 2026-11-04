@@ -234,6 +234,13 @@ jobs:
         "pytest-split-group-index": 3, "pytest-split-group-size": 4}, {"os": "macos-latest", "python-version": "3.14", "pytest-split-group-index":
         4, "pytest-split-group-size": 4}]}'
       cache-group: candidate
+  scheduling-control:
+    needs: configure
+    if: needs.configure.outputs.mode == 'scheduling-investigation'
+    permissions:
+      contents: read
+      actions: write
+    uses: ./.github/workflows/ci-perf-scheduling-control.yml
   mapping-control:
     needs: configure
     if: needs.configure.outputs.mode == 'mapping-investigation'
