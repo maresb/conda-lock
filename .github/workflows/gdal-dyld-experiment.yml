@@ -24,8 +24,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - label: suspended-spawn
-            timeout: 900
+          - label: natural-window-1
+            timeout: 2100
+          - label: natural-window-2
+            timeout: 2100
+          - label: natural-window-3
+            timeout: 2100
     name: ${{ matrix.label }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -45,8 +49,8 @@ jobs:
           TRACE_TIMEOUT: ${{ matrix.timeout }}
         run: |
           /usr/bin/python3 experiments/gdal-dyld/trace_probe.py \
-            --output "$RUNNER_TEMP/gdal-dyld/trace" --timeout "$TRACE_TIMEOUT" -- \
-            /usr/bin/python3 experiments/gdal-dyld/spawn_probe.py \
+            --output "$RUNNER_TEMP/gdal-dyld/trace" --timeout "$TRACE_TIMEOUT" --launch-windows -- \
+            /usr/bin/python3 experiments/gdal-dyld/trigger_probe.py natural --trials 8 \
             --micromamba "$MAMBA_EXE" --root-prefix "$MAMBA_ROOT_PREFIX" \
             --output "$RUNNER_TEMP/gdal-dyld/probe"
       - name: Collect evidence

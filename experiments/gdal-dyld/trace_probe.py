@@ -2,6 +2,7 @@
 """Run a command under a bounded filesystem capture on the authorized CI fork."""
 
 import argparse
+import collections
 import datetime
 import json
 import os
@@ -17,6 +18,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--timeout", type=int, default=900)
+    parser.add_argument("--launch-windows", action="store_true")
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     if (
@@ -36,6 +38,8 @@ def main():
         "timezone": str(datetime.datetime.now().astimezone().tzinfo),
         "input_lines": 0,
         "retained_lines": 0,
+        "window_lines": 0,
+        "launch_windows": 0,
         "command": command,
     }
     trace_command = [
@@ -49,6 +53,8 @@ def main():
         "exec",
         "-t",
         str(args.timeout),
+        "-e",
+        str(os.getpid()),
     ]
     stats["trace_command"] = trace_command
     returncode = 1
@@ -63,14 +69,48 @@ def main():
 
         def collect():
             assert trace.stdout is not None
-            with (args.output / "events.jsonl").open("w", buffering=1) as events:
+            recent = collections.deque(maxlen=100000)
+            last_written = -1
+            until = -1.0
+            with (
+                (args.output / "events.jsonl").open("w", buffering=1) as events,
+                (args.output / "windows.jsonl").open("w") as windows,
+            ):
                 for line in trace.stdout:
                     stats["input_lines"] += 1
+                    fields = line.split()
+                    if args.launch_windows and len(fields) > 2:
+                        try:
+                            h, m, s = fields[0].split(":")
+                            stamp = int(h) * 3600 + int(m) * 60 + float(s)
+                        except ValueError:
+                            stamp = None
+                        if stamp is not None:
+                            row = (stats["input_lines"], stamp, line.rstrip("\n"))
+                            recent.append(row)
+                            while recent and recent[0][1] < stamp - 2:
+                                recent.popleft()
+                            launch = (
+                                fields[1] in {"execve", "posix_spawn"}
+                                and "/bin/gdalinfo " in line
+                            )
+                            if launch:
+                                stats["launch_windows"] += 1
+                                until = stamp + 1
+                            if stamp <= until:
+                                for seq, _, raw in recent if launch else [row]:
+                                    if seq > last_written:
+                                        windows.write(
+                                            json.dumps({"sequence": seq, "line": raw})
+                                            + "\n"
+                                        )
+                                        stats["window_lines"] += 1
+                                        last_written = seq
                     if not ready.is_set():
                         stats["first_input_ns"] = time.time_ns()
                         ready.set()
                     # Metadata calls on directory descriptors may omit a pathname.
-                    actor = line.split()[-1].rsplit(".", 1)[0] if line.split() else ""
+                    actor = fields[-1].rsplit(".", 1)[0] if fields else ""
                     context_actor = actor.startswith(
                         ("mdworker", "mds", "mdimport")
                     ) or actor in {
