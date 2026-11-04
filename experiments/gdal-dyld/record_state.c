@@ -9,6 +9,11 @@
  *     read      calls fsgetpath on the inode and reports the alias
  *     refresh   calls fsgetpath, then looks up INSTALLED
  *     control   calls fsgetpath (no worker ran)
+ *     hold      a holder thread is created right after the worker exits and
+ *               kept alive for SLEEP_MS with no filesystem activity, then
+ *               released; X then calls fsgetpath. If X reads the cache path,
+ *               the record survived the pause and the holder's identity was
+ *               handed back to X.
  *   Thread Y then calls fsgetpath on the inode and reports the alias.
  *   X and Y are created after the previous thread was joined, so each may
  *   reuse the previous thread's kernel object. */
@@ -34,6 +39,16 @@ static const char *resolve(void) {
     if (fsgetpath(buffer, sizeof buffer, &fsid, inode) < 0) { perror("fsgetpath"); exit(2); }
     return which(buffer);
 }
+static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+static int release_holder;
+static void *holder(void *unused) {
+    (void)unused;
+    pthread_mutex_lock(&mutex);
+    while (!release_holder) pthread_cond_wait(&cond, &mutex);
+    pthread_mutex_unlock(&mutex);
+    return NULL;
+}
 static void *worker(void *unused) {
     (void)unused;
     struct stat st;
@@ -43,6 +58,7 @@ static void *worker(void *unused) {
 static void *thread_x(void *unused) {
     (void)unused;
     if (!strcmp(mode, "baseline")) { printf("x=none\n"); return NULL; }
+    /* read, refresh, control, and hold all read the path here */
     printf("x=%s\n", resolve());
     if (!strcmp(mode, "refresh")) {
         struct stat st;
@@ -73,7 +89,18 @@ int main(int argc, char **argv) {
     inode = st.st_ino;
     printf("main=%s\n", resolve());
     if (strcmp(mode, "control")) run(worker);
-    if (sleep_ms) usleep((useconds_t)sleep_ms * 1000);
+    if (!strcmp(mode, "hold")) {
+        pthread_t held;
+        if (pthread_create(&held, NULL, holder, NULL)) return 2;
+        if (sleep_ms) usleep((useconds_t)sleep_ms * 1000);
+        pthread_mutex_lock(&mutex);
+        release_holder = 1;
+        pthread_cond_broadcast(&cond);
+        pthread_mutex_unlock(&mutex);
+        if (pthread_join(held, NULL)) return 2;
+    } else if (sleep_ms) {
+        usleep((useconds_t)sleep_ms * 1000);
+    }
     run(thread_x);
     run(thread_y);
     close(fd);

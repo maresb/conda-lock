@@ -52,6 +52,8 @@ def main():
         ("control", 0),
         ("read", 200),
         ("read", 1000),
+        ("hold", 1000),
+        ("hold", 5000),
     ]
     cases = [(m, ms, t) for m, ms in cells for t in range(args.trials)]
     random.Random(974).shuffle(cases)
