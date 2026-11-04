@@ -16,15 +16,32 @@ defaults:
     shell: bash
 
 jobs:
-  trigger:
+  follow-up:
     if: github.repository == 'maresb/conda-lock'
-    runs-on: macos-latest
-    timeout-minutes: 40
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         include:
-          - label: standalone-thread-exit
+          - label: cross-process
+            os: macos-26
+            script: reproduce_cross_process.py
+          - label: thread-scrub
+            os: macos-26
+            script: scrub_probe.py
+          - label: filesystem-images
+            os: macos-26
+            script: image_probe.py
+          - label: thread-exit-macos-15
+            os: macos-15
+            script: reproduce_thread_exit.py
+          - label: thread-exit-macos-15-intel
+            os: macos-15-intel
+            script: reproduce_thread_exit.py
+          - label: thread-exit-macos-26-intel
+            os: macos-26-intel
+            script: reproduce_thread_exit.py
     name: ${{ matrix.label }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -32,12 +49,13 @@ jobs:
           persist-credentials: false
       - name: Record runner
         run: |
-          test "$(uname -m)" = arm64
           mkdir -p "$RUNNER_TEMP/gdal-dyld"
           { sw_vers; uname -m; /usr/bin/what /usr/lib/dyld; xcrun clang --version; } > "$RUNNER_TEMP/gdal-dyld/host.log"
-      - name: Reproduce without package manager or tracing
+      - name: Run probe
+        env:
+          PROBE_SCRIPT: ${{ matrix.script }}
         run: |
-          /usr/bin/python3 experiments/gdal-dyld/reproduce_thread_exit.py \
+          /usr/bin/python3 "experiments/gdal-dyld/$PROBE_SCRIPT" \
             --output "$RUNNER_TEMP/gdal-dyld/probe"
       - name: Collect evidence
         if: ${{ !cancelled() }}
