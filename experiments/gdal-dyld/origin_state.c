@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
     if (fd < 0 || fstat(fd, &st) || fstatfs(fd, &fs)) return 2;
     printf("{\"event\":\"identity\",\"filesystem\":\"%s\",\"inode\":%llu,\"nlink\":%u}\n",
         fs.f_fstypename, (unsigned long long)st.st_ino, (unsigned int)st.st_nlink);
-    int sizes[] = {0, 1, 2, 4, 8, 9, 10, 12, 16, 24, 32, 64};
+    int sizes[] = {0, 5, 6, 7, 8, 9};
     for (int trial = 0; trial < 20; ++trial) {
         for (size_t s = 0; s < sizeof(sizes) / sizeof(*sizes); ++s) {
             int count = sizes[s];

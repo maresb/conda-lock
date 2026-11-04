@@ -14,7 +14,9 @@ from pathlib import Path
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--probe", choices=["alias", "origin"], default="alias")
+    parser.add_argument(
+        "--probe", choices=["alias", "origin", "stale"], default="alias"
+    )
     args = parser.parse_args()
     if (
         os.environ.get("GITHUB_ACTIONS") != "true"
@@ -133,6 +135,24 @@ def main():
                     )
                     summaries[label] = {
                         "identities": rows[:3],
+                        "counts": [
+                            {"key": k, "count": v} for k, v in sorted(counts.items())
+                        ],
+                    }
+                if args.probe == "stale":
+                    counts = collections.Counter(
+                        (
+                            e["mode"],
+                            e["operation"],
+                            e["target"],
+                            e["parent_fd"],
+                            e["parent_id"],
+                        )
+                        for e in rows
+                        if e["event"] == "stale"
+                    )
+                    summaries[label] = {
+                        "identity": rows[0],
                         "counts": [
                             {"key": k, "count": v} for k, v in sorted(counts.items())
                         ],

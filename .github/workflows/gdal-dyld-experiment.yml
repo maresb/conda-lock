@@ -24,8 +24,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - label: stale-origin-gdal
-            timeout: 1200
+          - label: stale-filesystems
+            probe: stale
+          - label: origin-capacity
+            probe: origin
     name: ${{ matrix.label }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -40,14 +42,11 @@ jobs:
           test "$(uname -m)" = arm64
           mkdir -p "$RUNNER_TEMP/gdal-dyld"
           { sw_vers; uname -m; /usr/bin/what /usr/lib/dyld; xcrun clang --version; } > "$RUNNER_TEMP/gdal-dyld/host.log"
-      - name: Trace sequential stale-origin GDAL launches
+      - name: Probe thread origins across filesystems
         env:
-          TRACE_TIMEOUT: ${{ matrix.timeout }}
+          PROBE: ${{ matrix.probe }}
         run: |
-          /usr/bin/python3 experiments/gdal-dyld/trace_probe.py \
-            --output "$RUNNER_TEMP/gdal-dyld/trace" --timeout "$TRACE_TIMEOUT" --launch-windows -- \
-            /usr/bin/python3 experiments/gdal-dyld/sequence_probe.py \
-            --micromamba "$MAMBA_EXE" --root-prefix "$MAMBA_ROOT_PREFIX" \
+          /usr/bin/python3 experiments/gdal-dyld/alias_probe.py --probe "$PROBE" \
             --output "$RUNNER_TEMP/gdal-dyld/probe"
       - name: Collect evidence
         if: ${{ !cancelled() }}
