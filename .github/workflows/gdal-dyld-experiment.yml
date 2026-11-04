@@ -7,6 +7,11 @@ on:
       - .github/workflows/gdal-dyld-experiment.yml
       - experiments/gdal-dyld/**
   workflow_dispatch:
+    inputs:
+      only:
+        description: Comma-separated job labels to run; empty runs every job
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -16,53 +21,54 @@ defaults:
     shell: bash
 
 jobs:
-  follow-up:
+  plan:
     if: github.repository == 'maresb/conda-lock'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      installer: ${{ steps.plan.outputs.installer }}
+      workaround: ${{ steps.plan.outputs.workaround }}
+    steps:
+      - id: plan
+        env:
+          ONLY: ${{ inputs.only }}
+        run: |
+          ALL='[
+            {"label": "cross-process", "os": "macos-26", "script": "reproduce_cross_process.py"},
+            {"label": "thread-scrub", "os": "macos-26", "script": "scrub_probe.py"},
+            {"label": "filesystem-images", "os": "macos-26", "script": "image_probe.py"},
+            {"label": "thread-exit-macos-15", "os": "macos-15", "script": "reproduce_thread_exit.py"},
+            {"label": "thread-exit-macos-15-intel", "os": "macos-15-intel", "script": "reproduce_thread_exit.py"},
+            {"label": "thread-exit-macos-26-intel", "os": "macos-26-intel", "script": "reproduce_thread_exit.py"},
+            {"label": "link-cost", "os": "macos-26", "script": "link_cost_probe.py"},
+            {"label": "route2-images", "os": "macos-26", "script": "route2_probe.py"},
+            {"label": "thread-exit-macos-26", "os": "macos-26", "script": "reproduce_thread_exit.py"},
+            {"label": "retained-inode-retry", "os": "macos-26", "script": "retry_probe.py"},
+            {"label": "record-probe-v2", "os": "macos-26", "script": "record_probe.py"},
+            {"label": "delay-probe", "os": "macos-26", "script": "delay_probe.py"},
+            {"label": "respawn-probe", "os": "macos-26", "script": "respawn_probe.py"}
+          ]'
+          wanted() { [ -z "$ONLY" ] || case ",$ONLY," in *",$1,"*) true ;; *) false ;; esac; }
+          if [ -z "$ONLY" ]; then
+            MATRIX=$(jq -c . <<<"$ALL")
+          else
+            MATRIX=$(jq -c --arg only ",$ONLY," '[.[] | select(("," + .label + ",") as $l | $only | contains($l))]' <<<"$ALL")
+          fi
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          echo "installer=$(wanted installer-identity && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "workaround=$(wanted workaround-validation && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "matrix: $MATRIX"
+
+  follow-up:
+    needs: plan
+    if: needs.plan.outputs.matrix != '[]'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - label: cross-process
-            os: macos-26
-            script: reproduce_cross_process.py
-          - label: thread-scrub
-            os: macos-26
-            script: scrub_probe.py
-          - label: filesystem-images
-            os: macos-26
-            script: image_probe.py
-          - label: thread-exit-macos-15
-            os: macos-15
-            script: reproduce_thread_exit.py
-          - label: thread-exit-macos-15-intel
-            os: macos-15-intel
-            script: reproduce_thread_exit.py
-          - label: thread-exit-macos-26-intel
-            os: macos-26-intel
-            script: reproduce_thread_exit.py
-          - label: link-cost
-            os: macos-26
-            script: link_cost_probe.py
-          - label: route2-images
-            os: macos-26
-            script: route2_probe.py
-          - label: thread-exit-macos-26
-            os: macos-26
-            script: reproduce_thread_exit.py
-          - label: retained-inode-retry
-            os: macos-26
-            script: retry_probe.py
-          - label: record-probe
-            os: macos-26
-            script: record_probe.py
-          - label: delay-probe
-            os: macos-26
-            script: delay_probe.py
-          - label: respawn-probe
-            os: macos-26
-            script: respawn_probe.py
+        include: ${{ fromJSON(needs.plan.outputs.matrix) }}
     name: ${{ matrix.label }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -89,7 +95,8 @@ jobs:
           retention-days: 30
 
   installer-identity:
-    if: github.repository == 'maresb/conda-lock'
+    needs: plan
+    if: needs.plan.outputs.installer == 'true'
     runs-on: macos-26
     timeout-minutes: 30
     steps:
@@ -99,7 +106,9 @@ jobs:
       - name: Record runner
         run: |
           mkdir -p "$RUNNER_TEMP/gdal-dyld"
-          { sw_vers; uname -m; /usr/bin/what /usr/lib/dyld; } > "$RUNNER_TEMP/gdal-dyld/host.log"
+          { sw_vers; uname -m; /usr/bin/what /usr/lib/dyld; xcrun clang --version; } > "$RUNNER_TEMP/gdal-dyld/host.log"
+      - name: Storage controls
+        run: /usr/bin/python3 experiments/gdal-dyld/installer_identity.py --output "$RUNNER_TEMP/gdal-dyld/probe" --self-check
       - uses: mamba-org/setup-micromamba@add3a49764cedee8ee24e82dfde87f5bc2914462 # v2.0.7
         with:
           init-shell: none
@@ -142,7 +151,8 @@ jobs:
           retention-days: 30
 
   workaround-validation:
-    if: github.repository == 'maresb/conda-lock'
+    needs: plan
+    if: needs.plan.outputs.workaround == 'true'
     runs-on: macos-26
     timeout-minutes: 30
     steps:
@@ -152,7 +162,9 @@ jobs:
       - name: Record runner
         run: |
           mkdir -p "$RUNNER_TEMP/gdal-dyld"
-          { sw_vers; uname -m; /usr/bin/what /usr/lib/dyld; } > "$RUNNER_TEMP/gdal-dyld/host.log"
+          { sw_vers; uname -m; /usr/bin/what /usr/lib/dyld; xcrun clang --version; } > "$RUNNER_TEMP/gdal-dyld/host.log"
+      - name: Storage controls
+        run: /usr/bin/python3 experiments/gdal-dyld/installer_identity.py --output "$RUNNER_TEMP/gdal-dyld/probe" --self-check
       - uses: mamba-org/setup-micromamba@add3a49764cedee8ee24e82dfde87f5bc2914462 # v2.0.7
         with:
           init-shell: none

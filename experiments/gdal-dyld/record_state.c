@@ -1,21 +1,28 @@
-/* Does reading a stale per-thread origin through fsgetpath consume or refresh it?
+/* What happens to a stale per-thread origin record when it is read, refreshed,
+ * or held through a pause by the thread that inherited it?
  *
  * record_state CACHED INSTALLED MODE [SLEEP_MS]
- *   SLEEP_MS: optional pause after the worker exits, before X is created.
  *   The main thread opens INSTALLED (a lookup of the environment alias).
- *   Unless MODE is "control", a worker looks up CACHED and exits.
+ *   Unless MODE is "control", a worker looks up CACHED and exits, leaving a
+ *   record that names the cache alias.
+ *   Unless MODE is "norestore", the main thread then looks up INSTALLED
+ *   again. A thread without a record of its own follows the most recent
+ *   lookup, so after this step only a thread that inherited the worker's
+ *   record can read the cache path. The first design of this probe lacked
+ *   this step and could not tell the two apart.
+ *   hold      a holder thread is created right after that lookup. It reads
+ *             the path by inode (h1), sleeps SLEEP_MS with no filesystem
+ *             activity, reads again (h2), and exits.
+ *   Otherwise, with SLEEP_MS, the main thread sleeps before creating X.
  *   Thread X then runs and exits:
- *     baseline  does nothing
- *     read      calls fsgetpath on the inode and reports the alias
- *     refresh   calls fsgetpath, then looks up INSTALLED
- *     control   calls fsgetpath (no worker ran)
- *     hold      a holder thread is created right after the worker exits and
- *               kept alive for SLEEP_MS with no filesystem activity, then
- *               released; X then calls fsgetpath. If X reads the cache path,
- *               the record survived the pause and the holder's identity was
- *               handed back to X.
- *   Thread Y then calls fsgetpath on the inode and reports the alias.
- *   X and Y are created after the previous thread was joined, so each may
+ *     baseline   does nothing
+ *     read       reads the path twice (x1, x2)
+ *     norestore  reads the path twice, without the restoring lookup above
+ *     refresh    reads (x1), looks up INSTALLED itself, reads again (x2)
+ *     control    reads twice (no worker ran)
+ *     hold       reads twice
+ *   Thread Y then reads the path once (y).
+ *   Every thread is created after the previous one was joined, so each may
  *   reuse the previous thread's kernel object. */
 #include <fcntl.h>
 #include <pthread.h>
@@ -31,6 +38,7 @@ static char paths[2][MAXPATHLEN];
 static fsid_t fsid;
 static uint64_t inode;
 static const char *mode;
+static int sleep_ms;
 static const char *which(const char *path) {
     return !strcmp(path, paths[0]) ? "cache" : !strcmp(path, paths[1]) ? "env" : "other";
 }
@@ -39,31 +47,31 @@ static const char *resolve(void) {
     if (fsgetpath(buffer, sizeof buffer, &fsid, inode) < 0) { perror("fsgetpath"); exit(2); }
     return which(buffer);
 }
-static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
-static int release_holder;
-static void *holder(void *unused) {
-    (void)unused;
-    pthread_mutex_lock(&mutex);
-    while (!release_holder) pthread_cond_wait(&cond, &mutex);
-    pthread_mutex_unlock(&mutex);
-    return NULL;
+static void lookup(const char *path) {
+    struct stat st;
+    if (stat(path, &st)) { perror(path); exit(2); }
+}
+static void pause_ms(int ms) {
+    if (ms) usleep((useconds_t)ms * 1000);
 }
 static void *worker(void *unused) {
     (void)unused;
-    struct stat st;
-    if (stat(paths[0], &st)) abort();
+    lookup(paths[0]);
+    return NULL;
+}
+static void *holder(void *unused) {
+    (void)unused;
+    printf("h1=%s\n", resolve());
+    pause_ms(sleep_ms);
+    printf("h2=%s\n", resolve());
     return NULL;
 }
 static void *thread_x(void *unused) {
     (void)unused;
-    if (!strcmp(mode, "baseline")) { printf("x=none\n"); return NULL; }
-    /* read, refresh, control, and hold all read the path here */
-    printf("x=%s\n", resolve());
-    if (!strcmp(mode, "refresh")) {
-        struct stat st;
-        if (stat(paths[1], &st)) abort();
-    }
+    if (!strcmp(mode, "baseline")) return NULL;
+    printf("x1=%s\n", resolve());
+    if (!strcmp(mode, "refresh")) lookup(paths[1]);
+    printf("x2=%s\n", resolve());
     return NULL;
 }
 static void *thread_y(void *unused) {
@@ -79,7 +87,7 @@ int main(int argc, char **argv) {
     if (argc != 4 && argc != 5) return 2;
     for (int i = 0; i < 2; ++i) if (!realpath(argv[i + 1], paths[i])) return 2;
     mode = argv[3];
-    int sleep_ms = argc == 5 ? atoi(argv[4]) : 0;
+    sleep_ms = argc == 5 ? atoi(argv[4]) : 0;
     if (sleep_ms < 0 || sleep_ms > 60000) return 2;
     int fd = open(paths[1], O_RDONLY);
     struct stat st;
@@ -89,18 +97,10 @@ int main(int argc, char **argv) {
     inode = st.st_ino;
     printf("main=%s\n", resolve());
     if (strcmp(mode, "control")) run(worker);
-    if (!strcmp(mode, "hold")) {
-        pthread_t held;
-        if (pthread_create(&held, NULL, holder, NULL)) return 2;
-        if (sleep_ms) usleep((useconds_t)sleep_ms * 1000);
-        pthread_mutex_lock(&mutex);
-        release_holder = 1;
-        pthread_cond_broadcast(&cond);
-        pthread_mutex_unlock(&mutex);
-        if (pthread_join(held, NULL)) return 2;
-    } else if (sleep_ms) {
-        usleep((useconds_t)sleep_ms * 1000);
-    }
+    if (strcmp(mode, "norestore")) lookup(paths[1]);
+    printf("restored=%s\n", resolve());
+    if (!strcmp(mode, "hold")) run(holder);
+    else pause_ms(sleep_ms);
     run(thread_x);
     run(thread_y);
     close(fd);

@@ -63,8 +63,9 @@ def print_runs(runs):
 
 def print_cross_process(runs):
     print("\n## Cross-process (cache paths out of 30 per run; range over runs)\n")
+    n_runs = len(values(runs, "cross-process", "hardlink/none/python"))
     print(
-        "| Finished process looked up cache from | Python launches directly | Launcher spawns | Launcher execs |"
+        f"| Finished process looked up cache from ({n_runs} runs) | Python launches directly | Launcher spawns | Launcher execs |"
     )
     print("|---|---:|---:|---:|")
     for toucher, label in TOUCHERS:
@@ -264,6 +265,15 @@ def print_link_cost(runs):
         print(f"- {method}: {values(runs, 'link-cost', method, 'median_seconds')}")
 
 
+def storage_text(v):
+    """Shared-storage description for one installer cell."""
+    if v.get("storage_complete") is None:
+        return f"shares first block {v.get('shares_storage_with_cache', '?')} (truncated decode)"
+    if not v["storage_complete"]:
+        return "storage unknown"
+    return f"shared bytes {v['shared_bytes']}/{v['size']}"
+
+
 def print_installers(runs):
     print("\n## Installers and workaround validation\n")
     for r in runs:
@@ -273,11 +283,81 @@ def print_installers(runs):
                 continue
             cells = [
                 f"{k}: nlink {v['nlink']}, shares inode {bool(v['shares_inode_with_cache'])}, "
-                f"shares storage {v.get('shares_storage_with_cache', '?')}, cache matches {v['cache_matches']}, "
+                f"{storage_text(v)}, cache matches {v['cache_matches']}, "
                 f"failures {v['failures']}/{v['launches']}"
                 for k, v in s.items()
             ]
             print(f"- run {r['id']} {job}: " + "; ".join(cells))
+
+
+INSTALLERS = [
+    ("micromamba", "micromamba 2.10.0"),
+    ("conda", "conda (Miniconda latest)"),
+    ("pixi", "pixi (rattler)"),
+]
+WORKAROUND = [
+    ("micromamba-lock", "`gdal-test-mm-lock`, unified lockfile, `--always-copy`"),
+    (
+        "micromamba-explicit",
+        "`gdal-test-mm-explicit`, explicit lockfile, `--always-copy`",
+    ),
+    ("micromamba-env", "`gdal-test-mm-env`, environment YAML, `--always-copy`"),
+    ("micromamba-hardlink", "`gdal-test-mm-hardlink`, explicit lockfile, default"),
+]
+CONTROLS = [
+    ("control-hardlink", "Control: hardlink of a fresh 1 MiB file"),
+    ("control-clone", "Control: `cp -c` clone of it"),
+    ("control-copy", "Control: byte copy of it"),
+]
+
+
+def latest_with_extents(runs, job):
+    """The most recent run whose job measured storage extent by extent."""
+    for r in reversed(runs):
+        s = r["summaries"].get(job)
+        if s and "control-copy" in s:
+            return r, s
+    return None, None
+
+
+def identity_table(runs, heading, job, rows):
+    print(f"\n## {heading}\n")
+    r, s = latest_with_extents(runs, job)
+    if not s:
+        print("No run with extent measurements yet.")
+        return
+    print(
+        "| Installed file | Link count | Shares inode with cache or original "
+        "| Storage shared with cache or original | Launches |"
+    )
+    print("|---|---:|---|---|---:|")
+    for key, label in rows + CONTROLS:
+        v = s.get(key)
+        if not v:
+            continue
+        shared = (
+            f"{v['shared_bytes']:,} of {v['size']:,} bytes"
+            if v["storage_complete"]
+            else "unknown"
+        )
+        launches = (
+            f"{v['launches'] - v['failures']}/{v['launches']} pass"
+            if v["launches"]
+            else ""
+        )
+        print(
+            f"| {label} | {v['nlink']} | {'yes' if v['shares_inode_with_cache'] else 'no'} "
+            f"| {shared} | {launches} |"
+        )
+    print(f"\nFrom run {r['id']}.")
+
+
+def print_installer_table(runs):
+    identity_table(runs, "Installer identities", "installer-identity", INSTALLERS)
+
+
+def print_workaround_table(runs):
+    identity_table(runs, "Workaround validation", "workaround-validation", WORKAROUND)
 
 
 def print_retry(runs):
@@ -287,8 +367,20 @@ def print_retry(runs):
             print(f"- run {r['id']} {k}: {json.dumps(v)}")
 
 
+def aggregate(runs, job, mode):
+    agg = {}
+    for r in runs:
+        cell = (r["summaries"].get(job) or {}).get(mode)
+        if cell:
+            for k, v in cell.items():
+                agg[k] = agg.get(k, 0) + v
+    return agg
+
+
 def print_record(runs):
-    print("\n## Reading a stale record (per mode, over runs)\n")
+    print(
+        "\n## Reading a stale record (first design, no restoring lookup; superseded)\n"
+    )
     print(
         "| Mode | Trials | X read cache | Y read cache | Y cache given X cache | Y env given X cache |"
     )
@@ -297,16 +389,44 @@ def print_record(runs):
         {k for r in runs for k in (r["summaries"].get("record-probe") or {})}
     )
     for mode in modes:
-        agg = {}
-        for r in runs:
-            cell = (r["summaries"].get("record-probe") or {}).get(mode)
-            if cell:
-                for k, v in cell.items():
-                    agg[k] = agg.get(k, 0) + v
+        agg = aggregate(runs, "record-probe", mode)
         if agg:
             print(
                 f"| {mode} | {agg['trials']} | {agg['x_cache']} | {agg['y_cache']} "
                 f"| {agg['y_cache_given_x_cache']} | {agg['y_env_given_x_cache']} |"
+            )
+    print(
+        "\n## Reading, refreshing, and holding a stale record (per cell, over runs)\n"
+    )
+    job = "record-probe-v2"
+    modes = sorted({k for r in runs for k in (r["summaries"].get(job) or {})})
+    print(
+        "| Cell | Trials | X first read cache | X second read cache, given first cache "
+        "| X second read env, given first cache | Y read cache, given X second read cache "
+        "| Y read cache, given X second read env |"
+    )
+    print("|---|---:|---:|---:|---:|---:|---:|")
+    for mode in modes:
+        agg = aggregate(runs, job, mode)
+        if agg and not mode.startswith("hold"):
+            x1 = agg.get("x1_cache", "")
+            print(
+                f"| {mode} | {agg['trials']} | {x1} | {agg.get('x2_cache_given_x1_cache', '')} "
+                f"| {agg.get('x2_env_given_x1_cache', '')} | {agg.get('y_cache_given_x2_cache', '')} "
+                f"| {agg.get('y_cache_given_x2_env', '')} |"
+            )
+    print(
+        "\n| Hold cell | Trials | Holder's first read cache | Second read cache, given first cache "
+        "| Second read env, given first cache | X first read cache, given holder's first cache |"
+    )
+    print("|---|---:|---:|---:|---:|---:|")
+    for mode in modes:
+        agg = aggregate(runs, job, mode)
+        if agg and mode.startswith("hold"):
+            print(
+                f"| {mode} | {agg['trials']} | {agg.get('h1_cache', 0)} "
+                f"| {agg.get('h2_cache_given_h1_cache', 0)} | {agg.get('h2_env_given_h1_cache', 0)} "
+                f"| {agg.get('x1_cache_given_h1_cache', 0)} |"
             )
 
 
@@ -363,6 +483,8 @@ def main():
         print_images,
         print_link_cost,
         print_installers,
+        print_installer_table,
+        print_workaround_table,
         print_retry,
         print_record,
         print_delay,

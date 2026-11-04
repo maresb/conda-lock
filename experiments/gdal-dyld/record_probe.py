@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Does reading a stale per-thread origin through fsgetpath consume or refresh it?
+"""What happens to a stale per-thread origin record when it is read, refreshed, or held?
 
 Run: python3 record_probe.py --output /tmp/dyld-record
 Requires Xcode Command Line Tools and adjacent record_state.c.
@@ -15,6 +15,36 @@ import subprocess
 import sys
 
 from pathlib import Path
+
+
+CELLS = [
+    ("control", 0),
+    ("baseline", 0),
+    ("read", 0),
+    ("norestore", 0),
+    ("refresh", 0),
+    ("read", 200),
+    ("read", 1000),
+    ("hold", 1000),
+    ("hold", 5000),
+]
+
+
+def count(c, values):
+    """Add one trial's readings to the cell's counters."""
+    c["trials"] += 1
+    for field in ["x1", "x2", "y", "h1", "h2"]:
+        if field in values:
+            c[f"{field}_cache"] += values[field] == "cache"
+    if values.get("x1") == "cache":
+        c["x2_cache_given_x1_cache"] += values["x2"] == "cache"
+        c["x2_env_given_x1_cache"] += values["x2"] == "env"
+    if values.get("h1") == "cache":
+        c["h2_cache_given_h1_cache"] += values["h2"] == "cache"
+        c["h2_env_given_h1_cache"] += values["h2"] == "env"
+        c["x1_cache_given_h1_cache"] += values["x1"] == "cache"
+    if "x2" in values:
+        c[f"y_cache_given_x2_{values['x2']}"] += values["y"] == "cache"
 
 
 def main():
@@ -45,17 +75,7 @@ def main():
     (root / "cache").mkdir()
     (root / "env").mkdir()
     cached, installed = root / "cache/file", root / "env/file"
-    cells = [
-        ("baseline", 0),
-        ("read", 0),
-        ("refresh", 0),
-        ("control", 0),
-        ("read", 200),
-        ("read", 1000),
-        ("hold", 1000),
-        ("hold", 5000),
-    ]
-    cases = [(m, ms, t) for m, ms in cells for t in range(args.trials)]
+    cases = [(m, ms, t) for m, ms in CELLS for t in range(args.trials)]
     random.Random(974).shuffle(cases)
     counts = collections.defaultdict(collections.Counter)
     with (root / "events.jsonl").open("w", buffering=1) as events:
@@ -69,26 +89,15 @@ def main():
                 capture_output=True,
                 text=True,
                 check=True,
-                timeout=10,
+                timeout=30,
             )
             values = dict(
                 s.split("=", 1) for s in result.stdout.splitlines() if "=" in s
             )
             assert values["main"] == "env", values
-            assert values["y"] in {"cache", "env"} and values["x"] in {
-                "cache",
-                "env",
-                "none",
-            }, values
+            assert all(v in {"cache", "env"} for v in values.values()), values
             key = mode if not sleep_ms else f"{mode}/sleep{sleep_ms}ms"
-            c = counts[key]
-            c["trials"] += 1
-            c["x_cache"] += values["x"] == "cache"
-            c["y_cache"] += values["y"] == "cache"
-            c["y_cache_given_x_cache"] += (
-                values["x"] == "cache" and values["y"] == "cache"
-            )
-            c["y_env_given_x_cache"] += values["x"] == "cache" and values["y"] == "env"
+            count(counts[key], values)
             events.write(
                 json.dumps(
                     {"event": "trial", "case": key, "trial": trial, "values": values}
