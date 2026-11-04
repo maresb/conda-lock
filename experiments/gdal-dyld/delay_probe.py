@@ -29,7 +29,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--trials", type=int, default=20)
-    parser.add_argument("--delays", default="0,1,5,20")
+    parser.add_argument("--delays", default="0,0.2,0.5,1,5,20")
     args = parser.parse_args()
     if sys.platform != "darwin":
         parser.error("Requires macOS")
