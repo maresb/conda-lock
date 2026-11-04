@@ -13240,7 +13240,7 @@
    "artifacts": [],
    "hosts": {},
    "summaries": {},
-   "note": "dispatched with only=record-probe-v2,installer-identity,workaround-validation (the corrected record probe and extent-based storage measurement); its three queued macOS jobs were cancelled together at 17:08:05 UTC, not by me; cause unknown. GitHub's status page records an Actions incident from 16:05 to 17:01 UTC with delayed job status updates (githubstatus incident xr3myzj7ms51), overlapping the dispatch at 16:52. The reviewer started a second attempt at 17:23:48 by mistake and cancelled it at 17:26:37; no results from either attempt"
+   "note": "dispatched with only=record-probe-v2,installer-identity,workaround-validation (the corrected record probe and extent-based storage measurement); its three queued macOS jobs were cancelled together at 17:08:05 UTC, not by me; cause unknown. GitHub's status page records an Actions incident from 16:05 to 17:01 UTC with delayed job status updates (githubstatus incident xr3myzj7ms51), overlapping the dispatch at 16:52. The reviewer started a second attempt at 17:23:48 by mistake and cancelled it at 17:26:37; no results from either attempt. GitHub's job annotation on the cancelled job reads 'The job was not acquired by Runner of type hosted even after multiple attempts', with three notices 'Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times'"
   },
   {
    "conclusion": "failure",
@@ -13478,7 +13478,7 @@
      }
     }
    },
-   "note": "dispatched with only=record-probe-v2,installer-identity,workaround-validation; installer-identity was queued at 17:21:37 UTC, never assigned a runner, and cancelled at 17:36:38 UTC, not by me; the same fifteen-minute pattern as the other cancelled queued jobs of this day, which coincided with GitHub Actions incidents (16:05-17:01 UTC and one opened 17:40 UTC); dispatched again as run 41880415154. The record-probe-v2 summary here is recomputed from its events.jsonl with record_probe.count() after two conditional counters were added; the artifact's own summary.json has the original counters and agrees on them"
+   "note": "dispatched with only=record-probe-v2,installer-identity,workaround-validation; installer-identity was queued at 17:21:37 UTC, never assigned a runner, and cancelled at 17:36:38 UTC, not by me; the same fifteen-minute pattern as the other cancelled queued jobs of this day, which coincided with GitHub Actions incidents (16:05-17:01 UTC and one opened 17:40 UTC); dispatched again as run 41880415154. The record-probe-v2 summary here is recomputed from its events.jsonl with record_probe.count() after two conditional counters were added; the artifact's own summary.json has the original counters and agrees on them. GitHub's job annotation on the cancelled job reads 'The job was not acquired by Runner of type hosted even after multiple attempts', with three notices 'Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times'"
   },
   {
    "conclusion": "failure",
@@ -13511,7 +13511,217 @@
    "artifacts": [],
    "hosts": {},
    "summaries": {},
-   "note": "dispatched with only=installer-identity to replace the cancelled job of run 41876823641; queued at 17:46:52 UTC, never assigned a runner, cancelled at 18:01:53 UTC, not by me, while GitHub's status page showed an Actions incident opened at 17:40:33 UTC (Actions component: partial outage); no results"
+   "note": "dispatched with only=installer-identity to replace the cancelled job of run 41876823641; queued at 17:46:52 UTC, never assigned a runner, cancelled at 18:01:53 UTC, not by me, while GitHub's status page showed an Actions incident opened at 17:40:33 UTC (Actions component: partial outage); no results. GitHub's job annotation on the cancelled job reads 'The job was not acquired by Runner of type hosted even after multiple attempts', with three notices 'Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times'"
+  },
+  {
+   "conclusion": "failure",
+   "created_at": "2026-11-04T18:18:17Z",
+   "head_sha": "b1a926ba3fa5813dd040bacf39842a2d6501007c",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/41885808126",
+   "id": 41885808126,
+   "jobs": [
+    {
+     "conclusion": "success",
+     "id": 126769830248,
+     "name": "plan"
+    },
+    {
+     "conclusion": "success",
+     "id": 126769874417,
+     "name": "fallback-probe"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126769874499,
+     "name": "record-probe-v2"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126769874517,
+     "name": "installer-identity"
+    },
+    {
+     "conclusion": "success",
+     "id": 126769874537,
+     "name": "churn-probe"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 126769877693,
+     "name": "workaround-validation"
+    }
+   ],
+   "artifacts": [
+    {
+     "digest": "sha256:d44eba730729add17e95e676a826c74a3591529e73d2c4eb4ac562380100bd20",
+     "id": 13352385031,
+     "name": "gdal-trigger-fallback-probe",
+     "size_in_bytes": 4772
+    },
+    {
+     "digest": "sha256:b5f2b675cba3bf88c1bfecef8d1c3f0e370c1e58817dccaa4f794465f79c8dfb",
+     "id": 13352250537,
+     "name": "gdal-trigger-churn-probe",
+     "size_in_bytes": 4605
+    }
+   ],
+   "hosts": {
+    "churn-probe": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "fallback-probe": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ]
+   },
+   "summaries": {
+    "churn-probe": {
+     "read/sleep0ms/churn-off": {
+      "trials": 40,
+      "x1_cache": 22,
+      "x2_cache": 22,
+      "y_cache": 36,
+      "x2_cache_given_x1_cache": 22,
+      "x2_env_given_x1_cache": 0,
+      "y_cache_given_x2_cache": 22,
+      "y_cache_given_x1_env": 14,
+      "y_cache_given_x2_env": 14
+     },
+     "read/sleep1000ms/churn-off": {
+      "trials": 40,
+      "x1_cache": 0,
+      "x2_cache": 0,
+      "y_cache": 0,
+      "y_cache_given_x1_env": 0,
+      "y_cache_given_x2_env": 0
+     },
+     "read/sleep200ms/churn-off": {
+      "trials": 40,
+      "x1_cache": 6,
+      "x2_cache": 6,
+      "y_cache": 9,
+      "y_cache_given_x1_env": 3,
+      "y_cache_given_x2_env": 3,
+      "x2_cache_given_x1_cache": 6,
+      "x2_env_given_x1_cache": 0,
+      "y_cache_given_x2_cache": 6
+     },
+     "read/sleep0ms/churn-on": {
+      "trials": 40,
+      "x1_cache": 25,
+      "x2_cache": 25,
+      "y_cache": 31,
+      "x2_cache_given_x1_cache": 25,
+      "x2_env_given_x1_cache": 0,
+      "y_cache_given_x2_cache": 25,
+      "y_cache_given_x1_env": 6,
+      "y_cache_given_x2_env": 6
+     },
+     "read/sleep1000ms/churn-on": {
+      "trials": 40,
+      "x1_cache": 1,
+      "x2_cache": 1,
+      "y_cache": 2,
+      "y_cache_given_x1_env": 1,
+      "y_cache_given_x2_env": 1,
+      "x2_cache_given_x1_cache": 1,
+      "x2_env_given_x1_cache": 0,
+      "y_cache_given_x2_cache": 1
+     },
+     "read/sleep200ms/churn-on": {
+      "trials": 40,
+      "x1_cache": 2,
+      "x2_cache": 2,
+      "y_cache": 4,
+      "y_cache_given_x1_env": 2,
+      "y_cache_given_x2_env": 2,
+      "x2_cache_given_x1_cache": 2,
+      "x2_env_given_x1_cache": 0,
+      "y_cache_given_x2_cache": 2
+     }
+    },
+    "fallback-probe": {
+     "reader-pre/worker-alive/mainread-0": {
+      "trials": 40,
+      "r_cache": 37,
+      "x1_cache": 37,
+      "x2_cache": 37,
+      "y_cache": 37,
+      "x2_cache_given_x1_cache": 37,
+      "x1_cache_given_r_cache": 37,
+      "y_cache_given_x1_env": 0,
+      "x1_cache_given_r_env": 0
+     },
+     "reader-pre/worker-exited/mainread-0": {
+      "trials": 40,
+      "r_cache": 40,
+      "x1_cache": 40,
+      "x2_cache": 40,
+      "y_cache": 40,
+      "x2_cache_given_x1_cache": 40,
+      "x1_cache_given_r_cache": 40
+     },
+     "reader-pre/worker-none/mainread-1": {
+      "trials": 40,
+      "r_cache": 0,
+      "x1_cache": 0,
+      "x2_cache": 0,
+      "y_cache": 0,
+      "y_cache_given_x1_env": 0,
+      "x1_cache_given_r_env": 0
+     },
+     "reader-none/worker-exited/mainread-1": {
+      "trials": 40,
+      "x1_cache": 16,
+      "x2_cache": 16,
+      "y_cache": 29,
+      "y_cache_given_x1_env": 13,
+      "x2_cache_given_x1_cache": 16
+     },
+     "reader-pre/worker-exited/mainread-1": {
+      "trials": 40,
+      "r_cache": 0,
+      "x1_cache": 38,
+      "x2_cache": 38,
+      "y_cache": 40,
+      "x2_cache_given_x1_cache": 38,
+      "x1_cache_given_r_env": 38,
+      "y_cache_given_x1_env": 2
+     },
+     "reader-pre/worker-none/mainread-0": {
+      "trials": 40,
+      "r_cache": 0,
+      "x1_cache": 0,
+      "x2_cache": 0,
+      "y_cache": 0,
+      "y_cache_given_x1_env": 0,
+      "x1_cache_given_r_env": 0
+     },
+     "reader-none/worker-exited/mainread-0": {
+      "trials": 40,
+      "x1_cache": 40,
+      "x2_cache": 40,
+      "y_cache": 40,
+      "x2_cache_given_x1_cache": 40
+     },
+     "reader-pre/worker-alive/mainread-1": {
+      "trials": 40,
+      "r_cache": 0,
+      "x1_cache": 2,
+      "x2_cache": 1,
+      "y_cache": 1,
+      "y_cache_given_x1_env": 0,
+      "x1_cache_given_r_env": 2,
+      "x2_cache_given_x1_cache": 1
+     }
+    }
+   },
+   "note": "dispatched with only=record-probe-v2,fallback-probe,churn-probe,installer-identity after the Actions incident was mitigated; fallback-probe and churn-probe ran; record-probe-v2 and installer-identity were queued at 18:18:23 UTC and cancelled at 18:33:24 UTC without starting, with the annotation 'The job was not acquired by Runner of type hosted even after multiple attempts' and macOS arm64 capacity notices; both dispatched again as run 41888487799"
   }
  ]
 }
