@@ -1,6 +1,7 @@
 /* Does reading a stale per-thread origin through fsgetpath consume or refresh it?
  *
- * record_state CACHED INSTALLED MODE
+ * record_state CACHED INSTALLED MODE [SLEEP_MS]
+ *   SLEEP_MS: optional pause after the worker exits, before X is created.
  *   The main thread opens INSTALLED (a lookup of the environment alias).
  *   Unless MODE is "control", a worker looks up CACHED and exits.
  *   Thread X then runs and exits:
@@ -59,9 +60,11 @@ static void run(void *(*fn)(void *)) {
     if (pthread_create(&thread, NULL, fn, NULL) || pthread_join(thread, NULL)) exit(2);
 }
 int main(int argc, char **argv) {
-    if (argc != 4) return 2;
+    if (argc != 4 && argc != 5) return 2;
     for (int i = 0; i < 2; ++i) if (!realpath(argv[i + 1], paths[i])) return 2;
     mode = argv[3];
+    int sleep_ms = argc == 5 ? atoi(argv[4]) : 0;
+    if (sleep_ms < 0 || sleep_ms > 60000) return 2;
     int fd = open(paths[1], O_RDONLY);
     struct stat st;
     struct statfs fs;
@@ -70,6 +73,7 @@ int main(int argc, char **argv) {
     inode = st.st_ino;
     printf("main=%s\n", resolve());
     if (strcmp(mode, "control")) run(worker);
+    if (sleep_ms) usleep((useconds_t)sleep_ms * 1000);
     run(thread_x);
     run(thread_y);
     close(fd);
