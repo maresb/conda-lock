@@ -5,6 +5,7 @@ import csv
 import json
 
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 
 
@@ -14,8 +15,33 @@ def counter_delta(current, previous, field):
     return max(0, current[field] - previous[field])
 
 
+def workflow_steps(directory, metadata):
+    context = metadata["context"]
+    snapshot = directory.parents[1] / f"run-{context.get('GITHUB_RUN_ID')}.json"
+    if not snapshot.exists():
+        return []
+    matrix = json.loads(context.get("METRICS_MATRIX") or "{}") or {}
+    job = context.get("GITHUB_JOB")
+    suffix = {
+        "test": f"pytest py{matrix.get('python-version')} on {matrix.get('os')} ({matrix.get('pytest-split-group-index')}/{matrix.get('pytest-split-group-size')})",
+        "serial": f"serial control ({matrix.get('repeat')})",
+        "parallel": f"parallel ({matrix.get('repeat')}, {matrix.get('format')})",
+        "local-concurrency": f"Three formats on one runner ({matrix.get('repeat')})",
+        "link-threads": f"Link threads ({matrix.get('execute-threads')}, {matrix.get('repeat')})",
+        "worker-control": f"Worker control ({matrix.get('pytest-workers')}, {matrix.get('repeat')})",
+        "lock-gdal": f"lock-gdal ({matrix.get('os')}, {matrix.get('python-version')})",
+    }.get(job)
+    if suffix is None:
+        return []
+    jobs = json.loads(snapshot.read_text())["jobs"]
+    matches = [job for job in jobs if job["name"].endswith(suffix)]
+    assert len(matches) == 1, (snapshot, suffix)
+    return matches[0]["steps"]
+
+
 def summarize(directory):
     metadata = json.loads((directory / "metadata.json").read_text())
+    steps = workflow_steps(directory, metadata)
     samples = [
         json.loads(line)
         for line in (directory / "samples.jsonl").read_text().splitlines()
@@ -36,8 +62,28 @@ def summarize(directory):
                     row[category + "_delta"][field] = counter_delta(
                         current_total, previous_total, field
                     )
-        grouped[row["phase"]].append(row)
         previous = row
+        matches = [
+            step
+            for step in steps
+            if step["name"] == row["phase"]
+            or step["name"].startswith("Run " + row["phase"] + "@")
+        ]
+        if matches and matches[0].get("completed_at"):
+            step = matches[0]
+            begin = datetime.fromisoformat(step["started_at"]).timestamp()
+            end = datetime.fromisoformat(step["completed_at"]).timestamp()
+            interval = row["interval_seconds"]
+            overlap = max(0, min(row["time"], end) - max(row["time"] - interval, begin))
+            if overlap == 0:
+                continue
+            row["interval_seconds"] = overlap
+            for key in ["disk_delta", "network_delta", "process_cpu_seconds"]:
+                row[key] = {
+                    name: value * overlap / interval for name, value in row[key].items()
+                }
+            row["clipped_to_step"] = True
+        grouped[row["phase"]].append(row)
     results = []
     context = metadata["context"]
     matrix = json.loads(context.get("METRICS_MATRIX") or "{}") or {}
@@ -77,6 +123,9 @@ def summarize(directory):
                 "physical_cpus": metadata["physical_cpus"],
                 "phase": phase,
                 "samples": len(rows),
+                "clipped_to_workflow_step": any(
+                    row.get("clipped_to_step") for row in rows
+                ),
                 "wall_seconds": wall,
                 "cpu_percent": cpu,
                 "busy_vcpus": cpu / 100 * metadata["logical_cpus"],

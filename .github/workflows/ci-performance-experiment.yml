@@ -234,6 +234,13 @@ jobs:
         "pytest-split-group-index": 3, "pytest-split-group-size": 4}, {"os": "macos-latest", "python-version": "3.14", "pytest-split-group-index":
         4, "pytest-split-group-size": 4}]}'
       cache-group: candidate
+  windows-worker-control:
+    needs: configure
+    if: needs.configure.outputs.mode == 'windows-worker-control'
+    permissions:
+      contents: read
+      actions: write
+    uses: ./.github/workflows/ci-perf-worker-control.yml
   windows-link-threads:
     needs: configure
     if: needs.configure.outputs.mode == 'windows-workers4'

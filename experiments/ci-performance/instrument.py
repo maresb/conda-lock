@@ -97,6 +97,41 @@ for step in unit["jobs"]["aggregate-durations"]["steps"]:
     if step.get("uses", "").startswith("actions/download-artifact@"):
         step["with"] = {"pattern": "test-durations-*"}
 generator.save("ci-perf-pytest.yml", unit)
+worker_control = copy.deepcopy(unit["jobs"]["test"])
+worker_control["name"] = (
+    "Worker control (${{ matrix.pytest-workers }}, ${{ matrix.repeat }})"
+)
+worker_control["strategy"]["matrix"] = {
+    "os": ["windows-latest"],
+    "python-version": ["3.14"],
+    "pytest-split-group-index": [2],
+    "pytest-split-group-size": [4],
+    "pytest-workers": ["2", "4"],
+    "repeat": [1, 2],
+}
+for step in worker_control["steps"]:
+    if step.get("uses", "").startswith("mamba-org/setup-micromamba@"):
+        step["with"]["cache-environment-key"] = step["with"][
+            "cache-environment-key"
+        ].replace("${{ inputs.cache-group }}", "candidate")
+    if step.get("name") == "Store test durations":
+        step.clear()
+        step.update(
+            {
+                "name": "Preserve shard durations with measurements",
+                "shell": "bash -eo pipefail {0}",
+                "run": 'cp "tests/durations/${PYTEST_OS}-py${PYTEST_PYTHON}.json" "$RUNNER_TEMP/ci-metrics/test-durations.json"',
+            }
+        )
+generator.save(
+    "ci-perf-worker-control.yml",
+    {
+        "name": "Repeat the Windows worker-count straggler",
+        "on": {"workflow_call": {}},
+        "permissions": {},
+        "jobs": {"worker-control": worker_control},
+    },
+)
 
 windows = generator.load("ci-perf-windows-control.yml")
 link_threads = copy.deepcopy(windows["jobs"]["serial"])
@@ -178,6 +213,12 @@ for job in windows["jobs"].values():
 generator.save("ci-perf-windows-control.yml", windows)
 
 top = generator.load("ci-performance-experiment.yml")
+top["jobs"]["windows-worker-control"] = {
+    "needs": "configure",
+    "if": "needs.configure.outputs.mode == 'windows-worker-control'",
+    "permissions": {"contents": "read", "actions": "write"},
+    "uses": "./.github/workflows/ci-perf-worker-control.yml",
+}
 top["jobs"]["windows-link-threads"] = {
     "needs": "configure",
     "if": "needs.configure.outputs.mode == 'windows-workers4'",
