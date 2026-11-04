@@ -99,11 +99,65 @@ for step in unit["jobs"]["aggregate-durations"]["steps"]:
 generator.save("ci-perf-pytest.yml", unit)
 
 windows = generator.load("ci-perf-windows-control.yml")
+local_concurrency = copy.deepcopy(windows["jobs"]["parallel"])
+local_concurrency.pop("needs")
+local_concurrency["name"] = "Three formats on one runner (${{ matrix.repeat }})"
+local_concurrency["strategy"]["matrix"] = {"repeat": [1, 2]}
+for step in local_concurrency["steps"]:
+    if step.get("name") == "Download lockfiles":
+        step["with"].update(
+            {"run-id": 41885415752, "github-token": "${{ github.token }}"}
+        )
+    if step.get("name") == "Install GDAL with conda-lock":
+        original = step["run"]
+        step.pop("env", None)
+        step["run"] = (
+            """pids=()
+for format_to_run in lock explicit env; do
+  (
+    export LOCK_FORMAT="$format_to_run"
+    export CONDA_PKGS_DIRS="$RUNNER_TEMP/format-pkgs-$format_to_run"
+    date -u '+%Y-%m-%dT%H:%M:%SZ'
+"""
+            + original
+            + """
+    date -u '+%Y-%m-%dT%H:%M:%SZ'
+  ) > "$RUNNER_TEMP/install-$format_to_run.log" 2>&1 &
+  pids+=("$!")
+done
+result=0
+for pid in "${pids[@]}"; do
+  if ! wait "$pid"; then result=1; fi
+done
+for format_to_run in lock explicit env; do
+  echo "Format: $format_to_run"
+  cat "$RUNNER_TEMP/install-$format_to_run.log"
+done
+exit "$result"
+"""
+        )
+instrument(local_concurrency)
+generator.save(
+    "ci-perf-local-concurrency.yml",
+    {
+        "name": "Measure concurrent formats on one Windows runner",
+        "on": {"workflow_call": {}},
+        "permissions": {},
+        "defaults": windows["defaults"],
+        "jobs": {"local-concurrency": local_concurrency},
+    },
+)
 for job in windows["jobs"].values():
     instrument(job)
 generator.save("ci-perf-windows-control.yml", windows)
 
 top = generator.load("ci-performance-experiment.yml")
+top["jobs"]["windows-local-concurrency"] = {
+    "needs": "configure",
+    "if": "needs.configure.outputs.mode == 'windows-local-concurrency'",
+    "permissions": {"contents": "read", "actions": "read"},
+    "uses": "./.github/workflows/ci-perf-local-concurrency.yml",
+}
 top["jobs"]["cpu-probe"] = {
     "needs": "configure",
     "if": "needs.configure.outputs.mode == 'cpu-probe'",

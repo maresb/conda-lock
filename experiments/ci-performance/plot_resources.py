@@ -93,14 +93,15 @@ def main():
         for axis in [axes[0], axes[2], axes[3]]:
             axis.axvspan(begin, end, color="#64748b", alpha=0.08)
             axis.axvline(begin, color="#64748b", alpha=0.35, linewidth=0.7)
-        axes[0].text(
-            (begin + end) / 2,
-            102,
-            labels[phase["phase"]],
-            ha="center",
-            va="bottom",
-            fontsize=8,
-        )
+        if end - begin >= 0.28:
+            axes[0].text(
+                (begin + end) / 2,
+                102,
+                labels[phase["phase"]],
+                ha="center",
+                va="bottom",
+                fontsize=8,
+            )
     axes[-1].set(xlabel="Minutes since sampling started")
     for axis in [axes[0], axes[2], axes[3]]:
         axis.grid(alpha=0.2)
