@@ -218,6 +218,41 @@ candidate["jobs"]["integration-test-status"]["needs"] = [
 ]
 save("ci-perf-integration-candidate.yml", candidate)
 
+# Isolate Windows install concurrency from the unavailable macOS runner pool.
+windows = reusable(integration, "Benchmark Windows format concurrency")
+producer = copy.deepcopy(baseline["jobs"]["lock-gdal"])
+producer["strategy"]["matrix"] = {"os": ["windows-latest"], "python-version": ["3.14"]}
+serial = copy.deepcopy(baseline["jobs"]["install-gdal-with-conda-lock"])
+serial["strategy"]["matrix"] = {
+    "os": ["windows-latest"],
+    "python-version": ["3.14"],
+    "repeat": [1, 2],
+}
+serial["name"] = "serial control (${{ matrix.repeat }})"
+parallel = copy.deepcopy(pipeline["jobs"]["install-gdal-with-conda-lock"])
+
+
+def windows_values(value):
+    if isinstance(value, str):
+        return value.replace("${{ inputs.os }}", "windows-latest").replace(
+            "${{ inputs.python-version }}", "3.14"
+        )
+    if isinstance(value, dict):
+        return {key: windows_values(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [windows_values(item) for item in value]
+    return value
+
+
+parallel = windows_values(parallel)
+parallel["strategy"]["matrix"] = {
+    "format": ["lock", "explicit", "env"],
+    "repeat": [1, 2],
+}
+parallel["name"] = "parallel (${{ matrix.repeat }}, ${{ matrix.format }})"
+windows["jobs"] = {"lock-gdal": producer, "serial": serial, "parallel": parallel}
+save("ci-perf-windows-control.yml", windows)
+
 checkout = copy.deepcopy(test["steps"][0])
 top = {
     "name": "CI performance experiment",
@@ -262,4 +297,12 @@ for mode, shards in [("baseline", 10), ("candidate", 4)]:
         "if": condition,
         "uses": f"./.github/workflows/ci-perf-integration-{mode}.yml",
     }
+save("ci-performance-experiment.yml", top)
+
+top["jobs"]["windows-control"] = {
+    "needs": "configure",
+    "if": "needs.configure.outputs.mode == 'windows-control'",
+    "permissions": {"contents": "read", "actions": "write"},
+    "uses": "./.github/workflows/ci-perf-windows-control.yml",
+}
 save("ci-performance-experiment.yml", top)

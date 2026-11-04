@@ -120,3 +120,10 @@ jobs:
     needs: configure
     if: needs.configure.outputs.mode == 'candidate'
     uses: ./.github/workflows/ci-perf-integration-candidate.yml
+  windows-control:
+    needs: configure
+    if: needs.configure.outputs.mode == 'windows-control'
+    permissions:
+      contents: read
+      actions: write
+    uses: ./.github/workflows/ci-perf-windows-control.yml

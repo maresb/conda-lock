@@ -1,0 +1,167 @@
+name: Benchmark Windows format concurrency
+'on':
+  workflow_call:
+    inputs: {}
+permissions: {}
+defaults:
+  run:
+    shell: bash -elx {0}
+jobs:
+  lock-gdal:
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+      actions: write
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - windows-latest
+        python-version:
+        - '3.14'
+    steps:
+    - name: Set Conda platform
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          echo "CONDA_PLATFORM=linux-64" >> $GITHUB_ENV
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+          echo "CONDA_PLATFORM=osx-arm64" >> $GITHUB_ENV
+        elif [ "$RUNNER_OS" == "Windows" ]; then
+          echo "CONDA_PLATFORM=win-64" >> $GITHUB_ENV
+        fi
+    - name: Verify Conda platform
+      run: echo "Conda platform is $CONDA_PLATFORM"
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: install conda-lock
+      run: |
+        pip install pipx
+        pipx install -e .
+    - name: run-test
+      run: |
+        conda-lock --log-level=DEBUG --micromamba -f tests/gdal/environment.yml -p $CONDA_PLATFORM
+        conda-lock render -p $CONDA_PLATFORM
+        conda-lock render -p $CONDA_PLATFORM --kind=env
+        cat conda-$CONDA_PLATFORM.lock
+        cat conda-$CONDA_PLATFORM.lock.yml
+        cat conda-lock.yml
+        mkdir lockfiles
+        mv conda-$CONDA_PLATFORM.lock conda-$CONDA_PLATFORM.lock.yml conda-lock.yml lockfiles
+    - name: Upload lockfiles
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      with:
+        name: conda-lock-${{ matrix.os }}-${{ matrix.python-version }}
+        path: lockfiles
+    timeout-minutes: 25
+  serial:
+    runs-on: ${{ matrix.os }}
+    needs: lock-gdal
+    permissions:
+      contents: read
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - windows-latest
+        python-version:
+        - '3.14'
+        repeat:
+        - 1
+        - 2
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        persist-credentials: false
+    - uses: conda-incubator/setup-miniconda@fc2d68f6413eb2d87b895e92f8584b5b94a10167
+      with:
+        auto-activate-base: true
+        python-version: ${{ matrix.python-version }}
+    - name: install conda-lock
+      run: |
+        pip install pipx
+        pipx install -e .
+    - name: Download lockfiles
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+      with:
+        name: conda-lock-${{ matrix.os }}-${{ matrix.python-version }}
+        path: lockfiles
+    - name: Install GDAL with conda-lock
+      run: |
+        conda-lock install --log-level=DEBUG -n gdal-test-cl-lock lockfiles/conda-lock.yml
+        conda-lock install --log-level=DEBUG -n gdal-test-cl-explicit lockfiles/conda-*.lock
+        conda-lock install --log-level=DEBUG -n gdal-test-cl-env lockfiles/conda-*.lock.yml
+
+        conda list -n gdal-test-cl-lock
+        conda run -n gdal-test-cl-lock gdalinfo --version
+
+        conda list -n gdal-test-cl-explicit
+        conda run -n gdal-test-cl-explicit gdalinfo --version
+
+        conda list -n gdal-test-cl-env
+        conda run -n gdal-test-cl-env gdalinfo --version
+
+        conda run -n gdal-test-cl-lock python -c 'import toolz; print(toolz.__version__)'
+        conda run -n gdal-test-cl-explicit python -c 'import toolz; print(toolz.__version__)'
+        conda run -n gdal-test-cl-env python -c 'import toolz; print(toolz.__version__)'
+    timeout-minutes: 25
+    name: serial control (${{ matrix.repeat }})
+  parallel:
+    runs-on: windows-latest
+    needs: lock-gdal
+    permissions:
+      contents: read
+      actions: read
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        persist-credentials: false
+    - uses: conda-incubator/setup-miniconda@fc2d68f6413eb2d87b895e92f8584b5b94a10167
+      with:
+        auto-activate-base: true
+        python-version: '3.14'
+        run-post: false
+    - name: install conda-lock
+      run: |
+        pip install pipx
+        pipx install -e .
+    - name: Download lockfiles
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+      with:
+        name: conda-lock-windows-latest-3.14
+        path: lockfiles
+    - name: Install GDAL with conda-lock
+      run: |
+        for format in lock explicit env; do
+          if [[ "$LOCK_FORMAT" != all && "$LOCK_FORMAT" != "$format" ]]; then
+            continue
+          fi
+          case "$format" in
+            lock) lockfiles=(lockfiles/conda-lock.yml) ;;
+            explicit) lockfiles=(lockfiles/conda-*.lock) ;;
+            env) lockfiles=(lockfiles/conda-*.lock.yml) ;;
+          esac
+          conda-lock install --log-level=DEBUG -n "gdal-test-cl-$format" "${lockfiles[@]}"
+          conda list -n "gdal-test-cl-$format"
+          conda run -n "gdal-test-cl-$format" gdalinfo --version
+          conda run -n "gdal-test-cl-$format" python -c 'import toolz; print(toolz.__version__)'
+        done
+      env:
+        LOCK_FORMAT: ${{ matrix.format }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        format:
+        - lock
+        - explicit
+        - env
+        repeat:
+        - 1
+        - 2
+    name: parallel (${{ matrix.repeat }}, ${{ matrix.format }})

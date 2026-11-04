@@ -26,5 +26,12 @@ The candidate was therefore started as a correctness diagnostic before that
 baseline finished. Neither outage-era run provides a clean end-to-end speed
 comparison. Performance repetitions must run sequentially after recovery.
 
+The `windows-control` case isolates installation concurrency from that macOS
+blocker. One Windows/Python 3.14 producer supplies identical lockfiles to two
+serial controls and two three-format parallel batches. The serial controls keep
+the original post cleanup; the parallel batches disable it. Job step durations
+separate the install concurrency effect from post-cleanup time. Every consumer
+starts with a fresh runner, so all formats incur their own cold package download.
+
 Generate the reusable benchmark workflows with `python experiments/ci-performance/generate.py`
 (requires PyYAML). Only `case.env` changes between repeat runs.
