@@ -18,6 +18,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--trials", type=int, default=30)
+    parser.add_argument("--repeats", type=int, default=3)
     args = parser.parse_args()
     if sys.platform != "darwin":
         parser.error("Requires macOS")
@@ -25,11 +26,13 @@ def main():
     output.mkdir(parents=True, exist_ok=False)
     reproducer = Path(__file__).with_name("reproduce_thread_exit.py")
     summaries = {}
-    for label, filesystem in [
-        ("host-apfs", None),
-        ("image-apfs", "APFS"),
-        ("image-hfs", "HFS+"),
-    ]:
+    volumes = [("host-apfs", None)]
+    for repeat in range(args.repeats):
+        order = [("image-hfs", "HFS+"), ("image-apfs", "APFS")]
+        if repeat % 2:
+            order.reverse()
+        volumes += [(f"{label}-{repeat + 1}", fs) for label, fs in order]
+    for label, filesystem in volumes:
         root = output / label
         mounted = False
         with (output / (label + ".log")).open("w") as log:
