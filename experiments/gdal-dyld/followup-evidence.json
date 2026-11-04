@@ -13949,6 +13949,175 @@
     }
    },
    "note": "dispatched with only=record-probe-v2,installer-identity to replace the jobs cancelled in run 41885808126; both ran"
+  },
+  {
+   "conclusion": "failure",
+   "created_at": "2026-11-04T18:38:47Z",
+   "head_sha": "0c52fcb2ced645dc7edddeaa0eac4349a2f469f8",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/41889196235",
+   "id": 41889196235,
+   "jobs": [
+    {
+     "conclusion": "success",
+     "id": 126781754632,
+     "name": "plan"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 126781816214,
+     "name": "record-probe-v3"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 126781818683,
+     "name": "workaround-validation"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 126781818804,
+     "name": "installer-identity"
+    }
+   ],
+   "artifacts": [],
+   "hosts": {},
+   "summaries": {},
+   "note": "dispatched with only=record-probe-v3; the job was queued at 2026-11-04T18:38:58Z and cancelled at 2026-11-04T18:53:59Z without starting, with the annotation 'The job was not acquired by Runner of type hosted even after multiple attempts' and macOS arm64 capacity notices; dispatched again"
+  },
+  {
+   "conclusion": "success",
+   "created_at": "2026-11-04T18:54:48Z",
+   "head_sha": "2b405220e02a0f9b465ce9831cd6a29c8bc1df95",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/41891781416",
+   "id": 41891781416,
+   "jobs": [
+    {
+     "conclusion": "success",
+     "id": 126790787306,
+     "name": "plan"
+    },
+    {
+     "conclusion": "success",
+     "id": 126790843232,
+     "name": "record-probe-v3"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 126790846207,
+     "name": "installer-identity"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 126790846381,
+     "name": "workaround-validation"
+    }
+   ],
+   "artifacts": [
+    {
+     "digest": "sha256:6d35d956ae833c70f1f3e6212b50de365efcd756c1e8281ffdcb1da2d3350ada",
+     "id": 13354838005,
+     "name": "gdal-trigger-record-probe-v3",
+     "size_in_bytes": 4966
+    }
+   ],
+   "hosts": {
+    "record-probe-v3": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ]
+   },
+   "summaries": {
+    "record-probe-v3": {
+     "hold/sleep5000ms": {
+      "trials": 40,
+      "x1_cache": 25,
+      "x2_cache": 25,
+      "y_cache": 23,
+      "h1_cache": 31,
+      "h2_cache": 31,
+      "x2_cache_given_x1_cache": 25,
+      "x2_env_given_x1_cache": 0,
+      "h2_cache_given_h1_cache": 31,
+      "h2_env_given_h1_cache": 0,
+      "x1_cache_given_h1_cache": 25,
+      "y_cache_given_x2_cache": 23,
+      "y_cache_given_x1_env": 0,
+      "x1_cache_given_h1_env": 0,
+      "y_cache_given_x2_env": 0
+     },
+     "read/sleep1000ms": {
+      "trials": 40,
+      "x1_cache": 0,
+      "x2_cache": 0,
+      "y_cache": 0,
+      "y_cache_given_x1_env": 0,
+      "y_cache_given_x2_env": 0
+     },
+     "refresh": {
+      "trials": 40,
+      "x1_cache": 34,
+      "x2_cache": 0,
+      "y_cache": 3,
+      "x2_cache_given_x1_cache": 0,
+      "x2_env_given_x1_cache": 34,
+      "y_cache_given_x2_env": 3,
+      "y_cache_given_x1_env": 3
+     },
+     "hold/sleep1000ms": {
+      "trials": 40,
+      "x1_cache": 27,
+      "x2_cache": 27,
+      "y_cache": 19,
+      "h1_cache": 32,
+      "h2_cache": 32,
+      "y_cache_given_x1_env": 0,
+      "h2_cache_given_h1_cache": 32,
+      "h2_env_given_h1_cache": 0,
+      "x1_cache_given_h1_cache": 27,
+      "y_cache_given_x2_env": 0,
+      "x1_cache_given_h1_env": 0,
+      "x2_cache_given_x1_cache": 27,
+      "x2_env_given_x1_cache": 0,
+      "y_cache_given_x2_cache": 19
+     },
+     "read": {
+      "trials": 40,
+      "x1_cache": 32,
+      "x2_cache": 32,
+      "y_cache": 27,
+      "x2_cache_given_x1_cache": 32,
+      "x2_env_given_x1_cache": 0,
+      "y_cache_given_x2_cache": 24,
+      "y_cache_given_x1_env": 3,
+      "y_cache_given_x2_env": 3
+     },
+     "read/sleep200ms": {
+      "trials": 40,
+      "x1_cache": 6,
+      "x2_cache": 6,
+      "y_cache": 5,
+      "y_cache_given_x1_env": 0,
+      "y_cache_given_x2_env": 0,
+      "x2_cache_given_x1_cache": 6,
+      "x2_env_given_x1_cache": 0,
+      "y_cache_given_x2_cache": 5
+     },
+     "control": {
+      "trials": 40,
+      "x1_cache": 0,
+      "x2_cache": 0,
+      "y_cache": 0,
+      "y_cache_given_x1_env": 0,
+      "y_cache_given_x2_env": 0
+     },
+     "baseline": {
+      "trials": 40,
+      "y_cache": 29
+     }
+    }
+   },
+   "note": "dispatched with only=record-probe-v3 (third record probe design, main thread resets the fallback before every read)"
   }
  ]
 }
