@@ -131,8 +131,8 @@ others newer than the stale record, the stale record is gone, matching the
 capacity of eight per-inode origins measured earlier for APFS. Because the
 evictors are created while the stale worker is still alive, none of them can
 reuse its thread object, so this is eviction and not overwriting. Two live
-holder threads protect the launch almost completely (3 of 150 cache paths in
-five runs), consistent with the
+holder threads protect the launch almost completely (3 of 180 cache paths in
+six runs), consistent with the
 launched thread taking the most recently freed object. Dead dummy threads
 only reduce the rate, so allocation is not strictly last-in-first-out.
 
@@ -324,8 +324,8 @@ Established by experiment:
 
 Inferred, not observed: that the record is keyed on the kernel thread object
 and that the object is recycled. No kernel pointer or APFS data structure was
-inspected. HFS+ reproduced the effect in four of five runs, as its documented
-semantics predict; the run without it is unexplained.
+inspected. HFS+ reproduced the effect on eight of nine volumes, as its
+documented semantics predict; the one volume without it is unexplained.
 
 ## Consequences
 
