@@ -116,7 +116,7 @@ for step in local_concurrency["steps"]:
 for format_to_run in lock explicit env; do
   (
     export LOCK_FORMAT="$format_to_run"
-    export CONDA_PKGS_DIRS="$RUNNER_TEMP/format-pkgs-$format_to_run"
+    export CONDA_PKGS_DIRS="$CONDA/format-pkgs-$format_to_run"
     date -u '+%Y-%m-%dT%H:%M:%SZ'
 """
             + original
