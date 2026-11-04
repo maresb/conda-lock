@@ -31,11 +31,35 @@ jobs:
       PYTEST_PYTHON: ${{ matrix.python-version }}
       PYTEST_SPLITS: ${{ matrix.pytest-split-group-size }}
       PYTEST_GROUP: ${{ matrix.pytest-split-group-index }}
+      METRICS_MATRIX: ${{ toJSON(matrix) }}
+      METRICS_INPUTS: ${{ toJSON(inputs) }}
     steps:
     - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       with:
         fetch-depth: 0
         persist-credentials: false
+    - name: Set up telemetry Python
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      with:
+        python-version: '3.11'
+    - name: Start resource sampler
+      id: metrics
+      shell: bash -eo pipefail {0}
+      run: |
+        python -m venv "$RUNNER_TEMP/ci-metrics-venv"
+        if [[ "$RUNNER_OS" == Windows ]]; then
+          metrics_python="$RUNNER_TEMP/ci-metrics-venv/Scripts/python.exe"
+        else
+          metrics_python="$RUNNER_TEMP/ci-metrics-venv/bin/python"
+        fi
+        "$metrics_python" -m pip install --disable-pip-version-check psutil==7.1.0
+        echo "MONITOR_PY=$metrics_python" >> "$GITHUB_ENV"
+        "$metrics_python" experiments/ci-performance/telemetry.py start
+    - name: Measure Set Conda platform
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: Set Conda platform
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
     - name: Set Conda platform
       run: |
         if [ "$RUNNER_OS" == "Linux" ]; then
@@ -45,8 +69,18 @@ jobs:
         elif [ "$RUNNER_OS" == "Windows" ]; then
           echo "CONDA_PLATFORM=win-64" >> $GITHUB_ENV
         fi
+    - name: Measure Verify Conda platform
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: Verify Conda platform
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
     - name: Verify Conda platform
       run: echo "Conda platform is $CONDA_PLATFORM"
+    - name: Measure Rename conda-lock-python-${{ matrix.python-version }}.yaml to conda-lock.yml
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: Rename conda-lock-python-${{ matrix.python-version }}.yaml to conda-lock.yml
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
     - name: Rename conda-lock-python-${{ matrix.python-version }}.yaml to conda-lock.yml
       run: |
         LOCKFILE_DIR="${RUNNER_TEMP}/conda-lock-dir"
@@ -55,6 +89,11 @@ jobs:
         echo "LOCKFILE_DIR=${LOCKFILE_DIR}"
         ls -al "${LOCKFILE_DIR}"
         echo "LOCKFILE_DIR=${LOCKFILE_DIR}" >> $GITHUB_ENV
+    - name: Measure mamba-org/setup-micromamba
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: mamba-org/setup-micromamba
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
     - uses: mamba-org/setup-micromamba@add3a49764cedee8ee24e82dfde87f5bc2914462
       with:
         environment-file: ${{ env.LOCKFILE_DIR }}/conda-lock.yml
@@ -63,12 +102,27 @@ jobs:
         cache-environment: true
         create-args: --category=main --category=dev
         cache-environment-key: ci-perf-20261104-${{ inputs.cache-group }}-${{ matrix.os }}-py${{ matrix.python-version }}
+    - name: Measure install conda-lock
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: install conda-lock
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
     - name: install conda-lock
       run: |
         which pip
         pip install -e . --no-deps
+    - name: Measure run pip check
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: run pip check
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
     - name: run pip check
       run: pip check
+    - name: Measure run-test
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: run-test
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
     - name: run-test
       run: |
         mkdir -p tests/durations
@@ -82,15 +136,36 @@ jobs:
           --splitting-algorithm=least_duration \
           --splits="${PYTEST_SPLITS}" \
           --group="${PYTEST_GROUP}"
+    - name: Measure Print test durations
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: Print test durations
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
     - name: Print test durations
       run: |
         ls -al tests/durations
         cat tests/durations/${PYTEST_OS}-py${PYTEST_PYTHON}.json
+    - name: Measure Store test durations
+      shell: bash -eo pipefail {0}
+      env:
+        METRICS_PHASE: Store test durations
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py mark --label "$METRICS_PHASE"'
     - name: Store test durations
       uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
       with:
         name: test-durations-${{ matrix.os }}-py${{ matrix.python-version }}-${{ matrix.pytest-split-group-index }}
         path: tests/durations/${{ matrix.os }}-py${{ matrix.python-version }}.json
+    - name: Stop resource sampler
+      if: always() && steps.metrics.outcome == 'success'
+      shell: bash -eo pipefail {0}
+      run: '"$MONITOR_PY" experiments/ci-performance/telemetry.py stop'
+    - name: Upload resource measurements
+      if: always() && steps.metrics.outcome == 'success'
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      with:
+        name: metrics-${{ env.METRICS_ID }}
+        path: ${{ runner.temp }}/ci-metrics
+        if-no-files-found: error
   aggregate-durations:
     name: Aggregate test durations
     runs-on: ubuntu-latest
@@ -101,6 +176,8 @@ jobs:
     steps:
     - name: Download test durations
       uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+      with:
+        pattern: test-durations-*
     - name: Construct the list of filenames to aggregate and write them to temp/filenames.txt
       id: construct-filenames
       run: |

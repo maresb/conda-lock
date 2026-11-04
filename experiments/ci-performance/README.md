@@ -131,3 +131,23 @@ run remain outstanding until runner capacity is available.
 `results.json` and `job-timings.csv` record the successful control measurements.
 The original product code, tests, dependencies, and standard workflows remain
 unchanged. No pull request was opened.
+
+## Resource measurements
+
+Run `python experiments/ci-performance/instrument.py` to regenerate workflows
+with resource sampling. This first regenerates the ordinary experiment variants.
+The sampler uses pinned psutil 7.1.0 in a separate Python 3.11 environment and
+records system-wide per-logical-CPU utilization, disk and network counters,
+available memory, and sampled CPU deltas grouped by process name once a second.
+It records a five-second idle baseline and labels each subsequent workflow step.
+The `cpu-probe` mode validates the readings against eight seconds of known CPU
+load on each platform before real workload measurements.
+
+Resource artifacts have unique names and are excluded from pytest duration
+aggregation. Sampler CPU time is recorded to quantify instrumentation overhead.
+Sampling covers environment setup and tests/installations, ending before artifact
+upload and post-job cleanup. It excludes checkout, telemetry environment setup,
+and runner queueing. Process deltas miss processes that start and finish between
+samples, so system-wide CPU is the authoritative utilization measure. Disk and
+network counters describe activity, not proof that either device is saturated.
+Phase boundaries have approximately one-second sampling uncertainty.
