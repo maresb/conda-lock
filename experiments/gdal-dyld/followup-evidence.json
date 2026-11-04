@@ -1,0 +1,5795 @@
+{
+ "runs": [
+  {
+   "conclusion": "success",
+   "created_at": "2026-11-04T12:19:01Z",
+   "head_sha": "37a7768fc9e7d751c1e2aa2580ea853f184295ce",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/41828207360",
+   "id": 41828207360,
+   "jobs": [
+    {
+     "conclusion": "success",
+     "id": 126568302736,
+     "name": "filesystem-images"
+    },
+    {
+     "conclusion": "success",
+     "id": 126568303108,
+     "name": "thread-exit-macos-26-intel"
+    },
+    {
+     "conclusion": "success",
+     "id": 126568303204,
+     "name": "cross-process"
+    },
+    {
+     "conclusion": "success",
+     "id": 126568303216,
+     "name": "thread-exit-macos-15-intel"
+    },
+    {
+     "conclusion": "success",
+     "id": 126568303364,
+     "name": "thread-scrub"
+    },
+    {
+     "conclusion": "success",
+     "id": 126568303419,
+     "name": "thread-exit-macos-15"
+    }
+   ],
+   "artifacts": [
+    {
+     "digest": "sha256:adb1f3548ebae2fa36d2a7fd86a904ea35b1de38ac3858a9bfcc9b192ea74ab2",
+     "id": 13321215046,
+     "name": "gdal-trigger-thread-scrub",
+     "size_in_bytes": 7443
+    },
+    {
+     "digest": "sha256:87078908d7efeb3b7e6470bbc17f23464a87f49addd40f34634a8126523aec58",
+     "id": 13320785502,
+     "name": "gdal-trigger-thread-exit-macos-26-intel",
+     "size_in_bytes": 10934
+    },
+    {
+     "digest": "sha256:11667569b9fdbbd10e31584da853654568c19f56a57d6f6e9ebe6087af8e7b4d",
+     "id": 13320481349,
+     "name": "gdal-trigger-cross-process",
+     "size_in_bytes": 11982
+    },
+    {
+     "digest": "sha256:37357b6fa2989e6d0769c2269d52c79076cfc9e9b43d89ccebffdd7f4ccf5234",
+     "id": 13320436610,
+     "name": "gdal-trigger-filesystem-images",
+     "size_in_bytes": 32519
+    },
+    {
+     "digest": "sha256:80ad50509a17cbef67a2448cf5ae1ad54ecdaaac8497216050432dc561e2fd62",
+     "id": 13320207658,
+     "name": "gdal-trigger-thread-exit-macos-15-intel",
+     "size_in_bytes": 11049
+    },
+    {
+     "digest": "sha256:7845ee5e66a95928a18f31f6541110bfaca50b8f642a3eec196ce091bf46fdca",
+     "id": 13319504308,
+     "name": "gdal-trigger-thread-exit-macos-15",
+     "size_in_bytes": 10793
+    }
+   ],
+   "hosts": {
+    "cross-process": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "filesystem-images": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "thread-exit-macos-15": [
+     "ProductVersion:\t\t15.8.2",
+     "BuildVersion:\t\t24H232",
+     "\tPROGRAM:dyld  PROJECT:dyld-1286.12",
+     "arm64"
+    ],
+    "thread-exit-macos-15-intel": [
+     "ProductVersion:\t\t15.7.9",
+     "BuildVersion:\t\t24G830",
+     "\tPROGRAM:dyld  PROJECT:dyld-1286.10",
+     "x86_64"
+    ],
+    "thread-exit-macos-26-intel": [
+     "ProductVersion:\t\t26.6.1",
+     "BuildVersion:\t\t25G76",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "x86_64"
+    ],
+    "thread-scrub": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ]
+   },
+   "summaries": {
+    "cross-process": {
+     "hardlink/worker1/python": {
+      "launches": 30,
+      "cache_path": 19,
+      "env_path": 11
+     },
+     "hardlink/worker4/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 12,
+      "env_path": 18
+     },
+     "copy/worker1/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker1/launcher-exec": {
+      "launches": 30,
+      "cache_path": 6,
+      "env_path": 24
+     },
+     "hardlink/main/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 21,
+      "env_path": 9
+     },
+     "copy/main/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/none/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/main/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker1/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 8,
+      "env_path": 22
+     },
+     "hardlink/none/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker4/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/main/python": {
+      "launches": 30,
+      "cache_path": 5,
+      "env_path": 25
+     },
+     "copy/worker1/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker4/python": {
+      "launches": 30,
+      "cache_path": 24,
+      "env_path": 6
+     },
+     "hardlink/worker4/launcher-exec": {
+      "launches": 30,
+      "cache_path": 11,
+      "env_path": 19
+     },
+     "copy/none/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/none/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker1/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/main/launcher-exec": {
+      "launches": 30,
+      "cache_path": 19,
+      "env_path": 11
+     },
+     "copy/worker4/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/none/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker4/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/main/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/none/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     }
+    },
+    "filesystem-images": {
+     "host-apfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 28,
+       "env_path": 2
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 29,
+       "env_path": 1
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 1,
+       "env_path": 29
+      }
+     },
+     "image-apfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 28,
+       "env_path": 2
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 29,
+       "env_path": 1
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-hfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     }
+    },
+    "thread-exit-macos-15": {
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 40,
+      "env_path": 0
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 40,
+      "env_path": 0
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-exit-macos-15-intel": {
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 40,
+      "env_path": 0
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 38,
+      "env_path": 2
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-exit-macos-26-intel": {
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 38,
+      "env_path": 2
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 36,
+      "env_path": 4
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-scrub": {
+     "hardlink/stale1/dummies0/holders2/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 1,
+      "env_path": 29
+     },
+     "hardlink/stale1/dummies1/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 17,
+      "env_path": 13
+     },
+     "hardlink/stale1/dummies0/holders1/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 16,
+      "env_path": 14
+     },
+     "copy/stale1/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors3/spawn": {
+      "launches": 30,
+      "cache_path": 29,
+      "env_path": 1
+     },
+     "hardlink/stale1/dummies2/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 12,
+      "env_path": 18
+     },
+     "hardlink/stale0/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders4/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 25,
+      "env_path": 5
+     },
+     "hardlink/stale1/dummies0/holders0/evictors10/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors0/exec": {
+      "launches": 30,
+      "cache_path": 26,
+      "env_path": 4
+     },
+     "hardlink/stale1/dummies0/holders0/evictors7/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies4/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 16,
+      "env_path": 14
+     },
+     "hardlink/stale1/dummies8/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 15,
+      "env_path": 15
+     },
+     "hardlink/stale1/dummies0/holders0/evictors1/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     },
+     "hardlink/stale1/dummies0/holders0/evictors5/spawn": {
+      "launches": 30,
+      "cache_path": 29,
+      "env_path": 1
+     },
+     "hardlink/stale1/dummies0/holders0/evictors8/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors6/spawn": {
+      "launches": 30,
+      "cache_path": 29,
+      "env_path": 1
+     }
+    }
+   }
+  },
+  {
+   "conclusion": "failure",
+   "created_at": "2026-11-04T12:24:40Z",
+   "head_sha": "a0a9043fc529f20a56704a0ec0f6c453ad3adedd",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/41829030048",
+   "id": 41829030048,
+   "jobs": [
+    {
+     "conclusion": "failure",
+     "id": 126571098030,
+     "name": "installer-identity"
+    },
+    {
+     "conclusion": "success",
+     "id": 126571098163,
+     "name": "thread-scrub"
+    },
+    {
+     "conclusion": "success",
+     "id": 126571098325,
+     "name": "thread-exit-macos-15"
+    },
+    {
+     "conclusion": "success",
+     "id": 126571098365,
+     "name": "cross-process"
+    },
+    {
+     "conclusion": "success",
+     "id": 126571098414,
+     "name": "thread-exit-macos-26-intel"
+    },
+    {
+     "conclusion": "success",
+     "id": 126571098447,
+     "name": "thread-exit-macos-15-intel"
+    },
+    {
+     "conclusion": "success",
+     "id": 126571098454,
+     "name": "link-cost"
+    },
+    {
+     "conclusion": "success",
+     "id": 126571098525,
+     "name": "filesystem-images"
+    }
+   ],
+   "artifacts": [
+    {
+     "digest": "sha256:0f899e59af11e047b873f37e7bec7ff743da02e64b67e62e3681748d065a9959",
+     "id": 13323235045,
+     "name": "gdal-trigger-cross-process",
+     "size_in_bytes": 12006
+    },
+    {
+     "digest": "sha256:f87d2e85fb28e8a205e8dba942c8d8b54614c2c018da0886623302b3b103223b",
+     "id": 13323065225,
+     "name": "gdal-trigger-thread-exit-macos-15-intel",
+     "size_in_bytes": 15801
+    },
+    {
+     "digest": "sha256:b6d5d97410b5abe7c40fc093cf3de6f97460fd6ce2ce81fa977f269042b6a665",
+     "id": 13322865259,
+     "name": "gdal-trigger-thread-scrub",
+     "size_in_bytes": 7446
+    },
+    {
+     "digest": "sha256:e7256921fde3ffc57be73479dd3be1c79bf83d6f5938aee26d408c0bcfdb4b4d",
+     "id": 13322695397,
+     "name": "gdal-trigger-thread-exit-macos-15",
+     "size_in_bytes": 16025
+    },
+    {
+     "digest": "sha256:9bd668a57272dd0342c68011a613fa86bc7eb3a5a5e299dde88d1bc562d7b895",
+     "id": 13322290535,
+     "name": "gdal-trigger-installer-identity",
+     "size_in_bytes": 5142
+    },
+    {
+     "digest": "sha256:17323071f066ce55f2c1d41c3e22c0325c7c8087f7b42b3abc8e5327904237e9",
+     "id": 13322200988,
+     "name": "gdal-trigger-link-cost",
+     "size_in_bytes": 1070
+    },
+    {
+     "digest": "sha256:c9f051ab7f8ad83336f4ae35ed8a537b402dbfb7f284d9600114d5776e0d95a4",
+     "id": 13321696629,
+     "name": "gdal-trigger-filesystem-images",
+     "size_in_bytes": 33817
+    },
+    {
+     "digest": "sha256:d7e982b429ac6dd7d8b7820d624be8e4e6d194b16b7faaef2e25ab1a474c5080",
+     "id": 13321007299,
+     "name": "gdal-trigger-thread-exit-macos-26-intel",
+     "size_in_bytes": 15857
+    }
+   ],
+   "hosts": {
+    "cross-process": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "filesystem-images": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "installer-identity": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "link-cost": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "thread-exit-macos-15": [
+     "ProductVersion:\t\t15.8.2",
+     "BuildVersion:\t\t24H232",
+     "\tPROGRAM:dyld  PROJECT:dyld-1286.12",
+     "arm64"
+    ],
+    "thread-exit-macos-15-intel": [
+     "ProductVersion:\t\t15.7.9",
+     "BuildVersion:\t\t24G830",
+     "\tPROGRAM:dyld  PROJECT:dyld-1286.10",
+     "x86_64"
+    ],
+    "thread-exit-macos-26-intel": [
+     "ProductVersion:\t\t26.6.1",
+     "BuildVersion:\t\t25G76",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "x86_64"
+    ],
+    "thread-scrub": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ]
+   },
+   "summaries": {
+    "cross-process": {
+     "hardlink/worker1/python": {
+      "launches": 30,
+      "cache_path": 19,
+      "env_path": 11
+     },
+     "hardlink/worker4/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 5,
+      "env_path": 25
+     },
+     "copy/worker1/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker1/launcher-exec": {
+      "launches": 30,
+      "cache_path": 3,
+      "env_path": 27
+     },
+     "hardlink/main/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 24,
+      "env_path": 6
+     },
+     "copy/main/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/none/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/main/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker1/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 6,
+      "env_path": 24
+     },
+     "hardlink/none/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker4/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/main/python": {
+      "launches": 30,
+      "cache_path": 2,
+      "env_path": 28
+     },
+     "copy/worker1/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker4/python": {
+      "launches": 30,
+      "cache_path": 26,
+      "env_path": 4
+     },
+     "hardlink/worker4/launcher-exec": {
+      "launches": 30,
+      "cache_path": 4,
+      "env_path": 26
+     },
+     "copy/none/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/none/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker1/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/main/launcher-exec": {
+      "launches": 30,
+      "cache_path": 26,
+      "env_path": 4
+     },
+     "copy/worker4/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/none/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker4/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/main/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/none/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     }
+    },
+    "filesystem-images": {
+     "host-apfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-apfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 28,
+       "env_path": 2
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 26,
+       "env_path": 4
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-hfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     }
+    },
+    "link-cost": {
+     "hardlink": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 1.2063,
+      "min_seconds": 1.017,
+      "max_seconds": 1.4203
+     },
+     "clone_tree": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 0.5689,
+      "min_seconds": 0.5097,
+      "max_seconds": 0.6686
+     },
+     "copy_tree": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 1.5292,
+      "min_seconds": 1.2933,
+      "max_seconds": 2.2077
+     },
+     "clone_per_file": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 19.0262,
+      "min_seconds": 13.9301,
+      "max_seconds": 21.6245
+     }
+    },
+    "thread-exit-macos-15": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 39,
+      "env_path": 1
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 37,
+      "env_path": 3
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-exit-macos-15-intel": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 40,
+      "env_path": 0
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 38,
+      "env_path": 2
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-exit-macos-26-intel": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 37,
+      "env_path": 3
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 39,
+      "env_path": 1
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-scrub": {
+     "hardlink/stale1/dummies0/holders2/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies1/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 25,
+      "env_path": 5
+     },
+     "hardlink/stale1/dummies0/holders1/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 4,
+      "env_path": 26
+     },
+     "copy/stale1/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors3/spawn": {
+      "launches": 30,
+      "cache_path": 29,
+      "env_path": 1
+     },
+     "hardlink/stale1/dummies2/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 22,
+      "env_path": 8
+     },
+     "hardlink/stale0/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders4/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 29,
+      "env_path": 1
+     },
+     "hardlink/stale1/dummies0/holders0/evictors10/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors0/exec": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     },
+     "hardlink/stale1/dummies0/holders0/evictors7/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies4/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 16,
+      "env_path": 14
+     },
+     "hardlink/stale1/dummies8/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 16,
+      "env_path": 14
+     },
+     "hardlink/stale1/dummies0/holders0/evictors1/spawn": {
+      "launches": 30,
+      "cache_path": 29,
+      "env_path": 1
+     },
+     "hardlink/stale1/dummies0/holders0/evictors5/spawn": {
+      "launches": 30,
+      "cache_path": 29,
+      "env_path": 1
+     },
+     "hardlink/stale1/dummies0/holders0/evictors8/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors6/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     }
+    }
+   }
+  },
+  {
+   "conclusion": "failure",
+   "created_at": "2026-11-04T12:28:32Z",
+   "head_sha": "2a09ec47e3eb0486fae657f263e88653f76f9ed6",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/41829581372",
+   "id": 41829581372,
+   "jobs": [
+    {
+     "conclusion": "failure",
+     "id": 126572987752,
+     "name": "installer-identity"
+    },
+    {
+     "conclusion": "success",
+     "id": 126572988228,
+     "name": "thread-exit-macos-26"
+    },
+    {
+     "conclusion": "success",
+     "id": 126572988266,
+     "name": "thread-exit-macos-15-intel"
+    },
+    {
+     "conclusion": "success",
+     "id": 126572988319,
+     "name": "route2-images"
+    },
+    {
+     "conclusion": "success",
+     "id": 126572988334,
+     "name": "thread-exit-macos-15"
+    },
+    {
+     "conclusion": "success",
+     "id": 126572988387,
+     "name": "cross-process"
+    },
+    {
+     "conclusion": "success",
+     "id": 126572988392,
+     "name": "link-cost"
+    },
+    {
+     "conclusion": "success",
+     "id": 126572988424,
+     "name": "thread-scrub"
+    },
+    {
+     "conclusion": "success",
+     "id": 126572988433,
+     "name": "filesystem-images"
+    },
+    {
+     "conclusion": "success",
+     "id": 126572988601,
+     "name": "thread-exit-macos-26-intel"
+    }
+   ],
+   "artifacts": [
+    {
+     "digest": "sha256:b8aade57bea4b77a395f8fc14c9b217c6baed917360b68f608634947942639e0",
+     "id": 13323170870,
+     "name": "gdal-trigger-thread-exit-macos-15",
+     "size_in_bytes": 16089
+    },
+    {
+     "digest": "sha256:b5ec140cee40f337c106ad7beba63ca3a920733cfbe237b4c97763076669cc7b",
+     "id": 13322885907,
+     "name": "gdal-trigger-thread-scrub",
+     "size_in_bytes": 7443
+    },
+    {
+     "digest": "sha256:eac0faabba839195248ca1ec1da550bc9f7b1c40455f40fac7a815dcea33ca48",
+     "id": 13322595950,
+     "name": "gdal-trigger-route2-images",
+     "size_in_bytes": 11220
+    },
+    {
+     "digest": "sha256:5fd7b628950a3491af6ba195059824f4fcc5c636e5386563d5f819def1b6ffe4",
+     "id": 13322496243,
+     "name": "gdal-trigger-filesystem-images",
+     "size_in_bytes": 33901
+    },
+    {
+     "digest": "sha256:ad079ff196e185d222cdcad5f1f1f0232c18b611377b315827b24bdbe797819a",
+     "id": 13322411340,
+     "name": "gdal-trigger-installer-identity",
+     "size_in_bytes": 5142
+    },
+    {
+     "digest": "sha256:a8bfdc04a3c4ce8ae41aa0457e7a1c01212be6f1be44a134ecd4d9e189abfbdb",
+     "id": 13322216290,
+     "name": "gdal-trigger-cross-process",
+     "size_in_bytes": 12014
+    },
+    {
+     "digest": "sha256:a1b0e136b03d53a2404a1303ac31f4ea5bdf74e20bbab2fbda8242dd656ed938",
+     "id": 13321542776,
+     "name": "gdal-trigger-link-cost",
+     "size_in_bytes": 1071
+    },
+    {
+     "digest": "sha256:e1a0ea6828a5b47ab281f634f27d9b406b908481f45f63fdec84606b9b2355a4",
+     "id": 13321497482,
+     "name": "gdal-trigger-thread-exit-macos-26-intel",
+     "size_in_bytes": 15865
+    },
+    {
+     "digest": "sha256:a580afb74653d2c46a7f64052b155471f11b8bcd9da4c485d420badf557c1e8f",
+     "id": 13321312665,
+     "name": "gdal-trigger-thread-exit-macos-15-intel",
+     "size_in_bytes": 15814
+    },
+    {
+     "digest": "sha256:c6fee83923a631b56b947154b015ae11eeb0f538239f3eddc1ff5b746a14ba4a",
+     "id": 13321197766,
+     "name": "gdal-trigger-thread-exit-macos-26",
+     "size_in_bytes": 16141
+    }
+   ],
+   "hosts": {
+    "cross-process": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "filesystem-images": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "installer-identity": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "link-cost": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "route2-images": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "thread-exit-macos-15": [
+     "ProductVersion:\t\t15.8.2",
+     "BuildVersion:\t\t24H232",
+     "\tPROGRAM:dyld  PROJECT:dyld-1286.12",
+     "arm64"
+    ],
+    "thread-exit-macos-15-intel": [
+     "ProductVersion:\t\t15.7.9",
+     "BuildVersion:\t\t24G830",
+     "\tPROGRAM:dyld  PROJECT:dyld-1286.10",
+     "x86_64"
+    ],
+    "thread-exit-macos-26": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "thread-exit-macos-26-intel": [
+     "ProductVersion:\t\t26.6.1",
+     "BuildVersion:\t\t25G76",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "x86_64"
+    ],
+    "thread-scrub": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ]
+   },
+   "summaries": {
+    "cross-process": {
+     "hardlink/worker1/python": {
+      "launches": 30,
+      "cache_path": 19,
+      "env_path": 11
+     },
+     "hardlink/worker4/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 6,
+      "env_path": 24
+     },
+     "copy/worker1/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker1/launcher-exec": {
+      "launches": 30,
+      "cache_path": 10,
+      "env_path": 20
+     },
+     "hardlink/main/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 23,
+      "env_path": 7
+     },
+     "copy/main/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/none/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/main/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker1/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 6,
+      "env_path": 24
+     },
+     "hardlink/none/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker4/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/main/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker1/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker4/python": {
+      "launches": 30,
+      "cache_path": 26,
+      "env_path": 4
+     },
+     "hardlink/worker4/launcher-exec": {
+      "launches": 30,
+      "cache_path": 6,
+      "env_path": 24
+     },
+     "copy/none/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/none/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker1/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/main/launcher-exec": {
+      "launches": 30,
+      "cache_path": 14,
+      "env_path": 16
+     },
+     "copy/worker4/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/none/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker4/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/main/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/none/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     }
+    },
+    "filesystem-images": {
+     "host-apfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 29,
+       "env_path": 1
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 29,
+       "env_path": 1
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-apfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 26,
+       "env_path": 4
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 26,
+       "env_path": 4
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-hfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 29,
+       "env_path": 1
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 26,
+       "env_path": 4
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     }
+    },
+    "link-cost": {
+     "hardlink": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 0.9637,
+      "min_seconds": 0.8708,
+      "max_seconds": 1.1246
+     },
+     "clone_tree": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 0.4527,
+      "min_seconds": 0.4341,
+      "max_seconds": 0.5758
+     },
+     "copy_tree": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 2.0964,
+      "min_seconds": 1.6525,
+      "max_seconds": 3.3023
+     },
+     "clone_per_file": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 18.7902,
+      "min_seconds": 16.1161,
+      "max_seconds": 21.5405
+     }
+    },
+    "route2-images": {
+     "host-apfs": {
+      "copy/stat-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/stat-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "hardlink/open-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/open-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 2,
+       "env_path": 28
+      },
+      "copy/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-apfs": {
+      "copy/stat-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/stat-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "hardlink/open-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/open-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-hfs": {
+      "copy/stat-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/stat-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "hardlink/open-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/open-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     }
+    },
+    "thread-exit-macos-15": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 38,
+      "env_path": 2
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 38,
+      "env_path": 2
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-exit-macos-15-intel": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 39,
+      "env_path": 1
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 40,
+      "env_path": 0
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-exit-macos-26": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 39,
+      "env_path": 1
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 40,
+      "env_path": 0
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-exit-macos-26-intel": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 38,
+      "env_path": 2
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 35,
+      "env_path": 5
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-scrub": {
+     "hardlink/stale1/dummies0/holders2/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 1,
+      "env_path": 29
+     },
+     "hardlink/stale1/dummies1/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 24,
+      "env_path": 6
+     },
+     "hardlink/stale1/dummies0/holders1/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 8,
+      "env_path": 22
+     },
+     "copy/stale1/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors3/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     },
+     "hardlink/stale1/dummies2/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 17,
+      "env_path": 13
+     },
+     "hardlink/stale0/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders4/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     },
+     "hardlink/stale1/dummies0/holders0/evictors10/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors0/exec": {
+      "launches": 30,
+      "cache_path": 28,
+      "env_path": 2
+     },
+     "hardlink/stale1/dummies0/holders0/evictors7/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies4/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 15,
+      "env_path": 15
+     },
+     "hardlink/stale1/dummies8/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 20,
+      "env_path": 10
+     },
+     "hardlink/stale1/dummies0/holders0/evictors1/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     },
+     "hardlink/stale1/dummies0/holders0/evictors5/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     },
+     "hardlink/stale1/dummies0/holders0/evictors8/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors6/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     }
+    }
+   }
+  },
+  {
+   "conclusion": "success",
+   "created_at": "2026-11-04T12:29:50Z",
+   "head_sha": "0bbf78ee853757e8ac921256a488515685ef2c60",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/41829764653",
+   "id": 41829764653,
+   "jobs": [
+    {
+     "conclusion": "success",
+     "id": 126573623346,
+     "name": "installer-identity"
+    },
+    {
+     "conclusion": "success",
+     "id": 126573623602,
+     "name": "thread-exit-macos-26-intel"
+    },
+    {
+     "conclusion": "success",
+     "id": 126573623644,
+     "name": "route2-images"
+    },
+    {
+     "conclusion": "success",
+     "id": 126573623789,
+     "name": "thread-scrub"
+    },
+    {
+     "conclusion": "success",
+     "id": 126573623912,
+     "name": "link-cost"
+    },
+    {
+     "conclusion": "success",
+     "id": 126573623937,
+     "name": "filesystem-images"
+    },
+    {
+     "conclusion": "success",
+     "id": 126573623950,
+     "name": "cross-process"
+    },
+    {
+     "conclusion": "success",
+     "id": 126573623978,
+     "name": "thread-exit-macos-26"
+    },
+    {
+     "conclusion": "success",
+     "id": 126573624017,
+     "name": "thread-exit-macos-15"
+    },
+    {
+     "conclusion": "success",
+     "id": 126573624030,
+     "name": "thread-exit-macos-15-intel"
+    }
+   ],
+   "artifacts": [
+    {
+     "digest": "sha256:d4213dce1250994a41c687b7e89d855a9fcb36a642c432281cb51047945c2701",
+     "id": 13323241184,
+     "name": "gdal-trigger-installer-identity",
+     "size_in_bytes": 11220
+    },
+    {
+     "digest": "sha256:748f8c8769c464d49ddfffaa1a563fe3735979d1809d30f7695685f843719519",
+     "id": 13322886284,
+     "name": "gdal-trigger-cross-process",
+     "size_in_bytes": 12046
+    },
+    {
+     "digest": "sha256:4e8353e4f6b8767a9c88a19569561ad62ff870339657370406414da87ebd37f8",
+     "id": 13322821273,
+     "name": "gdal-trigger-route2-images",
+     "size_in_bytes": 11117
+    },
+    {
+     "digest": "sha256:a90e24546a0cf6027b30b16784680c19771d6394581e40baa04694c1feddb7ed",
+     "id": 13322591676,
+     "name": "gdal-trigger-filesystem-images",
+     "size_in_bytes": 33970
+    },
+    {
+     "digest": "sha256:42ae0e2ff1da56c26d93448ddbaa2101a9ff19672549aca015b30ec0455e36f8",
+     "id": 13322541324,
+     "name": "gdal-trigger-thread-exit-macos-15",
+     "size_in_bytes": 16071
+    },
+    {
+     "digest": "sha256:68b385b002d9fdf2734d1fe0af92b7344152dbcd8b6c964533536b98ee56cfa6",
+     "id": 13322521322,
+     "name": "gdal-trigger-thread-exit-macos-26",
+     "size_in_bytes": 16121
+    },
+    {
+     "digest": "sha256:47b80c0067e69e8a0239040dc68a179358c787ef4886949b20bc4ef4c3cb66a5",
+     "id": 13321257985,
+     "name": "gdal-trigger-thread-scrub",
+     "size_in_bytes": 7425
+    },
+    {
+     "digest": "sha256:3afef3fce7dcb54e264f1b70bdbcfbf7c278c4f93c7cefdeb5153111c6784e5c",
+     "id": 13321118311,
+     "name": "gdal-trigger-thread-exit-macos-15-intel",
+     "size_in_bytes": 15783
+    },
+    {
+     "digest": "sha256:d5b47990365e8bdb9ad6466f2dd0e2d6db3599d7edd82bba9387c1021170ac39",
+     "id": 13321018116,
+     "name": "gdal-trigger-thread-exit-macos-26-intel",
+     "size_in_bytes": 15882
+    },
+    {
+     "digest": "sha256:9a0d94e63eb59d836de37ce1c2c45ca8cae0d4fe1fdcf9bfa85a92dfccb41cf8",
+     "id": 13321003127,
+     "name": "gdal-trigger-link-cost",
+     "size_in_bytes": 1083
+    }
+   ],
+   "hosts": {
+    "cross-process": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "filesystem-images": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "installer-identity": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "link-cost": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "route2-images": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "thread-exit-macos-15": [
+     "ProductVersion:\t\t15.8.2",
+     "BuildVersion:\t\t24H232",
+     "\tPROGRAM:dyld  PROJECT:dyld-1286.12",
+     "arm64"
+    ],
+    "thread-exit-macos-15-intel": [
+     "ProductVersion:\t\t15.7.9",
+     "BuildVersion:\t\t24G830",
+     "\tPROGRAM:dyld  PROJECT:dyld-1286.10",
+     "x86_64"
+    ],
+    "thread-exit-macos-26": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "thread-exit-macos-26-intel": [
+     "ProductVersion:\t\t26.6.1",
+     "BuildVersion:\t\t25G76",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "x86_64"
+    ],
+    "thread-scrub": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ]
+   },
+   "summaries": {
+    "cross-process": {
+     "hardlink/worker1/python": {
+      "launches": 30,
+      "cache_path": 23,
+      "env_path": 7
+     },
+     "hardlink/worker4/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 7,
+      "env_path": 23
+     },
+     "copy/worker1/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker1/launcher-exec": {
+      "launches": 30,
+      "cache_path": 5,
+      "env_path": 25
+     },
+     "hardlink/main/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 25,
+      "env_path": 5
+     },
+     "copy/main/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/none/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/main/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker1/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 6,
+      "env_path": 24
+     },
+     "hardlink/none/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker4/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/main/python": {
+      "launches": 30,
+      "cache_path": 4,
+      "env_path": 26
+     },
+     "copy/worker1/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker4/python": {
+      "launches": 30,
+      "cache_path": 27,
+      "env_path": 3
+     },
+     "hardlink/worker4/launcher-exec": {
+      "launches": 30,
+      "cache_path": 4,
+      "env_path": 26
+     },
+     "copy/none/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/none/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker1/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/main/launcher-exec": {
+      "launches": 30,
+      "cache_path": 24,
+      "env_path": 6
+     },
+     "copy/worker4/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/none/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker4/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/main/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/none/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     }
+    },
+    "filesystem-images": {
+     "host-apfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 22,
+       "env_path": 8
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 27,
+       "env_path": 3
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-apfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 27,
+       "env_path": 3
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-hfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 28,
+       "env_path": 2
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 27,
+       "env_path": 3
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     }
+    },
+    "installer-identity": {
+     "micromamba": {
+      "launches": 20,
+      "failures": 0,
+      "shares_inode_with_cache": 1,
+      "nlink": 2,
+      "cache_matches": 1
+     },
+     "conda": {
+      "launches": 20,
+      "failures": 0,
+      "shares_inode_with_cache": 0,
+      "nlink": 2,
+      "cache_matches": 0
+     },
+     "pixi": {
+      "launches": 20,
+      "failures": 0,
+      "shares_inode_with_cache": 0,
+      "nlink": 1,
+      "cache_matches": 1
+     }
+    },
+    "link-cost": {
+     "hardlink": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 0.8621,
+      "min_seconds": 0.7796,
+      "max_seconds": 0.9558
+     },
+     "clone_tree": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 0.4431,
+      "min_seconds": 0.3905,
+      "max_seconds": 0.5175
+     },
+     "copy_tree": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 1.7956,
+      "min_seconds": 1.6312,
+      "max_seconds": 2.4986
+     },
+     "clone_per_file": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 0.4743,
+      "min_seconds": 0.4627,
+      "max_seconds": 0.5062
+     },
+     "copy_per_file": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 0.9277,
+      "min_seconds": 0.8563,
+      "max_seconds": 1.7415
+     }
+    },
+    "route2-images": {
+     "host-apfs": {
+      "copy/stat-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/stat-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "hardlink/open-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/open-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 1,
+       "env_path": 29
+      },
+      "copy/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-apfs": {
+      "copy/stat-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/stat-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "hardlink/open-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/open-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 2,
+       "env_path": 28
+      },
+      "copy/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-hfs": {
+      "copy/stat-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/stat-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "hardlink/open-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/open-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     }
+    },
+    "thread-exit-macos-15": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 38,
+      "env_path": 2
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 36,
+      "env_path": 4
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-exit-macos-15-intel": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 40,
+      "env_path": 0
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 40,
+      "env_path": 0
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 1,
+      "env_path": 39
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-exit-macos-26": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 39,
+      "env_path": 1
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 39,
+      "env_path": 1
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-exit-macos-26-intel": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 37,
+      "env_path": 3
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 38,
+      "env_path": 2
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-scrub": {
+     "hardlink/stale1/dummies0/holders2/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 1,
+      "env_path": 29
+     },
+     "hardlink/stale1/dummies1/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 23,
+      "env_path": 7
+     },
+     "hardlink/stale1/dummies0/holders1/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 11,
+      "env_path": 19
+     },
+     "copy/stale1/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors3/spawn": {
+      "launches": 30,
+      "cache_path": 29,
+      "env_path": 1
+     },
+     "hardlink/stale1/dummies2/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 21,
+      "env_path": 9
+     },
+     "hardlink/stale0/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders4/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     },
+     "hardlink/stale1/dummies0/holders0/evictors10/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors0/exec": {
+      "launches": 30,
+      "cache_path": 28,
+      "env_path": 2
+     },
+     "hardlink/stale1/dummies0/holders0/evictors7/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies4/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 19,
+      "env_path": 11
+     },
+     "hardlink/stale1/dummies8/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 16,
+      "env_path": 14
+     },
+     "hardlink/stale1/dummies0/holders0/evictors1/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     },
+     "hardlink/stale1/dummies0/holders0/evictors5/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     },
+     "hardlink/stale1/dummies0/holders0/evictors8/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors6/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     }
+    }
+   }
+  },
+  {
+   "conclusion": "success",
+   "created_at": "2026-11-04T12:34:55Z",
+   "head_sha": "9a75ec3850a458a405db25ef4f8d38e2eb5a0c83",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/41830505785",
+   "id": 41830505785,
+   "jobs": [
+    {
+     "conclusion": "success",
+     "id": 126576176696,
+     "name": "installer-identity"
+    },
+    {
+     "conclusion": "success",
+     "id": 126576176757,
+     "name": "thread-exit-macos-26-intel"
+    },
+    {
+     "conclusion": "success",
+     "id": 126576177128,
+     "name": "thread-scrub"
+    },
+    {
+     "conclusion": "success",
+     "id": 126576177158,
+     "name": "filesystem-images"
+    },
+    {
+     "conclusion": "success",
+     "id": 126576177177,
+     "name": "thread-exit-macos-26"
+    },
+    {
+     "conclusion": "success",
+     "id": 126576177245,
+     "name": "link-cost"
+    },
+    {
+     "conclusion": "success",
+     "id": 126576177378,
+     "name": "cross-process"
+    },
+    {
+     "conclusion": "success",
+     "id": 126576177399,
+     "name": "route2-images"
+    },
+    {
+     "conclusion": "success",
+     "id": 126576177430,
+     "name": "thread-exit-macos-15-intel"
+    },
+    {
+     "conclusion": "success",
+     "id": 126576177502,
+     "name": "thread-exit-macos-15"
+    }
+   ],
+   "artifacts": [
+    {
+     "digest": "sha256:c66ddfa841a82ec0dd60e6800412a9446c0280e5ecce53fd05f76de546d02707",
+     "id": 13323201932,
+     "name": "gdal-trigger-thread-exit-macos-15-intel",
+     "size_in_bytes": 15885
+    },
+    {
+     "digest": "sha256:4c83a17c2775c3e7d36be5d59fd6f11f4c62e167208f2a30a0396af2ef0a986d",
+     "id": 13322902261,
+     "name": "gdal-trigger-thread-scrub",
+     "size_in_bytes": 7419
+    },
+    {
+     "digest": "sha256:964cb1e8c0de851463c22fbcc34767f094259c14c31ba70353db9dde3f0c31b7",
+     "id": 13322837420,
+     "name": "gdal-trigger-thread-exit-macos-26",
+     "size_in_bytes": 16100
+    },
+    {
+     "digest": "sha256:065963cd2bc0d057daa52b5d3167a793b085fdaa1468b79d2c8fb755885d804d",
+     "id": 13322837369,
+     "name": "gdal-trigger-link-cost",
+     "size_in_bytes": 1082
+    },
+    {
+     "digest": "sha256:9dccbb872cbd42f57479a351e0ed43fdfd6657d444fb389749597018f6b0688e",
+     "id": 13322767458,
+     "name": "gdal-trigger-thread-exit-macos-15",
+     "size_in_bytes": 16118
+    },
+    {
+     "digest": "sha256:cff1b1692b1322b91891f8bb0d1c8dc84bf5fe6b6451fecf27813611161b71fe",
+     "id": 13322492456,
+     "name": "gdal-trigger-filesystem-images",
+     "size_in_bytes": 33838
+    },
+    {
+     "digest": "sha256:6bcc22951585f13b906c37768ff6c80db352bd637cb59ea194dda19292812aba",
+     "id": 13322462762,
+     "name": "gdal-trigger-installer-identity",
+     "size_in_bytes": 11287
+    },
+    {
+     "digest": "sha256:6bb3af344f23e812e278f74f948bb38ae88d63ef1fc021569df71f5847035477",
+     "id": 13322312527,
+     "name": "gdal-trigger-route2-images",
+     "size_in_bytes": 11092
+    },
+    {
+     "digest": "sha256:d8931a424d2981dacfd623cdf59307d6164191e0a2c1441831e51fcafb8f4247",
+     "id": 13322182558,
+     "name": "gdal-trigger-thread-exit-macos-26-intel",
+     "size_in_bytes": 15749
+    },
+    {
+     "digest": "sha256:81e8f11947d045ec456af4df42fcc057e2444d2706dc8985263bb48e5fbb76b4",
+     "id": 13321323699,
+     "name": "gdal-trigger-cross-process",
+     "size_in_bytes": 12031
+    }
+   ],
+   "hosts": {
+    "cross-process": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "filesystem-images": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "installer-identity": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "link-cost": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "route2-images": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "thread-exit-macos-15": [
+     "ProductVersion:\t\t15.8.2",
+     "BuildVersion:\t\t24H232",
+     "\tPROGRAM:dyld  PROJECT:dyld-1286.12",
+     "arm64"
+    ],
+    "thread-exit-macos-15-intel": [
+     "ProductVersion:\t\t15.7.9",
+     "BuildVersion:\t\t24G830",
+     "\tPROGRAM:dyld  PROJECT:dyld-1286.10",
+     "x86_64"
+    ],
+    "thread-exit-macos-26": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "thread-exit-macos-26-intel": [
+     "ProductVersion:\t\t26.6.1",
+     "BuildVersion:\t\t25G76",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "x86_64"
+    ],
+    "thread-scrub": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ]
+   },
+   "summaries": {
+    "cross-process": {
+     "hardlink/worker1/python": {
+      "launches": 30,
+      "cache_path": 24,
+      "env_path": 6
+     },
+     "hardlink/worker4/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 3,
+      "env_path": 27
+     },
+     "copy/worker1/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker1/launcher-exec": {
+      "launches": 30,
+      "cache_path": 5,
+      "env_path": 25
+     },
+     "hardlink/main/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 23,
+      "env_path": 7
+     },
+     "copy/main/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/none/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/main/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker1/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 7,
+      "env_path": 23
+     },
+     "hardlink/none/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker4/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/main/python": {
+      "launches": 30,
+      "cache_path": 3,
+      "env_path": 27
+     },
+     "copy/worker1/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/worker4/python": {
+      "launches": 30,
+      "cache_path": 26,
+      "env_path": 4
+     },
+     "hardlink/worker4/launcher-exec": {
+      "launches": 30,
+      "cache_path": 3,
+      "env_path": 27
+     },
+     "copy/none/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/none/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker1/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/main/launcher-exec": {
+      "launches": 30,
+      "cache_path": 27,
+      "env_path": 3
+     },
+     "copy/worker4/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/none/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/worker4/launcher-spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/main/python": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "copy/none/launcher-exec": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     }
+    },
+    "filesystem-images": {
+     "host-apfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 28,
+       "env_path": 2
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-apfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-hfs": {
+      "copy/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/env-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/exec": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-dead/spawn": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "hardlink/env-dead/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/env-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/cache-alive/spawn": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     }
+    },
+    "installer-identity": {
+     "micromamba": {
+      "launches": 20,
+      "failures": 0,
+      "shares_inode_with_cache": 1,
+      "nlink": 2,
+      "cache_matches": 1
+     },
+     "conda": {
+      "launches": 20,
+      "failures": 0,
+      "shares_inode_with_cache": 1,
+      "nlink": 2,
+      "cache_matches": 1
+     },
+     "pixi": {
+      "launches": 20,
+      "failures": 0,
+      "shares_inode_with_cache": 0,
+      "nlink": 1,
+      "cache_matches": 1
+     }
+    },
+    "link-cost": {
+     "hardlink": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 0.874,
+      "min_seconds": 0.8392,
+      "max_seconds": 1.0705
+     },
+     "clone_tree": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 0.5843,
+      "min_seconds": 0.5101,
+      "max_seconds": 0.6512
+     },
+     "copy_tree": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 1.7701,
+      "min_seconds": 1.3577,
+      "max_seconds": 2.9461
+     },
+     "clone_per_file": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 0.5972,
+      "min_seconds": 0.4758,
+      "max_seconds": 0.667
+     },
+     "copy_per_file": {
+      "files": 3000,
+      "bytes_per_file": 32768,
+      "rounds": 5,
+      "median_seconds": 0.8721,
+      "min_seconds": 0.8309,
+      "max_seconds": 1.3917
+     }
+    },
+    "route2-images": {
+     "host-apfs": {
+      "copy/stat-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/stat-cache": {
+       "launches": 30,
+       "cache_path": 28,
+       "env_path": 2
+      },
+      "hardlink/open-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/open-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 2,
+       "env_path": 28
+      },
+      "copy/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-apfs": {
+      "copy/stat-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/stat-cache": {
+       "launches": 30,
+       "cache_path": 29,
+       "env_path": 1
+      },
+      "hardlink/open-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/open-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 1,
+       "env_path": 29
+      },
+      "copy/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     },
+     "image-hfs": {
+      "copy/stat-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/stat-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "hardlink/open-cache": {
+       "launches": 30,
+       "cache_path": 30,
+       "env_path": 0
+      },
+      "copy/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/open-cache": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "hardlink/open-cache-stat-env": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      },
+      "copy/none": {
+       "launches": 30,
+       "cache_path": 0,
+       "env_path": 30
+      }
+     }
+    },
+    "thread-exit-macos-15": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 39,
+      "env_path": 1
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 38,
+      "env_path": 2
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-exit-macos-15-intel": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 39,
+      "env_path": 1
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 40,
+      "env_path": 0
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-exit-macos-26": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 39,
+      "env_path": 1
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 34,
+      "env_path": 6
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-exit-macos-26-intel": {
+     "copy/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 39,
+      "env_path": 1
+     },
+     "clone/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 39,
+      "env_path": 1
+     },
+     "copy/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/env-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-alive/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "clone/cache-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/cache-dead/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-dead/spawn": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "hardlink/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     },
+     "copy/env-alive/exec": {
+      "launches": 40,
+      "cache_path": 0,
+      "env_path": 40
+     }
+    },
+    "thread-scrub": {
+     "hardlink/stale1/dummies0/holders2/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies1/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 23,
+      "env_path": 7
+     },
+     "hardlink/stale1/dummies0/holders1/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 7,
+      "env_path": 23
+     },
+     "copy/stale1/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors3/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     },
+     "hardlink/stale1/dummies2/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 16,
+      "env_path": 14
+     },
+     "hardlink/stale0/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders4/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 29,
+      "env_path": 1
+     },
+     "hardlink/stale1/dummies0/holders0/evictors10/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors0/exec": {
+      "launches": 30,
+      "cache_path": 27,
+      "env_path": 3
+     },
+     "hardlink/stale1/dummies0/holders0/evictors7/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies4/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 18,
+      "env_path": 12
+     },
+     "hardlink/stale1/dummies8/holders0/evictors0/spawn": {
+      "launches": 30,
+      "cache_path": 18,
+      "env_path": 12
+     },
+     "hardlink/stale1/dummies0/holders0/evictors1/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     },
+     "hardlink/stale1/dummies0/holders0/evictors5/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     },
+     "hardlink/stale1/dummies0/holders0/evictors8/spawn": {
+      "launches": 30,
+      "cache_path": 0,
+      "env_path": 30
+     },
+     "hardlink/stale1/dummies0/holders0/evictors6/spawn": {
+      "launches": 30,
+      "cache_path": 30,
+      "env_path": 0
+     }
+    }
+   }
+  }
+ ]
+}
