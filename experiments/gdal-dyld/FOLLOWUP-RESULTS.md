@@ -12,10 +12,9 @@ inode passed, and a pause of half a second or more before the first launch
 left at most one wrong-path launch in twenty on these hosted runners. A stale
 thread without a record follows the most recent lookup or path build by any
 thread, alive or exited. A stale record is not consumed by being read, is
-replaced when its holder looks up the environment alias, survives five
-seconds while held, and is gone within a second after the identity is freed,
-which thread turnover in another process does not accelerate. Why retries
-and pauses help is not established.**
+loses its stale answer when its holder looks up the environment alias,
+survives five seconds while held, and is rarely seen again a second after
+the identity is freed. Why retries and pauses help is not established.**
 
 All runs used GitHub-hosted runners in `maresb/conda-lock`. The earlier
 [TRIGGER-RESULTS.md](TRIGGER-RESULTS.md) records the spontaneous failures and
@@ -361,17 +360,22 @@ with the fallback reset to the environment path before the read:
 
 - **Reading does not consume the record.** Whenever a thread's first read
   returned the cache path, its second read did too, in every cell.
-- **A lookup by the holder replaces it.** In `refresh`, after X read the
-  cache path and looked up the environment alias itself, its second read
-  returned the environment path every time, and Y then read the environment
-  path in every one of those trials.
+- **A lookup by the holder eliminates its stale answer.** In `refresh`,
+  after X read the cache path and looked up the environment alias itself,
+  its second read returned the environment path every time, and Y then read
+  the environment path in every one of those trials. Whether the lookup
+  replaced X's record with an environment record or cleared it, leaving X
+  to the environment fallback, is not separated by this cell; the `oppose`
+  cells added for the next run set the fallback to the cache alias after
+  X's lookup to tell the two apart.
 - **A held record survives one and five seconds.** Every holder that read
   the cache path before its pause read it again afterwards, and X then
   inherited it from the holder in most trials.
-- **After the identity is freed, the cache answer disappears within a
+- **After the identity is freed, the cache answer becomes rare within a
   second.** With no holder, X read the cache path in a few trials after
-  200 ms and in none after one second, in this run as in the two runs of
-  the second design and in the turnover test below.
+  200 ms and in none after one second in this run; the second design's two
+  runs and the turnover test below gave the same picture, with one cache
+  answer at one second in the turnover test and one in the delay test.
 
 In-process reuse is not deterministic: X's first read returned the cache
 path in most trials but not all, Y inherited from X in most but not all, and
@@ -417,7 +421,9 @@ and the `norestore` sequence. Forty trials per cell, fresh inode each
 The reader, which cannot hold the worker's record, read the cache path in
 every trial after the worker had exited and in nearly every trial while it
 was alive, and the environment path in every trial after the main thread
-had built the path. The fallback therefore follows the most recent lookup
+had built the path. In this run the live-worker cells waited 20 ms for the
+worker's lookup rather than for its completion, so their few exceptions
+are not interpreted; the probe now waits for the lookup to return. The fallback therefore follows the most recent lookup
 whether or not the looking-up thread is still alive, and a path build by a
 thread with its own record resets it to that thread's answer. The two
 reader-less cells reproduce the superseded design's every-trial result and
@@ -451,11 +457,9 @@ in cmake-feedstock#230 as a mitigation on hosts like these. What changes
 during the pause is not established: background load was not varied, so the
 result shows neither that the effect is load-dependent nor that half a second
 suffices elsewhere. The hold cells above show that a record kept by a live
-thread survives pauses of one and five seconds, and the turnover test below
-shows that thread creation in another process does not accelerate the loss
-of the stale answer over a pause; whether the record is dropped after its
-thread exits, or the freed identity is handed out through a slower path, is
-not separated.
+thread survives pauses of one and five seconds; what removes the stale
+answer after the identity is freed is unresolved, and the turnover test
+below did not resolve it.
 
 ## Thread turnover during a pause
 
@@ -475,12 +479,14 @@ not ([run 41885808126](https://github.com/maresb/conda-lock/actions/runs/4188580
 | With a churning process, 0.2 s pause | 2/40 |
 | With a churning process, 1 s pause | 1/40 |
 
-The churning process did not lower the counts: with it running, X read the
-cache path about as often at 0 s and at 0.2 s, and once at 1 s. The loss of
-the stale answer over a pause is therefore not caused by thread turnover in
-another process, and it tracks elapsed time. Whether the record is dropped
-some time after its thread exits, or the freed identity is handed out
-through a slower path than turnover on the same core, is not separated.
+Cache answers became uncommon with longer pauses in both conditions, and
+the added churn produced no consistent change: a higher count at 0 s, a
+lower one at 0.2 s, and one cache answer at 1 s where the quiet condition
+had none, all within what these small cells can resolve. The helper's
+thread rate was not recorded, it always ran second within a block, and
+nothing shows that its threads compete for the identity in question, so
+this neither establishes nor excludes an effect of turnover. The mechanism
+that removes the stale answer after the identity is freed is unresolved.
 These are first reads after the main thread's restoring lookup and do not
 depend on the fallback.
 
@@ -565,11 +571,11 @@ Established by experiment:
   calling thread has one and otherwise follows the most recent lookup or
   path build by any thread, alive or exited; a record survives its thread's
   exit; eight records are kept per inode.
-- A record is not consumed by being read, is replaced when the thread
-  holding it looks up the environment alias, and survives one- and
+- A record is not consumed by being read, loses its stale answer when the
+  thread holding it looks up the environment alias, and survives one- and
   five-second pauses while held by a live thread; after the identity is
-  freed, the stale answer disappears within a second, which thread turnover
-  in another process does not accelerate.
+  freed, the stale answer is rarely seen again a second later, for reasons
+  not resolved.
 - The launched process's first thread can inherit such a record from an
   exited thread of the same or another process, and keeping that thread alive
   or occupying the freed object with other live threads prevents it.
@@ -594,9 +600,8 @@ documented semantics predict; the one run without it is unexplained.
   wrong-path launch in twenty on these hosted runners, and a retry after a
   wrong-path launch passed in every tested condition. Both are mitigations
   whose mechanism is not established, not fixes; a record held by a live
-  thread does not expire within five seconds, thread turnover in another
-  process does not accelerate the loss of the stale answer over a pause, and
-  what removes it after the identity is freed is not separated.
+  thread does not expire within five seconds, and what removes the stale
+  answer after the identity is freed is unresolved.
 - Both installers and dyld could address it: installers by not hardlinking
   Mach-O executables on macOS (cloning keeps the space savings), dyld by using
   the kernel-supplied `executable_path` or a link ID, which the earlier runs
