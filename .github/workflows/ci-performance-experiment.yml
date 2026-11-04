@@ -318,7 +318,7 @@ jobs:
       METRICS_INPUTS: ${{ toJSON(inputs) }}
   macos-recovery-probe:
     needs: configure
-    if: needs.configure.outputs.mode == 'mapping-investigation'
+    if: needs.configure.outputs.mode == 'mapping-investigation' && needs.configure.outputs.repeat == 'mapping-1'
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read

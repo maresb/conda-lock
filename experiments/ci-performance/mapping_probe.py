@@ -1,6 +1,7 @@
 """Observe mapping-cache waits without changing the cache or HTTP implementation."""
 
 import argparse
+import functools
 import hashlib
 import json
 import logging
@@ -8,13 +9,72 @@ import os
 import sys
 import threading
 import time
+import traceback
 
 from pathlib import Path
+from urllib.parse import urlsplit
 
 
 _stream = None
 _mutex = threading.Lock()
 _current_test = None
+_test_started = 0
+_watcher_stop = threading.Event()
+
+
+def watch_stacks():
+    while not _watcher_stop.wait(5):
+        if _current_test is None or time.monotonic() - _test_started < 10:
+            continue
+        stacks = {}
+        for identifier, frame in sys._current_frames().items():
+            if identifier != threading.get_ident():
+                stacks[str(identifier)] = [
+                    {"file": f.filename, "line": f.lineno, "function": f.name}
+                    for f in traceback.extract_stack(frame)[-25:]
+                ]
+        emit("stack-sample", elapsed=time.monotonic() - _test_started, stacks=stacks)
+
+
+def observe_http():
+    import requests
+
+    original = requests.Session.send
+
+    @functools.wraps(original)
+    def send(session, request, **kwargs):
+        url = urlsplit(request.url)
+        allowed = {
+            "pypi.org",
+            "files.pythonhosted.org",
+            "raw.githubusercontent.com",
+            "conda.anaconda.org",
+            "repo.anaconda.com",
+        }
+        if url.hostname not in allowed:
+            return original(session, request, **kwargs)
+        target = (url.hostname or "") + url.path
+        started = time.monotonic()
+        emit("http-start", target=target, stream=bool(kwargs.get("stream")))
+        try:
+            result = original(session, request, **kwargs)
+        except Exception as error:
+            emit(
+                "http-error",
+                target=target,
+                seconds=time.monotonic() - started,
+                error_type=type(error).__name__,
+            )
+            raise
+        emit(
+            "http-finish",
+            target=target,
+            seconds=time.monotonic() - started,
+            status=result.status_code,
+        )
+        return result
+
+    requests.Session.send = send
 
 
 def emit(event, **fields):
@@ -62,12 +122,24 @@ def pytest_configure(config):
         Path(os.environ["MAPPING_TRACE_DIR"]),
         os.environ.get("PYTEST_XDIST_WORKER", "controller"),
     )
+    observe_http()
+    threading.Thread(target=watch_stacks, daemon=True).start()
 
 
 def pytest_runtest_logstart(nodeid, location):
-    global _current_test
+    global _current_test, _test_started
     _current_test = nodeid
+    _test_started = time.monotonic()
     emit("test-start")
+
+
+def pytest_runtest_logfinish(nodeid, location):
+    global _current_test
+    _current_test = None
+
+
+def pytest_unconfigure(config):
+    _watcher_stop.set()
 
 
 def pytest_runtest_logreport(report):

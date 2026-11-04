@@ -311,7 +311,7 @@ top["jobs"]["cpu-probe"]["steps"] = [
 ]
 top["jobs"]["macos-recovery-probe"] = copy.deepcopy(top["jobs"]["cpu-probe"])
 top["jobs"]["macos-recovery-probe"]["if"] = (
-    "needs.configure.outputs.mode == 'mapping-investigation'"
+    "needs.configure.outputs.mode == 'mapping-investigation' && needs.configure.outputs.repeat == 'mapping-1'"
 )
 top["jobs"]["macos-recovery-probe"]["strategy"]["matrix"]["os"] = ["macos-latest"]
 linux_entries = [
