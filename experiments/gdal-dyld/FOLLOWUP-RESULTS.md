@@ -158,17 +158,17 @@ cell. The job ran six times on six runner VMs with the same macOS build; in
 run 6 it mounted three fresh images of each type in alternating order. Cache
 paths in the two exited-cache-worker cells combined, out of 60:
 
-| Volume | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Run 6 | Run 7 | Run 8 |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| host-apfs | 57 | 60 | 58 | 49 | 58 | 58 | 59 | 59 |
-| image-apfs | 57 | 54 | 52 | 57 | 60 |  |  |  |
-| image-apfs-1 |  |  |  |  |  | 55 | 57 | 59 |
-| image-apfs-2 |  |  |  |  |  | 45 | 60 | 58 |
-| image-apfs-3 |  |  |  |  |  | 56 | 56 | 60 |
-| image-hfs | 0 | 60 | 55 | 55 | 60 |  |  |  |
-| image-hfs-1 |  |  |  |  |  | 59 | 53 | 57 |
-| image-hfs-2 |  |  |  |  |  | 56 | 54 | 60 |
-| image-hfs-3 |  |  |  |  |  | 53 | 58 | 33 |
+| Volume | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Run 6 | Run 7 | Run 8 | Run 9 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| host-apfs | 57 | 60 | 58 | 49 | 58 | 58 | 59 | 59 | 60 |
+| image-apfs | 57 | 54 | 52 | 57 | 60 |  |  |  |  |
+| image-apfs-1 |  |  |  |  |  | 55 | 57 | 59 | 59 |
+| image-apfs-2 |  |  |  |  |  | 45 | 60 | 58 | 57 |
+| image-apfs-3 |  |  |  |  |  | 56 | 56 | 60 | 60 |
+| image-hfs | 0 | 60 | 55 | 55 | 60 |  |  |  |  |
+| image-hfs-1 |  |  |  |  |  | 59 | 53 | 57 | 60 |
+| image-hfs-2 |  |  |  |  |  | 56 | 54 | 60 | 58 |
+| image-hfs-3 |  |  |  |  |  | 53 | 58 | 33 | 59 |
 
 All other cells were 0 in every run, except one launch in a
 cache-alive cell in run 1. HFS+ reproduces the exited-thread route on eight of
@@ -218,7 +218,7 @@ run, except a single launch in one run on `macos-15-intel`:
 | `macos-15` | 15.8.2 | 1286.12 | arm64 | 8 | 38 to 40 | 36 to 40 | none |
 | `macos-15-intel` | 15.7.9 | 1286.10 | x86_64 | 9 | 39 to 40 | 38 to 40 | [(41829764653, 'hardlink/env-alive/spawn', 1)] |
 | `macos-26` | 26.6.2 | 1387 | arm64 | 6 | 34 to 39 | 34 to 40 | none |
-| `macos-26-intel` | 26.6.1 | 1387 | x86_64 | 9 | 37 to 40 | 35 to 40 | [(41848719008, 'hardlink/cache-alive/spawn', 1)] |
+| `macos-26-intel` | 26.6.1 | 1387 | x86_64 | 10 | 37 to 40 | 35 to 40 | [(41848719008, 'hardlink/cache-alive/spawn', 1)] |
 
 The mechanism is not specific to macOS 26 or to Apple silicon.
 
@@ -307,12 +307,14 @@ mode, fresh inode each ([run 41843069281](https://github.com/maresb/conda-lock/a
 
 | Mode | Trials | X read cache | Y read cache | Y cache given X cache | Y env given X cache |
 |---|---:|---:|---:|---:|---:|
-| baseline | 120 | 0 | 120 | 0 | 0 |
-| control | 120 | 0 | 0 | 0 | 0 |
-| read | 120 | 120 | 120 | 120 | 0 |
-| read/sleep1000ms | 40 | 0 | 0 | 0 | 0 |
-| read/sleep200ms | 40 | 30 | 31 | 30 | 0 |
-| refresh | 120 | 120 | 66 | 66 | 54 |
+| baseline | 160 | 0 | 160 | 0 | 0 |
+| control | 160 | 0 | 0 | 0 | 0 |
+| hold/sleep1000ms | 40 | 11 | 14 | 10 | 1 |
+| hold/sleep5000ms | 40 | 3 | 4 | 3 | 0 |
+| read | 160 | 160 | 160 | 160 | 0 |
+| read/sleep1000ms | 80 | 2 | 2 | 2 | 0 |
+| read/sleep200ms | 80 | 65 | 66 | 65 | 0 |
+| refresh | 160 | 160 | 90 | 90 | 70 |
 
 With no worker, X and Y both read the environment path. With a worker, Y
 read the cache path in every trial whether or not X had read it first,
@@ -322,7 +324,7 @@ and then looked up the environment alias itself, Y still read the cache path
 in about six of ten trials across runs. On HFS that lookup would update X's
 record in place; on APFS it did so only sometimes, which is unexplained. With
 a pause before X is created, X still received the stale identity after 200 ms
-in three of four trials but never after one second. The hold cells, in which
+in four of five trials but after one second in only 2 of 80. The hold cells, in which
 a live thread keeps the freed identity through the pause and then returns it,
 separate record expiry from the identity being taken by another thread
 during the pause. They answer only in part. With the identity held for one
@@ -367,21 +369,20 @@ differently.
 [respawn_probe.py](respawn_probe.py) with [respawn.c](respawn.c) creates the
 stale state once and then spawns the identity app four times from the same
 long-lived process, so no intermediate process or thread exists between the
-launches. Thirty trials per mode, fresh inode each:
+launches. Thirty trials per mode, fresh inode each, two runs:
 
-| Cell | Run 41848913533 |
-|---|---:|
-| Hardlink, launch 1 | 28/30 |
-| Hardlink, launch 2 | 2/30 |
-| Hardlink, launch 3 | 0/30 |
-| Hardlink, launch 4 | 0/30 |
-| Copy, launch 1 | 0/30 |
-| Copy, launch 4 | 0/30 |
+| Cell | Run 41848913533 | Run 41851263227 |
+|---|---:|---:|
+| Hardlink, launch 1 | 28/30 | 27/30 |
+| Hardlink, launch 2 | 2/30 | 2/30 |
+| Hardlink, launch 3 | 0/30 | 1/30 |
+| Hardlink, launch 4 | 0/30 | 0/30 |
+| Copy, launch 1 | 0/30 | 0/30 |
+| Copy, launch 4 | 0/30 | 0/30 |
 
-The stale identity reached exactly one launch. In every trial the launch that
-chose the cache path was the first that happened to receive it, and the next
-launches from the same process never did, even though nothing in between
-could have taken the freed object. Together with the previous sections this
+In each of the 60 hardlink trials exactly one launch chose the cache path,
+usually the first, and no later launch from the same process did, even
+though nothing in between could have taken the freed object. Together with the previous sections this
 settles why retries pass: not because the record is consumed or refreshed,
 which it is not, but because a spawned process's thread is handed the stale
 identity at most once in sequence. Why the kernel does not hand it out again
