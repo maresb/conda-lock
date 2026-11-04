@@ -1,0 +1,79 @@
+name: Benchmark candidate integration
+'on':
+  workflow_call:
+    inputs: {}
+permissions: {}
+defaults:
+  run:
+    shell: bash -elx {0}
+jobs:
+  platform:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - ubuntu-latest
+        - macos-latest
+        - windows-latest
+        python-version:
+        - '3.11'
+        - '3.14'
+    uses: ./.github/workflows/ci-perf-integration-pipeline.yml
+    permissions:
+      contents: read
+      actions: write
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+  lock-gdal-via-conda:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+    - name: Set Conda platform
+      run: |
+        echo "CONDA_PLATFORM=linux-64" >> $GITHUB_ENV
+    - name: Verify Conda platform
+      run: echo "Conda platform is $CONDA_PLATFORM"
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        persist-credentials: false
+    - name: Set up Conda
+      uses: conda-incubator/setup-miniconda@fc2d68f6413eb2d87b895e92f8584b5b94a10167
+      with:
+        auto-activate-base: true
+        python-version: 3.14
+        run-post: false
+    - name: install conda-lock
+      shell: bash -leo pipefail {0}
+      run: |
+        conda install conda pip setuptools editables hatchling hatch-vcs conda-lock --yes
+        conda uninstall conda-lock --force --yes
+        # Resolve the checkout's runtime requirements after removing the release.
+        pip install --no-build-isolation -e .
+        pip check
+    - name: run-test
+      shell: bash -leo pipefail {0}
+      run: |
+        python -m conda lock --help
+        python -m conda lock lock --help
+        python -m conda lock --log-level=DEBUG --micromamba -f tests/gdal/environment.yml -p $CONDA_PLATFORM
+        python -m conda lock render -p $CONDA_PLATFORM
+        python -m conda lock render -p $CONDA_PLATFORM --kind=env
+        cat conda-$CONDA_PLATFORM.lock
+        cat conda-$CONDA_PLATFORM.lock.yml
+        cat conda-lock.yml
+    timeout-minutes: 25
+  integration-test-status:
+    name: integration-test-status
+    needs:
+    - platform
+    - lock-gdal-via-conda
+    if: '!cancelled()'
+    runs-on: ubuntu-slim
+    steps:
+    - name: determine success
+      uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35
+      with:
+        jobs: ${{ toJSON(needs) }}
+    timeout-minutes: 25

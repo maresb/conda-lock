@@ -1,0 +1,134 @@
+name: Benchmark pytest
+permissions: {}
+'on':
+  workflow_call:
+    inputs:
+      matrix:
+        required: true
+        type: string
+      cache-group:
+        required: true
+        type: string
+jobs:
+  test:
+    name: pytest py${{ matrix.python-version }} on ${{ matrix.os }} (${{ matrix.pytest-split-group-index }}/${{ matrix.pytest-split-group-size
+      }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      actions: write
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(inputs.matrix) }}
+    defaults:
+      run:
+        shell: bash -eo pipefail -l {0}
+    env:
+      PYTHONUNBUFFERED: '1'
+      FORCE_COLOR: '1'
+      PYTEST_OS: ${{ matrix.os }}
+      PYTEST_PYTHON: ${{ matrix.python-version }}
+      PYTEST_SPLITS: ${{ matrix.pytest-split-group-size }}
+      PYTEST_GROUP: ${{ matrix.pytest-split-group-index }}
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+    - name: Set Conda platform
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          echo "CONDA_PLATFORM=linux-64" >> $GITHUB_ENV
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+          echo "CONDA_PLATFORM=osx-arm64" >> $GITHUB_ENV
+        elif [ "$RUNNER_OS" == "Windows" ]; then
+          echo "CONDA_PLATFORM=win-64" >> $GITHUB_ENV
+        fi
+    - name: Verify Conda platform
+      run: echo "Conda platform is $CONDA_PLATFORM"
+    - name: Rename conda-lock-python-${{ matrix.python-version }}.yaml to conda-lock.yml
+      run: |
+        LOCKFILE_DIR="${RUNNER_TEMP}/conda-lock-dir"
+        mkdir -p "${LOCKFILE_DIR}"
+        cp environments/conda-lock-python-${PYTEST_PYTHON}.yaml "${LOCKFILE_DIR}/conda-lock.yml"
+        echo "LOCKFILE_DIR=${LOCKFILE_DIR}"
+        ls -al "${LOCKFILE_DIR}"
+        echo "LOCKFILE_DIR=${LOCKFILE_DIR}" >> $GITHUB_ENV
+    - uses: mamba-org/setup-micromamba@add3a49764cedee8ee24e82dfde87f5bc2914462
+      with:
+        environment-file: ${{ env.LOCKFILE_DIR }}/conda-lock.yml
+        environment-name: conda-lock-dev
+        init-shell: bash
+        cache-environment: true
+        create-args: --category=main --category=dev
+        cache-environment-key: ci-perf-20261104-${{ inputs.cache-group }}-${{ matrix.os }}-py${{ matrix.python-version }}
+    - name: install conda-lock
+      run: |
+        which pip
+        pip install -e . --no-deps
+    - name: run pip check
+      run: pip check
+    - name: run-test
+      run: |
+        mkdir -p tests/durations
+        set -x
+        which pytest
+        pytest \
+          --cov=conda_lock --cov-branch --cov-report=xml --cov-report=term \
+          --store-durations \
+          --clean-durations \
+          --durations-path "tests/durations/${PYTEST_OS}-py${PYTEST_PYTHON}.json" \
+          --splitting-algorithm=least_duration \
+          --splits="${PYTEST_SPLITS}" \
+          --group="${PYTEST_GROUP}"
+    - name: Print test durations
+      run: |
+        ls -al tests/durations
+        cat tests/durations/${PYTEST_OS}-py${PYTEST_PYTHON}.json
+    - name: Store test durations
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      with:
+        name: test-durations-${{ matrix.os }}-py${{ matrix.python-version }}-${{ matrix.pytest-split-group-index }}
+        path: tests/durations/${{ matrix.os }}-py${{ matrix.python-version }}.json
+  aggregate-durations:
+    name: Aggregate test durations
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+      actions: write
+    steps:
+    - name: Download test durations
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+    - name: Construct the list of filenames to aggregate and write them to temp/filenames.txt
+      id: construct-filenames
+      run: |
+        mkdir temp
+        find . -type f -name '*.json' | xargs -n1 basename | sort | uniq > temp/filenames.txt
+        cat temp/filenames.txt
+    - name: Aggregate test durations and sort by key (test name)
+      run: |
+        mkdir aggregated
+        while read -r filename; do
+          jq -s 'add | to_entries | sort_by(.key) | from_entries' $(find . -type f -name "$filename") > "aggregated/$filename"
+        done < temp/filenames.txt
+    - name: Upload aggregated test durations
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      with:
+        name: aggregated-test-durations
+        path: aggregated
+    timeout-minutes: 25
+  test-status:
+    name: test-status
+    needs:
+    - test
+    - aggregate-durations
+    if: '!cancelled()'
+    runs-on: ubuntu-slim
+    steps:
+    - name: determine success
+      uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35
+      with:
+        jobs: ${{ toJSON(needs) }}
+    timeout-minutes: 25
