@@ -305,4 +305,12 @@ top["jobs"]["windows-control"] = {
     "permissions": {"contents": "read", "actions": "write"},
     "uses": "./.github/workflows/ci-perf-windows-control.yml",
 }
+top["jobs"]["macos-probe"] = {
+    "needs": "configure",
+    "if": "needs.configure.outputs.mode == 'macos-probe'",
+    "strategy": {"fail-fast": False, "matrix": {"os": ["macos-latest", "macos-26"]}},
+    "runs-on": "${{ matrix.os }}",
+    "timeout-minutes": 5,
+    "steps": [{"run": "sw_vers\nuname -m\nsysctl -n hw.ncpu\n"}],
+}
 save("ci-performance-experiment.yml", top)

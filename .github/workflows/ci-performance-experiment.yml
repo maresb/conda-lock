@@ -127,3 +127,19 @@ jobs:
       contents: read
       actions: write
     uses: ./.github/workflows/ci-perf-windows-control.yml
+  macos-probe:
+    needs: configure
+    if: needs.configure.outputs.mode == 'macos-probe'
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - macos-latest
+        - macos-26
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    steps:
+    - run: |
+        sw_vers
+        uname -m
+        sysctl -n hw.ncpu
