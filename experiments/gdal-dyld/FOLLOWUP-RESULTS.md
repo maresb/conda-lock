@@ -7,16 +7,18 @@ looking-up thread alive prevents it, and so do seven later lookups of the
 environment alias by other live threads. The effect is present on macOS 15 and
 26, on arm64 and x86_64, on APFS volumes, on APFS disk images, and on eight of nine HFS+ disk images
 tested. Copied and cloned executables never resolve to the cache. After a
-wrong-path launch, every retry of the same inode passed, with or without
-further lookups or delay.**
+wrong-path launch, every retry of the same inode passed, and a pause of half
+a second before the first launch avoided it on the hosted runner; both depend
+on the stale thread identity reaching a launched process at most once.**
 
 All runs used GitHub-hosted runners in `maresb/conda-lock`. The earlier
 [TRIGGER-RESULTS.md](TRIGGER-RESULTS.md) records the spontaneous failures and
 the suspended-start experiment. Run and artifact identifiers, host versions,
 artifact digests, and every summary table in this document are collected in
-[followup-evidence.json](followup-evidence.json), which covers six runs of
-the follow-up workflow (41828207360, 41829030048, 41829581372, 41829764653,
-41830505785, 41842075808) plus the lifecycle and standalone runs cited below.
+[followup-evidence.json](followup-evidence.json), which covers every run of
+the follow-up workflow, including one I cancelled after its queued jobs
+duplicated the previous run, plus the lifecycle and standalone runs cited
+below.
 Every table below is pasted from the output of
 [summarize_evidence.py](summarize_evidence.py) on that record. Each summary
 was recounted from its raw `events.jsonl`, and each artifact's file checksums
@@ -83,9 +85,9 @@ chosen, as the range over runs:
 |---|---:|---:|---:|
 | Nothing (control) | 0 | 0 | 0 |
 | Its main thread | 0 to 5 | 21 to 25 | 14 to 28 |
-| One exited worker | 19 to 29 | 3 to 8 | 3 to 10 |
-| Four exited workers | 24 to 29 | 3 to 12 | 3 to 11 |
-| Any, copied executable | 0/2160 total | | |
+| One exited worker | 19 to 29 | 1 to 8 | 0 to 10 |
+| Four exited workers | 24 to 29 | 1 to 12 | 3 to 11 |
+| Any, copied executable | 0/2880 total | | |
 
 The rates swap between the direct and launcher columns depending on which
 threads exited last. That is consistent with reuse of recently freed kernel
@@ -103,28 +105,28 @@ out of 30 as the range over runs:
 
 | Between the worker's exit and the launch | Range | Total |
 |---|---:|---:|
-| Nothing, `spawn` | 25 to 30 | 173/180 |
-| Nothing, `exec` | 26 to 30 | 168/180 |
-| 1 dummy threads created and joined | 17 to 28 | 140/180 |
-| 2 dummy threads created and joined | 12 to 22 | 109/180 |
-| 4 dummy threads created and joined | 15 to 19 | 102/180 |
-| 8 dummy threads created and joined | 15 to 20 | 104/180 |
-| 1 holder threads kept alive | 4 to 16 | 54/180 |
-| 2 holder threads kept alive | 0 to 1 | 3/180 |
-| 4 holder threads kept alive | 0 | 0/180 |
-| 1 live threads that looked up the environment alias before the worker exited | 29 to 30 | 179/180 |
-| 3 live threads that looked up the environment alias before the worker exited | 29 to 30 | 177/180 |
-| 5 live threads that looked up the environment alias before the worker exited | 29 to 30 | 177/180 |
-| 6 live threads that looked up the environment alias before the worker exited | 29 to 30 | 178/180 |
-| 7 live threads that looked up the environment alias before the worker exited | 0 | 0/180 |
-| 8 live threads that looked up the environment alias before the worker exited | 0 | 0/180 |
-| 10 live threads that looked up the environment alias before the worker exited | 0 | 0/180 |
-| 7 live threads created before the worker exited, no lookup | 30 | 30/30 |
-| 10 live threads created before the worker exited, no lookup | 30 | 30/30 |
-| 7 live threads created before the worker exited, lookup of an unrelated file | 30 | 30/30 |
-| 10 live threads created before the worker exited, lookup of an unrelated file | 30 | 30/30 |
-| No cache worker | 0 | 0/180 |
-| Copied executable | 0 | 0/180 |
+| Nothing, `spawn` | 25 to 30 | 259/270 |
+| Nothing, `exec` | 26 to 30 | 256/270 |
+| 1 dummy threads created and joined | 17 to 28 | 218/270 |
+| 2 dummy threads created and joined | 12 to 23 | 167/270 |
+| 4 dummy threads created and joined | 15 to 21 | 162/270 |
+| 8 dummy threads created and joined | 13 to 21 | 155/270 |
+| 1 holder threads kept alive | 2 to 16 | 69/270 |
+| 2 holder threads kept alive | 0 to 1 | 3/270 |
+| 4 holder threads kept alive | 0 | 0/270 |
+| 1 live threads that looked up the environment alias before the worker exited | 27 to 30 | 264/270 |
+| 3 live threads that looked up the environment alias before the worker exited | 29 to 30 | 266/270 |
+| 5 live threads that looked up the environment alias before the worker exited | 28 to 30 | 265/270 |
+| 6 live threads that looked up the environment alias before the worker exited | 29 to 30 | 268/270 |
+| 7 live threads that looked up the environment alias before the worker exited | 0 | 0/270 |
+| 8 live threads that looked up the environment alias before the worker exited | 0 | 0/270 |
+| 10 live threads that looked up the environment alias before the worker exited | 0 | 0/270 |
+| 7 live threads created before the worker exited, no lookup | 30 | 120/120 |
+| 10 live threads created before the worker exited, no lookup | 29 to 30 | 119/120 |
+| 7 live threads created before the worker exited, lookup of an unrelated file | 30 | 120/120 |
+| 10 live threads created before the worker exited, lookup of an unrelated file | 29 to 30 | 119/120 |
+| No cache worker | 0 | 0/270 |
+| Copied executable | 0 | 0/270 |
 
 The eviction boundary is exact: with the main thread's lookup plus seven
 others newer than the stale record, the stale record is gone, matching the
@@ -156,17 +158,17 @@ cell. The job ran six times on six runner VMs with the same macOS build; in
 run 6 it mounted three fresh images of each type in alternating order. Cache
 paths in the two exited-cache-worker cells combined, out of 60:
 
-| Volume | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Run 6 |
-|---|---:|---:|---:|---:|---:|---:|
-| host-apfs | 57 | 60 | 58 | 49 | 58 | 58 |
-| image-apfs | 57 | 54 | 52 | 57 | 60 |  |
-| image-apfs-1 |  |  |  |  |  | 55 |
-| image-apfs-2 |  |  |  |  |  | 45 |
-| image-apfs-3 |  |  |  |  |  | 56 |
-| image-hfs | 0 | 60 | 55 | 55 | 60 |  |
-| image-hfs-1 |  |  |  |  |  | 59 |
-| image-hfs-2 |  |  |  |  |  | 56 |
-| image-hfs-3 |  |  |  |  |  | 53 |
+| Volume | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Run 6 | Run 7 | Run 8 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| host-apfs | 57 | 60 | 58 | 49 | 58 | 58 | 59 | 59 |
+| image-apfs | 57 | 54 | 52 | 57 | 60 |  |  |  |
+| image-apfs-1 |  |  |  |  |  | 55 | 57 | 59 |
+| image-apfs-2 |  |  |  |  |  | 45 | 60 | 58 |
+| image-apfs-3 |  |  |  |  |  | 56 | 56 | 60 |
+| image-hfs | 0 | 60 | 55 | 55 | 60 |  |  |  |
+| image-hfs-1 |  |  |  |  |  | 59 | 53 | 57 |
+| image-hfs-2 |  |  |  |  |  | 56 | 54 | 60 |
+| image-hfs-3 |  |  |  |  |  | 53 | 58 | 33 |
 
 All other cells were 0 in every run, except one launch in a
 cache-alive cell in run 1. HFS+ reproduces the exited-thread route on eight of
@@ -192,11 +194,11 @@ volumes, one value per run
 
 | Lookup while the child is suspended | Host APFS | APFS image | HFS+ image |
 |---|---:|---:|---:|
-| None | 0, 0, 0, 0 | 0, 0, 0, 0 | 0, 0, 0, 0 |
-| `stat` of the cache alias | 30, 30, 28, 30 | 30, 30, 29, 29 | 30, 30, 30, 30 |
-| `open` and `close` of the cache alias | 30, 30, 30, 30 | 30, 30, 30, 30 | 30, 30, 30, 30 |
-| `open` of the cache alias, then `stat` of the environment alias | 2, 1, 2, 3 | 0, 2, 1, 0 | 0, 0, 0, 0 |
-| Any, copied executable | 0 total over 4 runs | | |
+| None | 0, 0, 0, 0, 0, 0 | 0, 0, 0, 0, 0, 0 | 0, 0, 0, 0, 1, 0 |
+| `stat` of the cache alias | 30, 30, 28, 30, 29, 30 | 30, 30, 29, 29, 29, 29 | 30, 30, 30, 30, 30, 30 |
+| `open` and `close` of the cache alias | 30, 30, 30, 30, 30, 30 | 30, 30, 30, 30, 30, 30 | 30, 30, 30, 30, 30, 30 |
+| `open` of the cache alias, then `stat` of the environment alias | 2, 1, 2, 3, 0, 4 | 0, 2, 1, 0, 4, 2 | 0, 0, 0, 0, 0, 0 |
+| Any, copied executable | 0 total over 6 runs | | |
 
 A thread with no origin record of its own follows the most recent lookup on
 every volume, which is what the HFS source says it does. The cell with a cache
@@ -213,10 +215,10 @@ run, except a single launch in one run on `macos-15-intel`:
 
 | Image | macOS | dyld | Arch | Runs | `spawn` | `exec` | Nonzero elsewhere |
 |---|---|---|---|---:|---:|---:|---|
-| `macos-15` | 15.8.2 | 1286.12 | arm64 | 6 | 38 to 40 | 36 to 40 | none |
-| `macos-15-intel` | 15.7.9 | 1286.10 | x86_64 | 6 | 39 to 40 | 38 to 40 | [(41829764653, 'hardlink/env-alive/spawn', 1)] |
-| `macos-26` | 26.6.2 | 1387 | arm64 | 4 | 37 to 39 | 34 to 40 | none |
-| `macos-26-intel` | 26.6.1 | 1387 | x86_64 | 6 | 37 to 40 | 35 to 40 | none |
+| `macos-15` | 15.8.2 | 1286.12 | arm64 | 8 | 38 to 40 | 36 to 40 | none |
+| `macos-15-intel` | 15.7.9 | 1286.10 | x86_64 | 9 | 39 to 40 | 38 to 40 | [(41829764653, 'hardlink/env-alive/spawn', 1)] |
+| `macos-26` | 26.6.2 | 1387 | arm64 | 6 | 34 to 39 | 34 to 40 | none |
+| `macos-26-intel` | 26.6.1 | 1387 | x86_64 | 9 | 37 to 40 | 35 to 40 | [(41848719008, 'hardlink/cache-alive/spawn', 1)] |
 
 The mechanism is not specific to macOS 26 or to Apple silicon.
 
@@ -243,8 +245,9 @@ A second run gave medians within 0.15 s of these; two earlier runs spawned
 one `cp` process per file instead and are not comparable. In this benchmark
 cloning was faster than hardlinking. The methods always ran in the same order,
 the files were uniform and freshly written, and only one runner and volume
-were measured, so this does not establish installation cost in general, and
-whether micromamba's copy mode clones or copies bytes was not checked.
+were measured, so this does not establish installation cost in general.
+Micromamba's `--always-copy` copies bytes rather than cloning, as the
+validation job below shows.
 
 ## Installers
 
@@ -286,12 +289,123 @@ condition, followed by a second retry with no explicit lookup
 A wrong-path launch does not leave the inode in a state that fails again:
 every retry passed, with no delay and no explicit lookup. Note that any spawn
 or exec of the environment alias is itself a path lookup by the launching
-thread, so "no explicit lookup" is not "no lookup". Which of these explains
-the result is not established: the launching thread may reuse the stale
-identity and refresh its record through that lookup, the wrong launch itself
-may refresh or consume the record, or the identity may simply not be reused
-twice. What the data do settle is practical: a retry passes on its own, and
-eviction by eight other threads is not required for it.
+thread, so "no explicit lookup" is not "no lookup". The three sections that
+follow test the candidate explanations: the record is not consumed by being
+read, a same-identity lookup of the right alias refreshes it only sometimes,
+and repeated spawns from one process show the identity reaching a launched
+process only once. A retry passes on its own, and eviction by eight other
+threads is not required for it.
+
+## Does reading a stale record consume it?
+
+[record_probe.py](record_probe.py) with [record_state.c](record_state.c)
+needs no executable. The main thread opens the environment alias; a worker
+looks up the cache alias and exits; thread X runs and exits; thread Y reads
+the path by inode. X and Y are each created after the previous thread was
+joined, so each may reuse the previous thread's identity. Forty trials per
+mode, fresh inode each ([run 41843069281](https://github.com/maresb/conda-lock/actions/runs/41846567784)):
+
+| Mode | Trials | X read cache | Y read cache | Y cache given X cache | Y env given X cache |
+|---|---:|---:|---:|---:|---:|
+| baseline | 120 | 0 | 120 | 0 | 0 |
+| control | 120 | 0 | 0 | 0 | 0 |
+| read | 120 | 120 | 120 | 120 | 0 |
+| read/sleep1000ms | 40 | 0 | 0 | 0 | 0 |
+| read/sleep200ms | 40 | 30 | 31 | 30 | 0 |
+| refresh | 120 | 120 | 66 | 66 | 54 |
+
+With no worker, X and Y both read the environment path. With a worker, Y
+read the cache path in every trial whether or not X had read it first,
+so identity reuse was deterministic in-process and **reading a record does
+not consume or refresh it**. In the refresh mode, after X read the cache path
+and then looked up the environment alias itself, Y still read the cache path
+in about six of ten trials across runs. On HFS that lookup would update X's
+record in place; on APFS it did so only sometimes, which is unexplained. With
+a pause before X is created, X still received the stale identity after 200 ms
+in three of four trials but never after one second. The hold cells, in which
+a live thread keeps the freed identity through the pause and then returns it,
+separate record expiry from the identity being taken by another thread
+during the pause. They answer only in part. With the identity held for one
+second and then released, X read the cache path in 11 of 40 trials, and after
+five seconds in 3 of 40, so the record survived those pauses in those trials
+and there is no deterministic expiry on that scale. But a held identity was
+not reliably handed back to X either, so the remaining trials cannot be
+attributed to expiry rather than to allocation. The delay effect is therefore
+best described as the stale identity becoming unlikely to reach the launched
+thread within about half a second on a busy machine, not as the record
+expiring.
+
+## Does a delay before the first launch help?
+
+[delay_probe.py](delay_probe.py) models `micromamba create` then
+`micromamba run` with a finished process that looks up the cache alias from
+its main thread, a pause, then a launcher that looks up the environment
+alias and spawns it. Twenty trials per cell, fresh inode each:
+
+| Cell | Run 41846567784 | Run 41848913533 |
+|---|---:|---:|
+| Hardlink, 0 s | 11/20 | 9/20 |
+| Hardlink, 0.2 s |  | 3/20 |
+| Hardlink, 0.5 s |  | 0/20 |
+| Hardlink, 1 s | 0/20 | 1/20 |
+| Hardlink, 5 s | 0/20 | 0/20 |
+| Hardlink, 20 s | 0/20 | 0/20 |
+| Copy, 0 s | 0/20 | 0/20 |
+
+A pause of half a second or more removed nearly every wrong-path launch on
+this runner, and 200 ms removed most. This contradicts the expectation stated
+earlier in this document and supports the sleep proposed in
+cmake-feedstock#230 as a mitigation on busy machines. What changes during the
+pause is which kernel object the launched thread receives, since a hosted
+runner creates and destroys threads constantly in the background; the hold
+cells above test whether the record itself also expires. Either way the
+effect depends on background activity, and a quiet machine may behave
+differently.
+
+## Spawning again from the same process
+
+[respawn_probe.py](respawn_probe.py) with [respawn.c](respawn.c) creates the
+stale state once and then spawns the identity app four times from the same
+long-lived process, so no intermediate process or thread exists between the
+launches. Thirty trials per mode, fresh inode each:
+
+| Cell | Run 41848913533 |
+|---|---:|
+| Hardlink, launch 1 | 28/30 |
+| Hardlink, launch 2 | 2/30 |
+| Hardlink, launch 3 | 0/30 |
+| Hardlink, launch 4 | 0/30 |
+| Copy, launch 1 | 0/30 |
+| Copy, launch 4 | 0/30 |
+
+The stale identity reached exactly one launch. In every trial the launch that
+chose the cache path was the first that happened to receive it, and the next
+launches from the same process never did, even though nothing in between
+could have taken the freed object. Together with the previous sections this
+settles why retries pass: not because the record is consumed or refreshed,
+which it is not, but because a spawned process's thread is handed the stale
+identity at most once in sequence. Why the kernel does not hand it out again
+is not observable from user space; a process exit frees its thread
+differently from an in-process join, which reuses the identity every time.
+
+## Validating the CI workaround
+
+The `workaround-validation` job runs the integration test's three
+`micromamba create` commands with `--always-copy` on the committed lockfile
+fixtures, plus the explicit lockfile without it, then records each
+`gdalinfo`'s identity, launches it twenty times, and runs the test's own
+`micromamba run ... gdalinfo --version` once:
+
+| Environment | Link count | Shares inode with cache | Shares first physical block with cache | Launches |
+|---|---:|---|---|---:|
+| `gdal-test-mm-lock`, unified lockfile, `--always-copy` | 1 | no | no | 20/20 pass |
+| `gdal-test-mm-explicit`, explicit lockfile, `--always-copy` | 1 | no | no | 20/20 pass |
+| `gdal-test-mm-env`, environment YAML, `--always-copy` | 1 | no | no | 20/20 pass |
+| `gdal-test-mm-hardlink`, explicit lockfile, default | 2 | yes | yes | 20/20 pass |
+
+`--always-copy` produces a byte copy, not a clone: the copies share no
+storage with the cache. That costs disk and time relative to cloning but
+removes the hardlink by construction, which is what the workaround needs.
 
 ## Why this fits the original failure
 
@@ -317,6 +431,8 @@ Established by experiment:
 - The launched process's first thread can inherit such a record from an
   exited thread of the same or another process, and keeping that thread alive
   or occupying the freed object with other live threads prevents it.
+- A record is not consumed by being read, and a launched process receives a
+  given stale identity at most once in sequence, so retries pass.
 - Apple's published [dyld main-path code](https://github.com/apple-oss-distributions/dyld/blob/fd8d0c4d52320ebf64db34f3cb280310d905c5ae/dyld/DyldProcessConfig.cpp#L656)
   prefers that inode-based result over the kernel-supplied executable path,
   and the kernel supplies the inode in the `executable_file=` string
@@ -331,9 +447,11 @@ documented semantics predict; the one volume without it is unexplained.
 
 - Copying or cloning the executable avoids the problem by construction; a
   clone costs no data copy on APFS. Copying only libraries does not help.
-- A fixed delay after installation is not an established fix; the stale
-  record was never observed to expire on its own. A retry after a wrong-path
-  launch passed in every tested condition.
+- The stale record was never observed to expire on its own, yet a one-second
+  pause before the launch removed every wrong-path launch on the hosted
+  runner, and a retry after a wrong-path launch passed in every tested
+  condition. Both are mitigations that depend on other threads taking the
+  freed identity, not fixes.
 - Both installers and dyld could address it: installers by not hardlinking
   Mach-O executables on macOS (cloning keeps the space savings), dyld by using
   the kernel-supplied `executable_path` or a link ID, which the earlier runs
