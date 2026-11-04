@@ -12,9 +12,10 @@ inode passed, and a pause of half a second or more before the first launch
 left at most one wrong-path launch in twenty on these hosted runners. A stale
 thread without a record follows the most recent lookup or path build by any
 thread, alive or exited. A stale record is not consumed by being read, is
-loses its stale answer when its holder looks up the environment alias,
-survives five seconds while held, and is rarely seen again a second after
-the identity is freed. Why retries and pauses help is not established.**
+replaced by an environment record when its holder looks up the environment
+alias, survives five seconds while held, and is rarely seen again a second
+after the identity is freed. Why retries and pauses help is not
+established.**
 
 All runs used GitHub-hosted runners in `maresb/conda-lock`. The earlier
 [TRIGGER-RESULTS.md](TRIGGER-RESULTS.md) records the spontaneous failures and
@@ -334,17 +335,27 @@ inode once. Each thread is created after the previous one was joined, so
 each may reuse the previous thread's identity. In the `read` cells X reads
 twice, with an optional pause before X is created; in `refresh` it reads,
 looks up the environment alias itself, and reads again; `control` has no
-worker. Forty trials per cell, fresh inode each
-([run 41891781416](https://github.com/maresb/conda-lock/actions/runs/41891781416)):
+worker. In `oppose`, after X's environment lookup, a helper thread that
+exists throughout looks up the cache alias so that the fallback names the
+cache, a verifier thread that exists throughout and has no record reads
+(the verifier column), and X reads again; `oppose-control` does the same
+with no worker and no lookup by X, so that X has no record. Forty trials
+per cell, fresh inode each, two runs; the first
+([run 41891781416](https://github.com/maresb/conda-lock/actions/runs/41891781416))
+checked only the last reset of each trial and had no `oppose` cells, the
+second ([run 41901920446](https://github.com/maresb/conda-lock/actions/runs/41901920446))
+checks every reset in the probe itself:
 
-| Cell | Trials | X first read cache | X second read cache, given first cache | X second read env, given first cache | Y read cache, given X second read cache | Y read cache, given X second read env | Y read cache, given X first read env |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| baseline | 40 |  |  |  |  |  |  |
-| control | 40 | 0 |  |  |  | 0 | 0 |
-| read | 40 | 32 | 32 | 0 | 24 | 3 | 3 |
-| read/sleep1000ms | 40 | 0 |  |  |  | 0 | 0 |
-| read/sleep200ms | 40 | 6 | 6 | 0 | 5 | 0 | 0 |
-| refresh | 40 | 34 | 0 | 34 |  | 3 | 3 |
+| Cell | Trials | X first read cache | X second read cache, given first cache | X second read env, given first cache | Y read cache, given X second read cache | Y read cache, given X second read env | Y read cache, given X first read env | Verifier read cache |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| baseline | 80 |  |  |  |  |  |  |  |
+| control | 80 | 0 |  |  |  | 0 | 0 |  |
+| oppose | 40 | 32 | 0 | 32 |  | 5 | 5 | 40 |
+| oppose-control | 40 | 0 |  |  | 0 |  | 0 | 40 |
+| read | 80 | 64 | 64 | 0 | 49 | 5 | 5 |  |
+| read/sleep1000ms | 80 | 1 | 1 | 0 | 1 | 0 | 0 |  |
+| read/sleep200ms | 80 | 14 | 14 | 0 | 13 | 1 | 1 |  |
+| refresh | 80 | 64 | 0 | 64 |  | 8 | 8 |  |
 
 In the `hold` cells a holder thread is created right after the first reset,
 reads the path, sleeps with no filesystem activity, reads again after
@@ -352,30 +363,30 @@ another reset, and exits before X runs:
 
 | Hold cell | Trials | Holder's first read cache | Second read cache, given first cache | Second read env, given first cache | X first read cache, given holder's first cache | X first read cache, given holder's first env |
 |---|---:|---:|---:|---:|---:|---:|
-| hold/sleep1000ms | 40 | 32 | 32 | 0 | 27 | 0 |
-| hold/sleep5000ms | 40 | 31 | 31 | 0 | 25 | 0 |
+| hold/sleep1000ms | 80 | 66 | 66 | 0 | 59 | 0 |
+| hold/sleep5000ms | 80 | 62 | 62 | 0 | 48 | 0 |
 
 Four things follow from the conditional columns, each within one live thread
 with the fallback reset to the environment path before the read:
 
 - **Reading does not consume the record.** Whenever a thread's first read
   returned the cache path, its second read did too, in every cell.
-- **A lookup by the holder eliminates its stale answer.** In `refresh`,
-  after X read the cache path and looked up the environment alias itself,
-  its second read returned the environment path every time, and Y then read
-  the environment path in every one of those trials. Whether the lookup
-  replaced X's record with an environment record or cleared it, leaving X
-  to the environment fallback, is not separated by this cell; the `oppose`
-  cells added for the next run set the fallback to the cache alias after
-  X's lookup to tell the two apart.
+- **A lookup by the holder replaces the record.** In `refresh`, after X
+  read the cache path and looked up the environment alias itself, its
+  second read returned the environment path every time, and Y then read the
+  environment path in every one of those trials. The `oppose` cell shows
+  that this is a record of X's own and not the fallback: with the fallback
+  set to the cache alias after X's lookup, as the verifier confirmed in
+  every trial, X still read the environment path every time, while a thread
+  without a record in `oppose-control` read the cache path every time.
 - **A held record survives one and five seconds.** Every holder that read
   the cache path before its pause read it again afterwards, and X then
   inherited it from the holder in most trials.
 - **After the identity is freed, the cache answer becomes rare within a
   second.** With no holder, X read the cache path in a few trials after
-  200 ms and in none after one second in this run; the second design's two
-  runs and the turnover test below gave the same picture, with one cache
-  answer at one second in the turnover test and one in the delay test.
+  200 ms and in one of eighty after one second over the two runs; the
+  second design's two runs, the delay test, and the turnover test below
+  gave the same picture.
 
 In-process reuse is not deterministic: X's first read returned the cache
 path in most trials but not all, Y inherited from X in most but not all, and
@@ -404,34 +415,36 @@ alias and whether the main thread calls `fsgetpath` afterwards, as
 `record_state` does. Nothing looks up the environment alias after the
 worker. The reader then reads the path by inode, X reads twice, and Y reads
 once. Two cells without a reader reproduce the superseded design's sequence
-and the `norestore` sequence. Forty trials per cell, fresh inode each
-([run 41885808126](https://github.com/maresb/conda-lock/actions/runs/41885808126)):
+and the `norestore` sequence. Forty trials per cell, fresh inode each,
+two runs ([first run 41885808126](https://github.com/maresb/conda-lock/actions/runs/41885808126));
+values per run:
 
-| Cell | Trials | Reader read cache | X first read cache | X first read cache, given reader cache | X first read cache, given reader env | Y read cache |
-|---|---:|---:|---:|---:|---:|---:|
-| No worker | 40 | 0 | 0 |  | 0 | 0 |
-| No worker, main thread reads | 40 | 0 | 0 |  | 0 | 0 |
-| Worker alive | 40 | 37 | 37 | 37 | 0 | 37 |
-| Worker alive, main thread reads | 40 | 0 | 2 |  | 2 | 1 |
-| Worker exited | 40 | 40 | 40 | 40 |  | 40 |
-| Worker exited, main thread reads | 40 | 0 | 38 |  | 38 | 40 |
-| No reader, worker exited (superseded design's sequence) | 40 |  | 40 |  |  | 40 |
-| No reader, worker exited, main thread reads (`norestore`'s sequence) | 40 |  | 16 |  |  | 29 |
+| Cell | Reader read cache | X first read cache | Y read cache |
+|---|---:|---:|---:|
+| No worker | 0, 0 | 0, 0 | 0, 0 |
+| No worker, main thread reads | 0, 0 | 0, 0 | 0, 0 |
+| Worker alive | 37, 40 | 37, 40 | 37, 40 |
+| Worker alive, main thread reads | 0, 0 | 2, 0 | 1, 0 |
+| Worker exited | 40, 40 | 40, 40 | 40, 40 |
+| Worker exited, main thread reads | 0, 0 | 38, 40 | 40, 40 |
+| No reader, worker exited (superseded design's sequence) |  | 40, 40 | 40, 40 |
+| No reader, worker exited, main thread reads (`norestore`'s sequence) |  | 16, 22 | 29, 35 |
 
 The reader, which cannot hold the worker's record, read the cache path in
-every trial after the worker had exited and in nearly every trial while it
-was alive, and the environment path in every trial after the main thread
-had built the path. In this run the live-worker cells waited 20 ms for the
-worker's lookup rather than for its completion, so their few exceptions
-are not interpreted; the probe now waits for the lookup to return. The fallback therefore follows the most recent lookup
+every trial after the worker had exited, and the environment path in every
+trial after the main thread had built the path. In the first run the
+live-worker cells waited 20 ms for the worker's lookup rather than for its
+completion and had a few exceptions; the second run waits for the lookup
+to return and the reader read the cache path in every trial there too. The
+fallback therefore follows the most recent lookup
 whether or not the looking-up thread is still alive, and a path build by a
 thread with its own record resets it to that thread's answer. The two
 reader-less cells reproduce the superseded design's every-trial result and
 the lower `norestore` count, which that reset explains. With the fallback
 reset to the environment path, X's cache answers are inherited records: X
-inherited in nearly every trial when the idle reader existed and in fewer
-than half when it did not, so in-process inheritance also depends on what
-other threads exist, which is not explained.
+inherited in every or nearly every trial when the idle reader existed and
+in about half when it did not, in both runs, so in-process inheritance
+also depends on what other threads exist, which is not explained.
 
 ## Does a delay before the first launch help?
 
@@ -571,11 +584,11 @@ Established by experiment:
   calling thread has one and otherwise follows the most recent lookup or
   path build by any thread, alive or exited; a record survives its thread's
   exit; eight records are kept per inode.
-- A record is not consumed by being read, loses its stale answer when the
-  thread holding it looks up the environment alias, and survives one- and
-  five-second pauses while held by a live thread; after the identity is
-  freed, the stale answer is rarely seen again a second later, for reasons
-  not resolved.
+- A record is not consumed by being read, is replaced by an environment
+  record when the thread holding it looks up the environment alias, and
+  survives one- and five-second pauses while held by a live thread; after
+  the identity is freed, the stale answer is rarely seen again a second
+  later, for reasons not resolved.
 - The launched process's first thread can inherit such a record from an
   exited thread of the same or another process, and keeping that thread alive
   or occupying the freed object with other live threads prevents it.

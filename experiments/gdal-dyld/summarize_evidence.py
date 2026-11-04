@@ -493,24 +493,24 @@ FALLBACK_CELLS = [
 
 
 def print_fallback(runs):
-    print("\n## Fallback after an exited thread's lookup (totals over runs)\n")
-    print(
-        "| Cell | Trials | Reader read cache | X first read cache | X first read cache, given reader cache "
-        "| X first read cache, given reader env | Y read cache |"
-    )
-    print("|---|---:|---:|---:|---:|---:|---:|")
+    print("\n## Fallback after an exited thread's lookup (per run, out of 40)\n")
+    present = [r for r in runs if "fallback-probe" in r["summaries"]]
+    print("| Cell | Reader read cache | X first read cache | Y read cache |")
+    print("|---|---:|---:|---:|")
     for key, label in FALLBACK_CELLS:
-        agg = aggregate(runs, "fallback-probe", key)
-        if not agg:
+        cells = [r["summaries"]["fallback-probe"].get(key) for r in present]
+        if not any(cells):
             continue
-        reader = agg.get("r_cache", "") if key.startswith("reader-pre") else ""
-        print(
-            f"| {label} | {agg['trials']} | {reader} | {agg.get('x1_cache', 0)} "
-            f"| {agg.get('x1_cache_given_r_cache', '') if reader != '' else ''} "
-            f"| {agg.get('x1_cache_given_r_env', '') if reader != '' else ''} | {agg.get('y_cache', 0)} |"
-        )
-    present = [r["id"] for r in runs if "fallback-probe" in r["summaries"]]
-    print(f"\nRuns with this job: {len(present)}")
+        reader = ", ".join(str(c.get("r_cache", "")) if c else "" for c in cells)
+        if not key.startswith("reader-pre"):
+            reader = ""
+        x1 = ", ".join(str(c.get("x1_cache", 0)) if c else "" for c in cells)
+        y = ", ".join(str(c.get("y_cache", 0)) if c else "" for c in cells)
+        print(f"| {label} | {reader} | {x1} | {y} |")
+    print(
+        f"\nRuns with this job, in order: {[r['id'] for r in present]}; "
+        "the first waited 20 ms for the live worker's lookup, later runs wait for it to return."
+    )
 
 
 def print_churn(runs):
