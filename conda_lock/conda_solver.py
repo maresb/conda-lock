@@ -8,7 +8,13 @@ import subprocess
 import sys
 import time
 
-from collections.abc import Iterable, Iterator, MutableSequence, Sequence
+from collections.abc import (
+    Generator,
+    Iterable,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
 from contextlib import contextmanager
 from textwrap import dedent
 from typing import (
@@ -127,14 +133,23 @@ def solve_conda(
     # extract dependencies from package plan
     planned = {}
     for action in dry_run_install["actions"]["FETCH"]:
-        dependencies = {}
+        dependency_specs: dict[str, list[MatchSpec]] = {}
         for dep in action.get("depends") or []:
             matchspec = MatchSpec(dep)  # pyright: ignore[reportArgumentType]
-            name = matchspec.name
-            version = (
-                matchspec.version.spec_str if matchspec.version is not None else ""
+            dependency_specs.setdefault(matchspec.name, []).append(matchspec)
+
+        dependencies = {}
+        for name, matchspecs in dependency_specs.items():
+            merged_matchspec = (
+                matchspecs[0]
+                if len(matchspecs) == 1
+                else MatchSpec.merge(matchspecs)[0]
             )
-            dependencies[name] = version
+            dependencies[name] = (
+                merged_matchspec.version.spec_str
+                if merged_matchspec.version is not None
+                else ""
+            )
 
         locked_dependency = LockedDependency(
             name=action["name"],
@@ -222,8 +237,10 @@ def _get_pkgs_dirs(
 
 
 def _reconstruct_fetch_actions(
-    conda: PathLike, platform: str, dry_run_install: DryRunInstall
-) -> DryRunInstall:
+    conda: PathLike,
+    platform: str,
+    dry_run_install: DryRunInstall | dict[str, dict[str, list[Any]]],
+) -> DryRunInstall | dict[str, dict[str, list[Any]]]:
     """
     Conda may choose to link a previously downloaded distribution from pkgs_dirs rather
     than downloading a fresh one. Find the repodata record in existing distributions
@@ -271,7 +288,7 @@ def solve_specs_for_arch(
     channels: Sequence[Channel],
     specs: list[str],
     platform: str,
-) -> DryRunInstall:
+) -> DryRunInstall | dict[str, dict[str, list[Any]]]:
     """
     Solve conda specifications for the given platform
 
@@ -307,7 +324,7 @@ def solve_specs_for_arch(
         encoding="utf8",
     )
 
-    def print_proc(proc: subprocess.CompletedProcess) -> None:
+    def print_proc(proc: "subprocess.CompletedProcess[str]") -> None:
         print(f"    Command: {proc.args}", file=sys.stderr)
         if proc.stdout:
             print(f"    STDOUT:\n{proc.stdout}", file=sys.stderr)
@@ -379,10 +396,10 @@ def _get_installed_conda_packages(
         else:
             # Re-raise if it's a different error.
             raise
-    decoded_output = output.decode("utf-8")
-    installed: dict[str, LinkAction] = {
-        entry["name"]: entry for entry in json.loads(decoded_output)
-    }
+    output_json = json.loads(output.decode("utf-8"))
+    if isinstance(output_json, MutableMapping) and "packages" in output_json:
+        output_json = output_json["packages"]
+    installed: dict[str, LinkAction] = {entry["name"]: entry for entry in output_json}
     return installed
 
 
@@ -393,7 +410,7 @@ def update_specs_for_arch(
     update: list[str],
     platform: str,
     channels: Sequence[Channel],
-) -> DryRunInstall:
+) -> DryRunInstall | dict[str, dict[str, list[Any]]]:
     """
     Update a previous solution for the given platform
 
@@ -416,10 +433,11 @@ def update_specs_for_arch(
 
     with fake_conda_environment(locked.values(), platform=platform) as prefix:
         installed = _get_installed_conda_packages(conda, platform, prefix)
-        spec_for_name = {MatchSpec(v).name: v for v in specs}  # pyright: ignore
+        spec_for_name = {MatchSpec(v).name: v for v in specs}
         to_update = [
             spec_for_name[name] for name in set(installed).intersection(update)
         ]
+        dryrun_install: DryRunInstall
         if to_update:
             # NB: [micro]mamba and mainline conda have different semantics for `install` and `update`
             # - conda:
@@ -477,7 +495,7 @@ def update_specs_for_arch(
                     f"Could not lock the environment for platform {platform}: {err_json.get('message')}"
                 ) from exc
 
-            dryrun_install: DryRunInstall = json.loads(extract_json_object(proc.stdout))
+            dryrun_install = json.loads(extract_json_object(proc.stdout))
         else:
             dryrun_install = {"actions": {"LINK": [], "FETCH": []}}
 
@@ -503,7 +521,7 @@ def update_specs_for_arch(
 @contextmanager
 def fake_conda_environment(
     locked: Iterable[LockedDependency], platform: str
-) -> Iterator[str]:
+) -> Generator[str]:
     """
     Create a fake conda prefix containing metadata corresponding to the provided dependencies
 
