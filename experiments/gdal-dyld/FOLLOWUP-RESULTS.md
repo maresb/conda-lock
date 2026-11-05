@@ -712,3 +712,26 @@ python3 experiments/gdal-dyld/reproduce_cross_process.py --output /tmp/dyld-cros
 
 Both need only Xcode Command Line Tools and the adjacent C sources, finish in
 under a minute, and crash nothing.
+
+## Reporting to Apple
+
+Nobody involved in this investigation plans to file it with Apple. Anyone
+who wants to is welcome to. A report would need:
+
+- [reproduce_thread_exit.py](reproduce_thread_exit.py) together with
+  [prime_exec.c](prime_exec.c), which it compiles and cannot run without;
+  [reproduce_cross_process.py](reproduce_cross_process.py) additionally
+  needs [touch_exit.c](touch_exit.c).
+- The macOS version, OS build number, and dyld version of the machine the
+  report is filed from. The hosted runners used here are listed under
+  [Runner images and architectures](#runner-images-and-architectures);
+  their OS build numbers were not recorded.
+- The reproducer's own output, where `launch_path` (from
+  `_NSGetExecutablePath`) names the environment alias while `main_image`
+  (from `_dyld_get_image_name(0)`) names the package-cache alias, placed
+  next to one library-loading failure such as the traced job in
+  [TRIGGER-RESULTS.md](TRIGGER-RESULTS.md), so that the report shows both
+  the path divergence and its consequence.
+- The two candidate fixes under [Where the defect lies](#where-the-defect-lies)
+  marked as unvalidated, and the per-thread origin explanation marked as a
+  model consistent with the measurements rather than as established.
