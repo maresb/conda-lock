@@ -663,9 +663,10 @@ targeted workaround.
   later, for reasons not resolved.
 - The launched process's first thread can inherit such a record from an
   exited thread of the same or another process. Keeping that thread alive
-  prevented it, and so did starting two or more threads after its exit and
-  keeping them alive through the launch (3 and 0 of 270), consistent with,
-  but not proof of, the launched thread otherwise taking the freed identity.
+  prevented it. Starting two holder threads after the worker exited reduced
+  cache-path launches to 3/270, while four holders yielded 0/270, consistent
+  with, but not proof of, the launched thread otherwise taking the freed
+  identity.
 - A retry after a wrong-path launch passed in every tested condition, and
   repeated launches from one process chose the cache path at most once per
   trial; why is not established.
