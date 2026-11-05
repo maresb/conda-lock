@@ -7,7 +7,7 @@ looking-up thread alive prevents it, and so do seven later lookups of the
 environment alias by other live threads. The effect is present on macOS 15 and
 26, on arm64 and x86_64, on APFS volumes, on APFS disk images, and on HFS+
 disk images in all but one image-run. Copied and cloned executables never
-resolve to the cache. After a wrong-path launch, every retry of the same
+resolved to the cache in any tested launch. After a wrong-path launch, every retry of the same
 inode passed, and a pause of half a second or more before the first launch
 left at most one wrong-path launch in twenty on these hosted runners. A stale
 thread without a record follows the most recent lookup or path build by any
@@ -622,20 +622,31 @@ published implementation provides a concrete model:
 keys records on `current_thread()`; records are removed for the calling
 thread on unlink, rename, and
 [`setattr`](https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_vnops.c#L1613),
-and wholesale in cnode lifecycle code, never on thread exit; and a
+and wholesale in cnode lifecycle code, with no thread-exit cleanup anywhere
+in that pinned source; and a
 [comment](https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_link.c#L1208)
 acknowledges that the fallback may use "the wrong link ID". That model
 matches the capacity measured on HFS+ above; APFS's internal mechanism
 remains unverified. Fixing it alone would not guarantee preservation of the
-launch alias, though clearing origins on thread termination would remove the
-demonstrated trigger.
+launch alias. Under this model, clearing origins on thread termination would
+prevent stale-record inheritance; that change has not been tested and would
+not address the concurrent-lookup route.
 
-Installers that hardlink from a package cache expose executables whose
-relative dependencies or resources differ between aliases. Avoiding hardlinks
-for such executables is a compatibility fix on their side; cloning or copying
-all Mach-O executables is a conservative policy broader than the demonstrated
-failure. The relocation scheme in conda-forge packages is intentional, and
-conda-lock's `--always-copy` change
+These conclusions are scoped to the executable-path failure, the only one
+reproduced in the natural install sequence. Libraries are not immune: with a
+copied executable and a hardlinked library whose own dependency is
+`@loader_path`-relative, concurrent cache `open()` and `stat()` loops
+produced 39 and 13 wrong-library launches in 60, against 0 in 60 with no
+reader and 0 in 180 with a copied library
+([CI-RESULTS.md](CI-RESULTS.md#controlled-experiments)); no library-only
+failure was observed without an artificial reader. Installers that hardlink
+from a package cache therefore expose executables, and under concurrent cache
+access libraries, whose relative dependencies or resources differ between
+aliases. Avoiding hardlinks for such executables is a compatibility fix on
+their side that addresses the demonstrated natural failure; cloning or
+copying all Mach-O executables is a conservative policy broader than that
+failure, and it does not cover the library route. The relocation scheme in
+conda-forge packages is intentional, and conda-lock's `--always-copy` change
 ([conda/conda-lock#974](https://github.com/conda/conda-lock/pull/974)) is a
 targeted workaround.
 
@@ -651,8 +662,10 @@ targeted workaround.
   the identity is freed, the stale answer is rarely seen again a second
   later, for reasons not resolved.
 - The launched process's first thread can inherit such a record from an
-  exited thread of the same or another process, and keeping that thread alive
-  or occupying the freed object with other live threads prevents it.
+  exited thread of the same or another process. Keeping that thread alive
+  prevented it, and so did starting two or more threads after its exit and
+  keeping them alive through the launch (3 and 0 of 270), consistent with,
+  but not proof of, the launched thread otherwise taking the freed identity.
 - A retry after a wrong-path launch passed in every tested condition, and
   repeated launches from one process chose the cache path at most once per
   trial; why is not established.
@@ -665,7 +678,8 @@ documented semantics predict; the one run without it is unexplained.
 ## Consequences
 
 - Copying or cloning the executable avoids the problem by construction; a
-  clone costs no data copy on APFS. Copying only libraries does not help.
+  clone costs no data copy on APFS. Copying only libraries does not prevent
+  the executable-path failure.
 - A pause of half a second or more before the launch left at most one
   wrong-path launch in twenty on these hosted runners, and a retry after a
   wrong-path launch passed in every tested condition. Both are mitigations
@@ -674,8 +688,9 @@ documented semantics predict; the one run without it is unexplained.
   answer after the identity is freed is unresolved.
 - Both installers and dyld could address it: installers by cloning or
   copying executables whose relative dependencies differ between aliases,
-  which in conda packages is nearly all of them (cloning keeps the space
-  savings); dyld by preferring `realpath` of the kernel-supplied
+  which conda-build's relocation scheme makes common (cloning keeps the
+  space savings; libraries stay exposed to the concurrent-lookup route);
+  dyld by preferring `realpath` of the kernel-supplied
   `executable_path`, which named the launched alias in every recorded
   wrong-path launch, or a link ID. Neither candidate has been validated.
 
