@@ -15,7 +15,9 @@ thread, alive or exited. A stale record is not consumed by being read, is
 replaced by an environment record when its holder looks up the environment
 alias, survives five seconds while held, and is rarely seen again a second
 after the identity is freed. Why retries and pauses help is not
-established.**
+established. The defect is dyld's use of an inode-based `fsgetpath` result,
+which for a hard link may be any alias, as the origin for relative loading,
+in preference to the launched path it also holds.**
 
 All runs used GitHub-hosted runners in `maresb/conda-lock`. The earlier
 [TRIGGER-RESULTS.md](TRIGGER-RESULTS.md) records the spontaneous failures and
@@ -584,7 +586,60 @@ had since exited.
 
 ## Mechanism
 
-Established by experiment:
+### Where the defect lies
+
+On the tested macOS versions, dyld can reconstruct a hardlinked executable's
+main-image path through a different alias from the one used to launch it.
+Although that pathname is permitted by `fsgetpath`'s inode-based contract,
+using it as the origin for relative library loading can redirect resolution
+into the package cache and cause launch failure. The kernel-supplied launch
+pathname still identifies the environment alias in these reproductions.
+
+The primary component is dyld.
+[`getMainPath`](https://github.com/apple-oss-distributions/dyld/blob/fd8d0c4d52320ebf64db34f3cb280310d905c5ae/dyld/DyldProcessConfig.cpp#L656)
+uses the inode from `executable_file=`, which the kernel fills from
+`va_fileid`
+([kern_exec.c](https://github.com/apple-oss-distributions/xnu/blob/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea/bsd/kern/kern_exec.c#L6477)),
+and takes `fsgetpath`'s answer unconditionally, falling back to `realpath` of
+the launched path only when `fsgetpath` fails. For a hard link,
+[`fsgetpath(2)`](https://github.com/apple-oss-distributions/xnu/blob/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea/bsd/man/man2/fsgetpath.2#L65)
+states that when an inode number is passed "any one of the multiple paths to
+that filesystem object may be returned" and that a link ID gives a more
+accurate path. macOS's
+[`_NSGetExecutablePath`](https://github.com/apple-oss-distributions/dyld/blob/fd8d0c4d52320ebf64db34f3cb280310d905c5ae/dyld/DyldAPIs.cpp#L786)
+deliberately returns the launched path instead ("this is not real-path. It
+may be a symlink rdar://74451681"), so the two paths diverge inside dyld. The
+reproducers record both, and every wrong-path launch is exactly that
+divergence: `launch_path` names the launched alias and `main_image` the
+cache. Candidate fixes are realpath-first ordering, which keeps symlink
+handling, and a correctly captured link ID, which the man page recommends;
+neither has been validated.
+
+The measurements are consistent with stale per-thread origin state surviving
+thread exit and becoming visible to another thread or process. HFS's
+published implementation provides a concrete model:
+[`hfs_savelinkorigin`](https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_link.c#L1140)
+keys records on `current_thread()`; records are removed for the calling
+thread on unlink, rename, and
+[`setattr`](https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_vnops.c#L1613),
+and wholesale in cnode lifecycle code, never on thread exit; and a
+[comment](https://github.com/apple-oss-distributions/hfs/blob/d1bac2f062e6e9c0dfcce302d9aacb10173d0eea/core/hfs_link.c#L1208)
+acknowledges that the fallback may use "the wrong link ID". That model
+matches the capacity measured on HFS+ above; APFS's internal mechanism
+remains unverified. Fixing it alone would not guarantee preservation of the
+launch alias, though clearing origins on thread termination would remove the
+demonstrated trigger.
+
+Installers that hardlink from a package cache expose executables whose
+relative dependencies or resources differ between aliases. Avoiding hardlinks
+for such executables is a compatibility fix on their side; cloning or copying
+all Mach-O executables is a conservative policy broader than the demonstrated
+failure. The relocation scheme in conda-forge packages is intentional, and
+conda-lock's `--always-copy` change
+([conda/conda-lock#974](https://github.com/conda/conda-lock/pull/974)) is a
+targeted workaround.
+
+### Established by experiment
 
 - Inode-based `fsgetpath` on APFS honors a per-thread origin record when the
   calling thread has one and otherwise follows the most recent lookup or
@@ -601,10 +656,6 @@ Established by experiment:
 - A retry after a wrong-path launch passed in every tested condition, and
   repeated launches from one process chose the cache path at most once per
   trial; why is not established.
-- Apple's published [dyld main-path code](https://github.com/apple-oss-distributions/dyld/blob/fd8d0c4d52320ebf64db34f3cb280310d905c5ae/dyld/DyldProcessConfig.cpp#L656)
-  prefers that inode-based result over the kernel-supplied executable path,
-  and the kernel supplies the inode in the `executable_file=` string
-  ([kern_exec.c](https://github.com/apple-oss-distributions/xnu/blob/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea/bsd/kern/kern_exec.c#L6306)).
 
 Inferred, not observed: that the record is keyed on the kernel thread object
 and that the object is recycled. No kernel pointer or APFS data structure was
@@ -621,10 +672,12 @@ documented semantics predict; the one run without it is unexplained.
   whose mechanism is not established, not fixes; a record held by a live
   thread does not expire within five seconds, and what removes the stale
   answer after the identity is freed is unresolved.
-- Both installers and dyld could address it: installers by not hardlinking
-  Mach-O executables on macOS (cloning keeps the space savings), dyld by using
-  the kernel-supplied `executable_path` or a link ID, which the earlier runs
-  showed always names the requested alias.
+- Both installers and dyld could address it: installers by cloning or
+  copying executables whose relative dependencies differ between aliases,
+  which in conda packages is nearly all of them (cloning keeps the space
+  savings); dyld by preferring `realpath` of the kernel-supplied
+  `executable_path`, which named the launched alias in every recorded
+  wrong-path launch, or a link ID. Neither candidate has been validated.
 
 ## Reproducing
 
