@@ -1,5 +1,13 @@
 # Exited-thread trigger: follow-up experiments, 2026-11-04
 
+> [!WARNING]
+> **AI-generated investigation.** This document, the experiments it
+> describes, and the code in this directory were produced by an LLM agent
+> (Claude Code) with review by a second LLM (Codex), at the direction of
+> Ben Mares (maresb), who does not understand the technical details and
+> cannot vouch for them independently. Treat the claims as leads to verify,
+> not as established findings.
+
 **A lookup of the package-cache alias by a thread that has since exited is
 sufficient to make dyld resolve a hardlinked executable to the cache path.
 The lookup can come from a separate, already-finished process. Keeping the
