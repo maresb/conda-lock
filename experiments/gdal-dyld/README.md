@@ -5,8 +5,7 @@
 > describes, and the code in this directory were produced by Claude Fable
 > 5.1 using Claude Code and by GPT-6 Astra using Codex, which also reviewed
 > them, at the direction of Ben Mares (maresb), who does not understand the
-> technical details and cannot vouch for them independently. Treat the
-> claims as leads to verify, not as established findings.
+> technical details and cannot vouch for them independently.
 
 The fork-only workflow runs on GitHub-hosted `macos-latest` arm64 runners in
 `maresb/conda-lock`. Push this directory or its workflow on
