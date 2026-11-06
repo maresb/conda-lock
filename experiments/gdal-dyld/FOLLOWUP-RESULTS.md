@@ -640,9 +640,9 @@ revisions and is one more natural first-launch failure.
 
 ### Census of the environment (clean-run probe, by device and inode)
 
-- 42206132757: 540 of 608 Mach-O files are cache hardlinks (179,622,309 of 250,124,485 bytes); 298 of 328 `.dylib`/`.so` files (153,026,928 of 207,325,456 bytes); 0 multiply linked files not linked to the cache; of the images dyld reported for gdalinfo, 76 are files on disk and 60 of those cache hardlinks; identical on all 3 instances
+- 42206132757: 540 of 608 Mach-O files are cache hardlinks (179,622,309 of 250,124,485 bytes); 298 of 328 `.dylib`/`.so` files (153,026,928 of 207,325,456 bytes); 0 multiply linked files not linked to the cache; 76 non-executable image paths dyld reported for gdalinfo existed as files on disk, 60 of them cache hardlinks; identical on all 3 instances
 - 42209002461: 540 of 608 Mach-O files are cache hardlinks (179,622,309 of 250,124,485 bytes); 298 of 328 `.dylib`/`.so` files (153,026,928 of 207,325,456 bytes); 0 multiply linked files not linked to the cache; identical on all 3 instances
-- 42213891575: 540 of 608 Mach-O files are cache hardlinks (179,622,309 of 250,124,485 bytes); 298 of 328 `.dylib`/`.so` files (153,026,928 of 207,325,456 bytes); 0 multiply linked files not linked to the cache; of the images dyld reported for gdalinfo, 76 are files on disk and 60 of those cache hardlinks; identical on all 3 instances
+- 42213891575: 540 of 608 Mach-O files are cache hardlinks (179,622,309 of 250,124,485 bytes); 298 of 328 `.dylib`/`.so` files (153,026,928 of 207,325,456 bytes); 0 multiply linked files not linked to the cache; 76 non-executable image paths dyld reported for gdalinfo existed as files on disk, 60 of them cache hardlinks; identical on all 3 instances
 
 ### Natural phase (failures / first launches, summed over instances)
 
@@ -697,9 +697,9 @@ that replaced that library's files before every trial and did not exclude
 background access; whether and how often this happens in ordinary
 installation launches is not established. The
 census bounds the cost at stake: 298 of the environment's 328 `.dylib` and
-`.so` files, 153 of 207 MB, are cache hardlinks, and 60 of the 76 file-backed
-images gdalinfo loads; dyld reported 673 images for it, the rest system
-images that are not files on disk.
+`.so` files, 153 of 207 MB, are cache hardlinks. dyld reported 673 images
+for gdalinfo, including the executable; among the remaining images, 76 paths
+existed as files on disk, and 60 of those files were cache hardlinks.
 
 ## Why this fits the original failure
 
