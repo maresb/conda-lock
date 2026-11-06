@@ -224,14 +224,10 @@ def main():  # noqa: C901
                 raise RuntimeError(f"{label} failed; inspect log")
 
         def files(name):
+            # Pure path construction: no filesystem access before a measured launch.
             prefix = root / "envs" / name
-            cached = list(
-                (root / "pkgs").glob("**/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo")
-            )
-            if len(cached) != 1:
-                raise RuntimeError(f"Expected one cached gdalinfo, found {cached}")
             return {
-                "cache_app": cached[0],
+                "cache_app": cache_app,
                 "env_app": prefix / "bin/gdalinfo",
                 "prefix": prefix,
             }
@@ -239,6 +235,11 @@ def main():  # noqa: C901
         # ---- census on a dedicated environment ------------------------------
         name = "gdal-census"
         run_logged(["create", "-y", "-n", name, "-f", str(lock)], "census-create")
+        # Resolve the cached executable once, here, so no trial searches for it.
+        cached = list((root / "pkgs").glob("**/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo"))
+        if len(cached) != 1:
+            raise RuntimeError(f"Expected one cached gdalinfo, found {cached}")
+        cache_app = cached[0]
         index = cache_index(root)
         prefix = root / "envs" / name
         rows = []
