@@ -836,6 +836,23 @@ documented semantics predict; the one run without it is unexplained.
   `executable_path`, which named the launched alias in every recorded
   wrong-path launch, or a link ID. Neither candidate has been validated.
 
+## Where this is being discussed
+
+- [conda-forge/cmake-feedstock#230](https://github.com/conda-forge/cmake-feedstock/issues/230#issuecomment-6671016821),
+  the conda-forge tracking issue for the intermittent `Library not loaded`
+  failures: why `mainExecutablePath` names the cache, with the reproducer.
+- [conda-forge/cctools-and-ld64-feedstock#111](https://github.com/conda-forge/cctools-and-ld64-feedstock/pull/111#issuecomment-6688397747),
+  `no_link` for ld64: the copied-versus-hardlinked comparison, the pause
+  results, and the libLerc control observation.
+- [mamba-org/mamba#4451](https://github.com/mamba-org/mamba/issues/4451), the
+  installer-side report with the reproducer and the `clonefile` proposal.
+- [conda/conda#16368](https://github.com/conda/conda/pull/16368#issuecomment-6690345541),
+  `clonefile` for conda's copy mode: copy mode as a loader workaround.
+- [conda-forge/gdal-feedstock#990](https://github.com/conda-forge/gdal-feedstock/issues/990#issuecomment-6690556775),
+  the original GDAL report.
+- [conda/conda-lock#974](https://github.com/conda/conda-lock/pull/974), the
+  merged CI workaround (`--always-copy` on macOS).
+
 ## Reproducing
 
 ```sh

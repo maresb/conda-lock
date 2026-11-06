@@ -58,3 +58,13 @@ later captures also retain metadata-process context for calls without pathnames.
 The filesystem capture is restricted in code to this fork's GitHub Actions jobs
 and requires working runner sudo permissions. A failed or incomplete capture is
 reported as an error. No security settings are changed.
+
+## Where this is being discussed
+
+The findings were posted, with the same AI-generated-investigation notice, to
+[cmake-feedstock#230](https://github.com/conda-forge/cmake-feedstock/issues/230#issuecomment-6671016821),
+[cctools-and-ld64-feedstock#111](https://github.com/conda-forge/cctools-and-ld64-feedstock/pull/111#issuecomment-6688397747),
+[mamba#4451](https://github.com/mamba-org/mamba/issues/4451),
+[conda#16368](https://github.com/conda/conda/pull/16368#issuecomment-6690345541), and
+[gdal-feedstock#990](https://github.com/conda-forge/gdal-feedstock/issues/990#issuecomment-6690556775);
+the CI workaround is [conda-lock#974](https://github.com/conda/conda-lock/pull/974).
