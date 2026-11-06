@@ -3,9 +3,8 @@
 > [!WARNING]
 > **AI-generated investigation.** This document, the experiments it
 > describes, and the code in this directory were produced by Claude Fable
-> 5.1 using Claude Code and by GPT-6 Astra using Codex, at the direction of
-> Ben Mares (maresb), who does not understand the technical details and
-> cannot vouch for them independently.
+> 5.1 and GPT-6 Astra, at the direction of Ben Mares (maresb), who does not
+> understand the technical details and cannot vouch for them independently.
 
 **A lookup of the package-cache alias by a thread that has since exited is
 sufficient to make dyld resolve a hardlinked executable to the cache path.
