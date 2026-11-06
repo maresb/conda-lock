@@ -24,6 +24,12 @@ The fork-only workflow runs on GitHub-hosted `macos-latest` arm64 runners in
   `stat`, `getattrlist`, and event-only opens on the actual GDAL executable and
   library, comparing hardlinked and copied executables. It checks the original
   libcrypto error signature and records unchanged library hashes and inodes.
+- `natural_copy_probe.py` (job `natural-selective`, three instances) runs the
+  real `micromamba create` sequence with only `bin/gdalinfo` replaced by a byte
+  copy, or with a pause of 1 s or 2 s before the first launch, records which
+  Mach-O files in the environment are hardlinked to the cache, and repeats
+  `delay_probe.py`'s design with the real executable and with a hardlinked
+  library as the trigger target.
 - Later runs use that script's `--reader-backend spotlight` for real metadata
   import requests, and `link_state_probe.py` for sequential operations without
   a concurrent reader.

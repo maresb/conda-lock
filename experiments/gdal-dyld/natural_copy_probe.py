@@ -1,0 +1,531 @@
+#!/usr/bin/env python3
+"""Real install sequence with only the executable copied, and with pauses before launch.
+
+Three phases on one runner, all with micromamba 2.10.0 and the explicit GDAL
+lockfile fixture:
+
+census     After the first `micromamba create`, record every Mach-O file in the
+           environment with its link count, so the share of libraries that are
+           hardlinked to the package cache at all is known.
+natural    Per trial: `micromamba create`, then one of four cells, shuffled:
+           launch at once; sleep 1 s or 2 s first; or replace only bin/gdalinfo
+           with a byte copy and launch at once. One counted launch per trial, a
+           retry recorded separately, then `micromamba env remove`. The copy
+           cell launches with DYLD_PRINT_LIBRARIES=1 so that the path dyld
+           assigned to each library is recorded; the hardlink cells launch with
+           no DYLD_ variables, like the earlier natural runs.
+triggered  One environment. Per trial, a fresh cache inode for the target file,
+           a finished process that looked up its cache alias (touch_exit), an
+           optional pause, then a launcher that looks up the environment alias
+           and spawns gdalinfo (prime_exec env-dead ... spawn 0): delay_probe.py's
+           design with the real executable. Library cells copy the executable,
+           trigger on a hardlinked library's cache alias, and launch with
+           DYLD_PRINT_LIBRARIES=1 to record where dyld placed that library.
+
+DYLD_PRINT_LIBRARIES is set only in cells whose outcome is library placement.
+"""
+
+import argparse
+import collections
+import hashlib
+import json
+import os
+import platform
+import random
+import re
+import shutil
+import subprocess
+import time
+
+from pathlib import Path
+
+
+ORIGINAL_UUID = "042BC0C2-C636-39C6-8DFD-3580A4847EF8"
+SIGNATURE = "Library not loaded: @rpath/libcrypto.3.dylib"
+MACHO_MAGICS = {
+    b"\xcf\xfa\xed\xfe",
+    b"\xce\xfa\xed\xfe",
+    b"\xca\xfe\xba\xbe",
+    b"\xfe\xed\xfa\xcf",
+    b"\xfe\xed\xfa\xce",
+}
+DYLD_LINE = re.compile(r"^dyld\[\d+\]: <[0-9A-F-]+> (.+)$")
+
+
+def fingerprint(path):
+    info = path.stat()
+    return {
+        "path": str(path),
+        "device": info.st_dev,
+        "inode": info.st_ino,
+        "nlink": info.st_nlink,
+        "size": info.st_size,
+        "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+    }
+
+
+def is_macho(path):
+    try:
+        with path.open("rb") as handle:
+            return handle.read(4) in MACHO_MAGICS
+    except OSError:
+        return False
+
+
+def dyld_images(stderr):
+    """Paths from DYLD_PRINT_LIBRARIES lines, in load order; the first is the main executable."""
+    return [m.group(1) for m in map(DYLD_LINE.match, stderr.splitlines()) if m]
+
+
+def classify(path):
+    if "/pkgs/" in path:
+        return "cache"
+    if "/envs/" in path:
+        return "env"
+    return "other"
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--micromamba", type=Path, required=True)
+    parser.add_argument("--root-prefix", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--natural-trials", type=int, default=25, help="per cell")
+    parser.add_argument("--triggered-trials", type=int, default=40, help="per cell")
+    parser.add_argument(
+        "--delays", default="0,1,2", help="seconds, natural and triggered"
+    )
+    args = parser.parse_args()
+    if (
+        platform.system() != "Darwin"
+        or os.environ.get("GITHUB_ACTIONS") != "true"
+        or os.environ.get("GITHUB_REPOSITORY") != "maresb/conda-lock"
+    ):
+        parser.error("Run only on this experiment's authorized GitHub macOS runner")
+    if args.natural_trials < 1 or args.triggered_trials < 1:
+        parser.error("Use positive trials")
+    return args
+
+
+def build(name, output):
+    source = Path(__file__).with_name(name + ".c")
+    shutil.copy2(source, output / source.name)
+    binary = output / name
+    subprocess.run(
+        [
+            "xcrun",
+            "clang",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            str(source),
+            "-o",
+            str(binary),
+        ],
+        check=True,
+    )
+    return binary
+
+
+def main():  # noqa: C901
+    args = parse_args()
+    output = args.output.resolve()
+    output.mkdir(parents=True, exist_ok=False)
+    root = args.root_prefix.resolve()
+    command = [str(args.micromamba), "-r", str(root)]
+    lock = Path(__file__).resolve().parent / "fixtures/conda-osx-arm64.lock"
+    env_clean = {k: v for k, v in os.environ.items() if not k.startswith("DYLD_")}
+    env_print = {**env_clean, "DYLD_PRINT_LIBRARIES": "1"}
+    delays = [float(d) for d in args.delays.split(",")]
+    metadata = {
+        "platform": platform.platform(),
+        "natural_trials": args.natural_trials,
+        "triggered_trials": args.triggered_trials,
+        "delays": delays,
+        "micromamba": subprocess.check_output(
+            [*command, "--version"], text=True
+        ).strip(),
+        "root_prefix": str(root),
+        "seed": 982,
+        "original_error_uuid": ORIGINAL_UUID,
+    }
+    (output / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
+    counts = {
+        "natural": collections.defaultdict(collections.Counter),
+        "triggered": collections.defaultdict(collections.Counter),
+        "census": collections.Counter(),
+    }
+
+    def save_counts():
+        (output / "summary.json").write_text(json.dumps(counts, indent=2) + "\n")
+
+    with (output / "events.jsonl").open("w", buffering=1) as events:
+
+        def record(event):
+            events.write(json.dumps(event) + "\n")
+
+        def run_logged(arguments, label):
+            started = time.time_ns()
+            with (output / (label + ".log")).open("w") as log:
+                proc = subprocess.Popen(
+                    [*command, *arguments],
+                    env=env_clean,
+                    stdout=log,
+                    stderr=subprocess.STDOUT,
+                )
+                rc = proc.wait(timeout=300)
+            record(
+                {
+                    "event": "command",
+                    "label": label,
+                    "command": arguments,
+                    "pid": proc.pid,
+                    "started_ns": started,
+                    "ended_ns": time.time_ns(),
+                    "returncode": rc,
+                }
+            )
+            if rc:
+                raise RuntimeError(f"{label} failed; inspect log")
+
+        def files(name):
+            prefix = root / "envs" / name
+            cached = list(
+                (root / "pkgs").glob("**/libgdal-3.6.2-h51eea9d_5/bin/gdalinfo")
+            )
+            if len(cached) != 1:
+                raise RuntimeError(f"Expected one cached gdalinfo, found {cached}")
+            return {
+                "cache_app": cached[0],
+                "env_app": prefix / "bin/gdalinfo",
+                "prefix": prefix,
+            }
+
+        def census(name):
+            prefix = root / "envs" / name
+            rows = []
+            for path in sorted(
+                p for p in prefix.rglob("*") if p.is_file() and not p.is_symlink()
+            ):
+                if not is_macho(path):
+                    continue
+                info = path.stat()
+                rows.append(
+                    {
+                        "path": str(path.relative_to(prefix)),
+                        "inode": info.st_ino,
+                        "nlink": info.st_nlink,
+                        "size": info.st_size,
+                    }
+                )
+            (output / "census.json").write_text(json.dumps(rows, indent=1) + "\n")
+            c = counts["census"]
+            for row in rows:
+                dylib = row["path"].endswith(".dylib") or row["path"].endswith(".so")
+                linked = row["nlink"] > 1
+                c["macho_files"] += 1
+                c["macho_hardlinked"] += linked
+                c["macho_bytes"] += row["size"]
+                c["macho_hardlinked_bytes"] += row["size"] if linked else 0
+                if dylib:
+                    c["dylib_files"] += 1
+                    c["dylib_hardlinked"] += linked
+                    c["dylib_bytes"] += row["size"]
+                    c["dylib_hardlinked_bytes"] += row["size"] if linked else 0
+            save_counts()
+
+        def natural_launch(name, key, trial, print_libraries, retry=False):
+            started = time.time_ns()
+            proc = subprocess.Popen(
+                [*command, "run", "-n", name, "gdalinfo", "--version"],
+                env=env_print if print_libraries else env_clean,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            stdout, stderr = proc.communicate(timeout=60)
+            signature = (
+                SIGNATURE in stderr and ORIGINAL_UUID in stderr and "/pkgs/" in stderr
+            )
+            images = dyld_images(stderr) if print_libraries else None
+            if print_libraries and not images:
+                raise RuntimeError(
+                    "DYLD_PRINT_LIBRARIES produced no dyld lines; inspect events"
+                )
+            result = {
+                "event": "natural_launch",
+                "case": key,
+                "trial": trial,
+                "name": name,
+                "retry": retry,
+                "pid": proc.pid,
+                "started_ns": started,
+                "ended_ns": time.time_ns(),
+                "returncode": proc.returncode,
+                "stdout": stdout,
+                "stderr": stderr,
+                "original_signature": signature,
+                "images": images,
+            }
+            record(result)
+            if not retry:
+                cell = counts["natural"][key]
+                cell["launches"] += 1
+                cell["failures"] += proc.returncode != 0
+                cell["original_signature"] += signature
+                if images is not None:
+                    cache_images = [p for p in images if classify(p) == "cache"]
+                    cell["images"] += len(images)
+                    cell["cache_images"] += len(cache_images)
+                    cell["launches_with_cache_image"] += bool(cache_images)
+                    cell["main_image_cache"] += classify(images[0]) == "cache"
+                save_counts()
+            if proc.returncode:
+                print("FAIL", key, trial, stderr.strip()[-400:], flush=True)
+            return result
+
+        # ---- natural phase -------------------------------------------------
+        cells = [("hardlink", d) for d in delays] + [("copy-app", 0.0)]
+        cases = [
+            (mode, delay, t)
+            for mode, delay in cells
+            for t in range(args.natural_trials)
+        ]
+        random.Random(982).shuffle(cases)
+        for index, (mode, delay, trial) in enumerate(cases):
+            name = f"gdal-nat-{index:03d}"
+            key = f"{mode}/delay{delay:g}s"
+            print("CREATE", index, key, flush=True)
+            run_logged(
+                ["create", "-y", "-n", name, "-f", str(lock)], f"{index:03d}-create"
+            )
+            created_ns = time.time_ns()
+            if index == 0:
+                census(name)
+            paths = files(name)
+            before = {k: fingerprint(paths[k]) for k in ("cache_app", "env_app")}
+            if mode == "copy-app":
+                paths["env_app"].unlink()
+                shutil.copy2(paths["cache_app"], paths["env_app"])
+                after = fingerprint(paths["env_app"])
+                assert (
+                    after["nlink"] == 1
+                    and after["inode"] != before["cache_app"]["inode"]
+                ), after
+                assert after["sha256"] == before["cache_app"]["sha256"], after
+            else:
+                assert before["env_app"]["inode"] == before["cache_app"]["inode"], (
+                    before
+                )
+            if delay:
+                time.sleep(delay)
+            launched_ns = time.time_ns()
+            result = natural_launch(
+                name, key, trial, print_libraries=(mode == "copy-app")
+            )
+            if result["returncode"]:
+                natural_launch(
+                    name, key, trial, print_libraries=(mode == "copy-app"), retry=True
+                )
+            record(
+                {
+                    "event": "natural_trial",
+                    "index": index,
+                    "case": key,
+                    "trial": trial,
+                    "created_ns": created_ns,
+                    "launched_ns": launched_ns,
+                    "files_before": before,
+                    "files_after": {
+                        k: fingerprint(paths[k]) for k in ("cache_app", "env_app")
+                    },
+                }
+            )
+            run_logged(["env", "remove", "-y", "-n", name], f"{index:03d}-remove")
+            print("DONE", index, json.dumps(counts["natural"][key]), flush=True)
+
+        # ---- triggered phase -----------------------------------------------
+        touch_exit = build("touch_exit", output)
+        prime_exec = build("prime_exec", output)
+        name = "gdal-trig"
+        run_logged(["create", "-y", "-n", name, "-f", str(lock)], "trig-create")
+        paths = files(name)
+        template_app = output / "template-app"
+        shutil.copy2(paths["cache_app"], template_app)
+
+        # Which libraries does gdalinfo load, and which of them are hardlinked?
+        probe = subprocess.run(
+            [str(paths["env_app"]), "--version"],
+            env=env_print,
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        images = dyld_images(probe.stderr)
+        if probe.returncode or not images:
+            raise RuntimeError(f"library listing launch failed: {probe.stderr[-400:]}")
+        inode_to_cache = {}
+        for path in (root / "pkgs").rglob("*"):
+            if path.is_file() and not path.is_symlink() and path.stat().st_nlink > 1:
+                inode_to_cache.setdefault(path.stat().st_ino, str(path))
+        loaded = []
+        for image in images[1:]:
+            p = Path(image)
+            if not p.exists():
+                continue
+            info = p.stat()
+            loaded.append(
+                {
+                    "path": image,
+                    "class": classify(image),
+                    "nlink": info.st_nlink,
+                    "inode": info.st_ino,
+                    "cache_alias": inode_to_cache.get(info.st_ino),
+                }
+            )
+        (output / "loaded_libraries.json").write_text(
+            json.dumps(loaded, indent=1) + "\n"
+        )
+        candidates = [
+            row
+            for row in loaded
+            if row["class"] == "env" and row["nlink"] > 1 and row["cache_alias"]
+        ]
+        target_lib = None
+        if candidates:
+            chosen = sorted(candidates, key=lambda r: r["path"])[0]
+            target_lib = {
+                "env": Path(chosen["path"]),
+                "cache": Path(chosen["cache_alias"]),
+            }
+            template_lib = output / "template-lib"
+            shutil.copy2(target_lib["cache"], template_lib)
+        record(
+            {
+                "event": "triggered_setup",
+                "images": images,
+                "loaded": loaded,
+                "target_lib": {k: str(v) for k, v in target_lib.items()}
+                if target_lib
+                else None,
+            }
+        )
+        counts["census"]["loaded_libraries"] = len(loaded)
+        counts["census"]["loaded_libraries_hardlinked"] = len(candidates)
+        save_counts()
+
+        def fresh(mode, cache, env_path, template):
+            """Give the cache alias a fresh inode and link or copy it into the environment."""
+            env_path.unlink()
+            cache.unlink()
+            shutil.copy2(template, cache)
+            (os.link if mode == "hardlink" else shutil.copy2)(cache, env_path)
+            c, e = cache.stat(), env_path.stat()
+            assert (c.st_ino == e.st_ino) == (mode == "hardlink"), (
+                mode,
+                c.st_ino,
+                e.st_ino,
+            )
+
+        cells = [("hardlink-app", "trigger-app", d) for d in delays]
+        cells += [("hardlink-app", "none", 0.0), ("copy-app", "trigger-app", 0.0)]
+        if target_lib:
+            cells += [("copy-app", "trigger-lib", 0.0), ("copy-app", "none-lib", 0.0)]
+        cases = [
+            (app, trigger, delay, t)
+            for app, trigger, delay in cells
+            for t in range(args.triggered_trials)
+        ]
+        random.Random(983).shuffle(cases)
+        for app, trigger, delay, trial in cases:
+            key = f"{app}/{trigger}/delay{delay:g}s"
+            fresh(
+                "hardlink" if app == "hardlink-app" else "copy",
+                paths["cache_app"],
+                paths["env_app"],
+                template_app,
+            )
+            lib_cell = trigger.endswith("lib")
+            if lib_cell:
+                fresh("hardlink", target_lib["cache"], target_lib["env"], template_lib)
+            if trigger == "trigger-app":
+                subprocess.run(
+                    [str(touch_exit), str(paths["cache_app"]), "0"],
+                    env=env_clean,
+                    check=True,
+                    timeout=10,
+                )
+            elif trigger == "trigger-lib":
+                subprocess.run(
+                    [str(touch_exit), str(target_lib["cache"]), "0"],
+                    env=env_clean,
+                    check=True,
+                    timeout=10,
+                )
+            if delay:
+                time.sleep(delay)
+            started = time.time_ns()
+            proc = subprocess.run(
+                [
+                    str(prime_exec),
+                    "env-dead",
+                    str(paths["cache_app"]),
+                    str(paths["env_app"]),
+                    "spawn",
+                    "0",
+                ],
+                env=env_print if lib_cell else env_clean,
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+            signature = (
+                SIGNATURE in proc.stderr
+                and ORIGINAL_UUID in proc.stderr
+                and "/pkgs/" in proc.stderr
+            )
+            images = dyld_images(proc.stderr) if lib_cell else None
+            lib_class = None
+            if lib_cell:
+                if not images:
+                    raise RuntimeError(
+                        "DYLD_PRINT_LIBRARIES produced no dyld lines; inspect events"
+                    )
+                matches = [p for p in images if Path(p).name == target_lib["env"].name]
+                lib_class = classify(matches[0]) if matches else "missing"
+            cell = counts["triggered"][key]
+            cell["launches"] += 1
+            cell["failures"] += proc.returncode != 0
+            cell["original_signature"] += signature
+            if lib_cell:
+                cell["target_lib_cache"] += lib_class == "cache"
+                cell["target_lib_env"] += lib_class == "env"
+                cell["target_lib_missing"] += lib_class == "missing"
+                cell["cache_images"] += sum(classify(p) == "cache" for p in images)
+                cell["main_image_cache"] += classify(images[0]) == "cache"
+            save_counts()
+            record(
+                {
+                    "event": "triggered_launch",
+                    "case": key,
+                    "trial": trial,
+                    "started_ns": started,
+                    "ended_ns": time.time_ns(),
+                    "returncode": proc.returncode,
+                    "stdout": proc.stdout,
+                    "stderr": proc.stderr,
+                    "original_signature": signature,
+                    "images": images,
+                    "target_lib_class": lib_class,
+                    "app": fingerprint(paths["env_app"]),
+                    "lib": fingerprint(target_lib["env"]) if lib_cell else None,
+                }
+            )
+            if proc.returncode:
+                print("FAIL", key, trial, proc.stderr.strip()[-400:], flush=True)
+        run_logged(["env", "remove", "-y", "-n", name], "trig-remove")
+    print(json.dumps(counts, indent=2), flush=True)
+
+
+if __name__ == "__main__":
+    main()
