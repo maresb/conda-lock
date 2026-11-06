@@ -4,25 +4,31 @@
 Three phases on one runner, all with micromamba 2.10.0 and the explicit GDAL
 lockfile fixture:
 
-census     After the first `micromamba create`, record every Mach-O file in the
-           environment with its link count, so the share of libraries that are
-           hardlinked to the package cache at all is known.
-natural    Per trial: `micromamba create`, then one of four cells, shuffled:
+census     A dedicated environment is created, every Mach-O file in it is
+           matched by device and inode against the package cache, and the
+           environment is removed, so the share of libraries that are hardlinked
+           to the cache at all is known without touching a measured environment.
+natural    Per trial: `micromamba create`, then one of five cells, shuffled:
            launch at once; sleep 1 s or 2 s first; or replace only bin/gdalinfo
-           with a byte copy and launch at once. One counted launch per trial, a
-           retry recorded separately, then `micromamba env remove`. The copy
-           cell launches with DYLD_PRINT_LIBRARIES=1 so that the path dyld
-           assigned to each library is recorded; the hardlink cells launch with
-           no DYLD_ variables, like the earlier natural runs.
+           with a byte copy and launch at once, with or without
+           DYLD_PRINT_LIBRARIES=1. Nothing else touches either alias between the
+           create and the launch. One counted launch per trial, a retry recorded
+           separately, fingerprints taken only after the launches, then
+           `micromamba env remove`. The hardlink cells and the plain copy cell
+           launch with no DYLD_ variables, like the earlier natural runs; the
+           printing copy cell records the path dyld assigned to each library.
 triggered  One environment. Per trial, a fresh cache inode for the target file,
            a finished process that looked up its cache alias (touch_exit), an
            optional pause, then a launcher that looks up the environment alias
            and spawns gdalinfo (prime_exec env-dead ... spawn 0): delay_probe.py's
            design with the real executable. Library cells copy the executable,
-           trigger on a hardlinked library's cache alias, and launch with
-           DYLD_PRINT_LIBRARIES=1 to record where dyld placed that library.
+           trigger on the cache alias of one named hardlinked library that
+           gdalinfo loads (up to three such libraries, each its own cell), and
+           launch with DYLD_PRINT_LIBRARIES=1 to record where dyld placed it.
 
 DYLD_PRINT_LIBRARIES is set only in cells whose outcome is library placement.
+Its lines are grouped by process ID and only gdalinfo's own process is read, since
+the launcher (micromamba or prime_exec) prints its own images too.
 """
 
 import argparse
@@ -49,7 +55,7 @@ MACHO_MAGICS = {
     b"\xfe\xed\xfa\xcf",
     b"\xfe\xed\xfa\xce",
 }
-DYLD_LINE = re.compile(r"^dyld\[\d+\]: <[0-9A-F-]+> (.+)$")
+DYLD_LINE = re.compile(r"^dyld\[(\d+)\]: <[0-9A-F-]+> (.+)$")
 
 
 def fingerprint(path):
@@ -72,9 +78,26 @@ def is_macho(path):
         return False
 
 
-def dyld_images(stderr):
-    """Paths from DYLD_PRINT_LIBRARIES lines, in load order; the first is the main executable."""
-    return [m.group(1) for m in map(DYLD_LINE.match, stderr.splitlines()) if m]
+def dyld_processes(stderr):
+    """Process ID -> image paths in load order, from DYLD_PRINT_LIBRARIES lines."""
+    processes = collections.OrderedDict()
+    for line in stderr.splitlines():
+        match = DYLD_LINE.match(line)
+        if match:
+            processes.setdefault(match.group(1), []).append(match.group(2))
+    return processes
+
+
+def gdal_images(stderr):
+    """gdalinfo's own images; the first is its main executable. None if not found."""
+    groups = [
+        images
+        for images in dyld_processes(stderr).values()
+        if images and Path(images[0]).name == "gdalinfo"
+    ]
+    if len(groups) != 1:
+        return None
+    return groups[0]
 
 
 def classify(path):
@@ -85,16 +108,27 @@ def classify(path):
     return "other"
 
 
+def cache_index(root):
+    """(device, inode) -> cache path for every regular file in the package cache."""
+    index = {}
+    for path in (root / "pkgs").rglob("*"):
+        if path.is_file() and not path.is_symlink():
+            info = path.stat()
+            index.setdefault((info.st_dev, info.st_ino), str(path))
+    return index
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--micromamba", type=Path, required=True)
     parser.add_argument("--root-prefix", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--natural-trials", type=int, default=25, help="per cell")
+    parser.add_argument("--natural-trials", type=int, default=20, help="per cell")
     parser.add_argument("--triggered-trials", type=int, default=40, help="per cell")
     parser.add_argument(
         "--delays", default="0,1,2", help="seconds, natural and triggered"
     )
+    parser.add_argument("--max-libraries", type=int, default=3)
     args = parser.parse_args()
     if (
         platform.system() != "Darwin"
@@ -142,6 +176,7 @@ def main():  # noqa: C901
         "natural_trials": args.natural_trials,
         "triggered_trials": args.triggered_trials,
         "delays": delays,
+        "max_libraries": args.max_libraries,
         "micromamba": subprocess.check_output(
             [*command, "--version"], text=True
         ).strip(),
@@ -201,38 +236,45 @@ def main():  # noqa: C901
                 "prefix": prefix,
             }
 
-        def census(name):
-            prefix = root / "envs" / name
-            rows = []
-            for path in sorted(
-                p for p in prefix.rglob("*") if p.is_file() and not p.is_symlink()
-            ):
-                if not is_macho(path):
-                    continue
-                info = path.stat()
-                rows.append(
-                    {
-                        "path": str(path.relative_to(prefix)),
-                        "inode": info.st_ino,
-                        "nlink": info.st_nlink,
-                        "size": info.st_size,
-                    }
-                )
-            (output / "census.json").write_text(json.dumps(rows, indent=1) + "\n")
-            c = counts["census"]
-            for row in rows:
-                dylib = row["path"].endswith(".dylib") or row["path"].endswith(".so")
-                linked = row["nlink"] > 1
-                c["macho_files"] += 1
-                c["macho_hardlinked"] += linked
-                c["macho_bytes"] += row["size"]
-                c["macho_hardlinked_bytes"] += row["size"] if linked else 0
-                if dylib:
-                    c["dylib_files"] += 1
-                    c["dylib_hardlinked"] += linked
-                    c["dylib_bytes"] += row["size"]
-                    c["dylib_hardlinked_bytes"] += row["size"] if linked else 0
-            save_counts()
+        # ---- census on a dedicated environment ------------------------------
+        name = "gdal-census"
+        run_logged(["create", "-y", "-n", name, "-f", str(lock)], "census-create")
+        index = cache_index(root)
+        prefix = root / "envs" / name
+        rows = []
+        for path in sorted(
+            p for p in prefix.rglob("*") if p.is_file() and not p.is_symlink()
+        ):
+            if not is_macho(path):
+                continue
+            info = path.stat()
+            rows.append(
+                {
+                    "path": str(path.relative_to(prefix)),
+                    "device": info.st_dev,
+                    "inode": info.st_ino,
+                    "nlink": info.st_nlink,
+                    "size": info.st_size,
+                    "cache_alias": index.get((info.st_dev, info.st_ino)),
+                }
+            )
+        (output / "census.json").write_text(json.dumps(rows, indent=1) + "\n")
+        c = counts["census"]
+        for row in rows:
+            dylib = row["path"].endswith((".dylib", ".so"))
+            linked = row["cache_alias"] is not None
+            c["macho_files"] += 1
+            c["macho_cache_linked"] += linked
+            c["macho_multilink_not_cache"] += row["nlink"] > 1 and not linked
+            c["macho_bytes"] += row["size"]
+            c["macho_cache_linked_bytes"] += row["size"] if linked else 0
+            if dylib:
+                c["dylib_files"] += 1
+                c["dylib_cache_linked"] += linked
+                c["dylib_bytes"] += row["size"]
+                c["dylib_cache_linked_bytes"] += row["size"] if linked else 0
+        save_counts()
+        run_logged(["env", "remove", "-y", "-n", name], "census-remove")
 
         def natural_launch(name, key, trial, print_libraries, retry=False):
             started = time.time_ns()
@@ -247,11 +289,7 @@ def main():  # noqa: C901
             signature = (
                 SIGNATURE in stderr and ORIGINAL_UUID in stderr and "/pkgs/" in stderr
             )
-            images = dyld_images(stderr) if print_libraries else None
-            if print_libraries and not images:
-                raise RuntimeError(
-                    "DYLD_PRINT_LIBRARIES produced no dyld lines; inspect events"
-                )
+            images = gdal_images(stderr) if print_libraries else None
             result = {
                 "event": "natural_launch",
                 "case": key,
@@ -266,6 +304,7 @@ def main():  # noqa: C901
                 "stderr": stderr,
                 "original_signature": signature,
                 "images": images,
+                "dyld_pids": list(dyld_processes(stderr)) if print_libraries else None,
             }
             record(result)
             if not retry:
@@ -273,76 +312,72 @@ def main():  # noqa: C901
                 cell["launches"] += 1
                 cell["failures"] += proc.returncode != 0
                 cell["original_signature"] += signature
-                if images is not None:
-                    cache_images = [p for p in images if classify(p) == "cache"]
-                    cell["images"] += len(images)
-                    cell["cache_images"] += len(cache_images)
-                    cell["launches_with_cache_image"] += bool(cache_images)
-                    cell["main_image_cache"] += classify(images[0]) == "cache"
+                if print_libraries:
+                    cell["gdal_images_found"] += images is not None
+                    if images:
+                        cache_images = [p for p in images if classify(p) == "cache"]
+                        cell["images"] += len(images)
+                        cell["cache_images"] += len(cache_images)
+                        cell["launches_with_cache_image"] += bool(cache_images)
+                        cell["main_image_cache"] += classify(images[0]) == "cache"
                 save_counts()
             if proc.returncode:
                 print("FAIL", key, trial, stderr.strip()[-400:], flush=True)
             return result
 
         # ---- natural phase -------------------------------------------------
-        cells = [("hardlink", d) for d in delays] + [("copy-app", 0.0)]
+        cells = [("hardlink", d) for d in delays] + [
+            ("copy-app", 0.0),
+            ("copy-app-print", 0.0),
+        ]
         cases = [
             (mode, delay, t)
             for mode, delay in cells
             for t in range(args.natural_trials)
         ]
         random.Random(982).shuffle(cases)
-        for index, (mode, delay, trial) in enumerate(cases):
-            name = f"gdal-nat-{index:03d}"
+        for index_, (mode, delay, trial) in enumerate(cases):
+            name = f"gdal-nat-{index_:03d}"
             key = f"{mode}/delay{delay:g}s"
-            print("CREATE", index, key, flush=True)
+            print("CREATE", index_, key, flush=True)
             run_logged(
-                ["create", "-y", "-n", name, "-f", str(lock)], f"{index:03d}-create"
+                ["create", "-y", "-n", name, "-f", str(lock)], f"{index_:03d}-create"
             )
             created_ns = time.time_ns()
-            if index == 0:
-                census(name)
             paths = files(name)
-            before = {k: fingerprint(paths[k]) for k in ("cache_app", "env_app")}
-            if mode == "copy-app":
+            if mode.startswith("copy-app"):
+                # The only operations on either alias before the launch: the
+                # byte copy itself reads the cache alias and creates the
+                # environment alias from this live thread.
                 paths["env_app"].unlink()
                 shutil.copy2(paths["cache_app"], paths["env_app"])
-                after = fingerprint(paths["env_app"])
-                assert (
-                    after["nlink"] == 1
-                    and after["inode"] != before["cache_app"]["inode"]
-                ), after
-                assert after["sha256"] == before["cache_app"]["sha256"], after
-            else:
-                assert before["env_app"]["inode"] == before["cache_app"]["inode"], (
-                    before
-                )
             if delay:
                 time.sleep(delay)
             launched_ns = time.time_ns()
-            result = natural_launch(
-                name, key, trial, print_libraries=(mode == "copy-app")
-            )
+            printing = mode == "copy-app-print"
+            result = natural_launch(name, key, trial, print_libraries=printing)
             if result["returncode"]:
-                natural_launch(
-                    name, key, trial, print_libraries=(mode == "copy-app"), retry=True
-                )
+                natural_launch(name, key, trial, print_libraries=printing, retry=True)
+            after = {k: fingerprint(paths[k]) for k in ("cache_app", "env_app")}
+            if mode.startswith("copy-app"):
+                assert after["env_app"]["nlink"] == 1, after
+                assert after["env_app"]["inode"] != after["cache_app"]["inode"], after
+            else:
+                assert after["env_app"]["inode"] == after["cache_app"]["inode"], after
+            assert after["env_app"]["sha256"] == after["cache_app"]["sha256"], after
             record(
                 {
                     "event": "natural_trial",
-                    "index": index,
+                    "index": index_,
                     "case": key,
                     "trial": trial,
                     "created_ns": created_ns,
                     "launched_ns": launched_ns,
-                    "files_before": before,
-                    "files_after": {
-                        k: fingerprint(paths[k]) for k in ("cache_app", "env_app")
-                    },
+                    "files_after": after,
                 }
             )
-            run_logged(["env", "remove", "-y", "-n", name], f"{index:03d}-remove")
-            print("DONE", index, json.dumps(counts["natural"][key]), flush=True)
+            run_logged(["env", "remove", "-y", "-n", name], f"{index_:03d}-remove")
+            print("DONE", index_, json.dumps(counts["natural"][key]), flush=True)
 
         # ---- triggered phase -----------------------------------------------
         touch_exit = build("touch_exit", output)
@@ -352,8 +387,9 @@ def main():  # noqa: C901
         paths = files(name)
         template_app = output / "template-app"
         shutil.copy2(paths["cache_app"], template_app)
+        index = cache_index(root)
 
-        # Which libraries does gdalinfo load, and which of them are hardlinked?
+        # Which libraries does gdalinfo load, and which of them are cache hardlinks?
         probe = subprocess.run(
             [str(paths["env_app"]), "--version"],
             env=env_print,
@@ -361,13 +397,9 @@ def main():  # noqa: C901
             text=True,
             timeout=60,
         )
-        images = dyld_images(probe.stderr)
+        images = gdal_images(probe.stderr)
         if probe.returncode or not images:
             raise RuntimeError(f"library listing launch failed: {probe.stderr[-400:]}")
-        inode_to_cache = {}
-        for path in (root / "pkgs").rglob("*"):
-            if path.is_file() and not path.is_symlink() and path.stat().st_nlink > 1:
-                inode_to_cache.setdefault(path.stat().st_ino, str(path))
         loaded = []
         for image in images[1:]:
             p = Path(image)
@@ -380,38 +412,41 @@ def main():  # noqa: C901
                     "class": classify(image),
                     "nlink": info.st_nlink,
                     "inode": info.st_ino,
-                    "cache_alias": inode_to_cache.get(info.st_ino),
+                    "cache_alias": index.get((info.st_dev, info.st_ino)),
                 }
             )
         (output / "loaded_libraries.json").write_text(
             json.dumps(loaded, indent=1) + "\n"
         )
-        candidates = [
-            row
-            for row in loaded
-            if row["class"] == "env" and row["nlink"] > 1 and row["cache_alias"]
-        ]
-        target_lib = None
-        if candidates:
-            chosen = sorted(candidates, key=lambda r: r["path"])[0]
-            target_lib = {
-                "env": Path(chosen["path"]),
-                "cache": Path(chosen["cache_alias"]),
+        candidates = sorted(
+            (row for row in loaded if row["class"] == "env" and row["cache_alias"]),
+            key=lambda r: r["path"],
+        )[: args.max_libraries]
+        libraries = {}
+        for row in candidates:
+            lib_name = Path(row["path"]).name
+            template = output / f"template-{lib_name}"
+            shutil.copy2(row["cache_alias"], template)
+            libraries[lib_name] = {
+                "env": Path(row["path"]),
+                "cache": Path(row["cache_alias"]),
+                "template": template,
             }
-            template_lib = output / "template-lib"
-            shutil.copy2(target_lib["cache"], template_lib)
         record(
             {
                 "event": "triggered_setup",
                 "images": images,
                 "loaded": loaded,
-                "target_lib": {k: str(v) for k, v in target_lib.items()}
-                if target_lib
-                else None,
+                "libraries": {
+                    k: {kk: str(vv) for kk, vv in v.items()}
+                    for k, v in libraries.items()
+                },
             }
         )
         counts["census"]["loaded_libraries"] = len(loaded)
-        counts["census"]["loaded_libraries_hardlinked"] = len(candidates)
+        counts["census"]["loaded_libraries_cache_linked"] = sum(
+            1 for row in loaded if row["class"] == "env" and row["cache_alias"]
+        )
         save_counts()
 
         def fresh(mode, cache, env_path, template):
@@ -427,27 +462,37 @@ def main():  # noqa: C901
                 e.st_ino,
             )
 
-        cells = [("hardlink-app", "trigger-app", d) for d in delays]
-        cells += [("hardlink-app", "none", 0.0), ("copy-app", "trigger-app", 0.0)]
-        if target_lib:
-            cells += [("copy-app", "trigger-lib", 0.0), ("copy-app", "none-lib", 0.0)]
+        cells = [("hardlink-app", "trigger-app", None, d) for d in delays]
+        cells += [
+            ("hardlink-app", "none", None, 0.0),
+            ("copy-app", "trigger-app", None, 0.0),
+        ]
+        for lib_name in libraries:
+            cells += [
+                ("copy-app", "trigger-lib", lib_name, 0.0),
+                ("copy-app", "none-lib", lib_name, 0.0),
+            ]
         cases = [
-            (app, trigger, delay, t)
-            for app, trigger, delay in cells
+            (app, trigger, lib_name, delay, t)
+            for app, trigger, lib_name, delay in cells
             for t in range(args.triggered_trials)
         ]
         random.Random(983).shuffle(cases)
-        for app, trigger, delay, trial in cases:
-            key = f"{app}/{trigger}/delay{delay:g}s"
+        for app, trigger, lib_name, delay, trial in cases:
+            key = (
+                f"{app}/{trigger}"
+                + (f":{lib_name}" if lib_name else "")
+                + f"/delay{delay:g}s"
+            )
             fresh(
                 "hardlink" if app == "hardlink-app" else "copy",
                 paths["cache_app"],
                 paths["env_app"],
                 template_app,
             )
-            lib_cell = trigger.endswith("lib")
-            if lib_cell:
-                fresh("hardlink", target_lib["cache"], target_lib["env"], template_lib)
+            lib = libraries[lib_name] if lib_name else None
+            if lib:
+                fresh("hardlink", lib["cache"], lib["env"], lib["template"])
             if trigger == "trigger-app":
                 subprocess.run(
                     [str(touch_exit), str(paths["cache_app"]), "0"],
@@ -457,7 +502,7 @@ def main():  # noqa: C901
                 )
             elif trigger == "trigger-lib":
                 subprocess.run(
-                    [str(touch_exit), str(target_lib["cache"]), "0"],
+                    [str(touch_exit), str(lib["cache"]), "0"],
                     env=env_clean,
                     check=True,
                     timeout=10,
@@ -474,7 +519,7 @@ def main():  # noqa: C901
                     "spawn",
                     "0",
                 ],
-                env=env_print if lib_cell else env_clean,
+                env=env_print if lib else env_clean,
                 capture_output=True,
                 text=True,
                 timeout=60,
@@ -484,25 +529,27 @@ def main():  # noqa: C901
                 and ORIGINAL_UUID in proc.stderr
                 and "/pkgs/" in proc.stderr
             )
-            images = dyld_images(proc.stderr) if lib_cell else None
+            images = gdal_images(proc.stderr) if lib else None
             lib_class = None
-            if lib_cell:
-                if not images:
-                    raise RuntimeError(
-                        "DYLD_PRINT_LIBRARIES produced no dyld lines; inspect events"
-                    )
-                matches = [p for p in images if Path(p).name == target_lib["env"].name]
-                lib_class = classify(matches[0]) if matches else "missing"
+            if lib:
+                if images:
+                    matches = [p for p in images if Path(p).name == lib_name]
+                    lib_class = classify(matches[0]) if matches else "missing"
+                else:
+                    lib_class = "unparsed"
             cell = counts["triggered"][key]
             cell["launches"] += 1
             cell["failures"] += proc.returncode != 0
             cell["original_signature"] += signature
-            if lib_cell:
+            if lib:
+                cell["gdal_images_found"] += images is not None
                 cell["target_lib_cache"] += lib_class == "cache"
                 cell["target_lib_env"] += lib_class == "env"
                 cell["target_lib_missing"] += lib_class == "missing"
-                cell["cache_images"] += sum(classify(p) == "cache" for p in images)
-                cell["main_image_cache"] += classify(images[0]) == "cache"
+                cell["target_lib_unparsed"] += lib_class == "unparsed"
+                if images:
+                    cell["cache_images"] += sum(classify(p) == "cache" for p in images)
+                    cell["main_image_cache"] += classify(images[0]) == "cache"
             save_counts()
             record(
                 {
@@ -516,9 +563,10 @@ def main():  # noqa: C901
                     "stderr": proc.stderr,
                     "original_signature": signature,
                     "images": images,
+                    "dyld_pids": list(dyld_processes(proc.stderr)) if lib else None,
                     "target_lib_class": lib_class,
                     "app": fingerprint(paths["env_app"]),
-                    "lib": fingerprint(target_lib["env"]) if lib_cell else None,
+                    "lib": fingerprint(lib["env"]) if lib else None,
                 }
             )
             if proc.returncode:
