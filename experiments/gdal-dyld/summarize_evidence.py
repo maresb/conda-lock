@@ -654,7 +654,7 @@ def print_natural_selective(runs):
                 f"({per['dylib_cache_linked_bytes']:,} of {per['dylib_bytes']:,} bytes); "
                 f"{per.get('macho_multilink_not_cache', 0)} multiply linked files not linked to the cache; "
                 + (
-                    f"gdalinfo loads {per['loaded_libraries']} libraries, {per['loaded_libraries_cache_linked']} of them cache hardlinks; "
+                    f"of the images dyld reported for gdalinfo, {per['loaded_libraries']} are files on disk and {per['loaded_libraries_cache_linked']} of those cache hardlinks; "
                     if "loaded_libraries" in per
                     else ""
                 )

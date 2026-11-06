@@ -10,8 +10,9 @@
 **A lookup of the package-cache alias by a thread that has since exited is
 sufficient to make dyld resolve a hardlinked executable to the cache path.
 The lookup can come from a separate, already-finished process. Keeping the
-looking-up thread alive prevents it, and so do seven later lookups of the
-environment alias by other live threads. The effect is present on macOS 15 and
+looking-up thread alive prevented it in all but one of 2,640 identity launches
+and in all 80 GDAL launches, and seven later lookups of the environment alias
+by other live threads prevented it in every launch. The effect is present on macOS 15 and
 26, on arm64 and x86_64, on APFS volumes, on APFS disk images, and on HFS+
 disk images in all but one image-run. Copied and cloned executables never
 resolved to the cache in any tested launch. After a wrong-path launch, every retry of the same
@@ -28,8 +29,8 @@ cache path in the 60 that recorded placement; with the installer-like trigger
 and the real executable, a one-second pause reduced failures from 202 to 3 in
 320 and two seconds to 1 in 320; a finished process's lookup of a hardlinked
 library's cache alias never moved that library in 800 launches over three
-libraries, while one control launch in 800 placed `libLerc.dylib` at the
-cache path on its own. The defect is dyld's use of an inode-based `fsgetpath` result,
+libraries, while one control launch in 800 reported `libLerc.dylib` at the
+cache path without an added lookup process or reader, and passed. The defect is dyld's use of an inode-based `fsgetpath` result,
 which for a hard link may be any alias, as the origin for relative loading,
 in preference to the launched path it also holds.**
 
@@ -43,7 +44,9 @@ cancelled and by whom where known, plus the lifecycle and standalone runs
 cited below.
 Every table below is pasted from the output of
 [summarize_evidence.py](summarize_evidence.py) on that record. Each summary
-was recounted from its raw `events.jsonl`, and each artifact's file checksums
+was recounted from its raw `events.jsonl`, except for the three instances of
+run 42206132757, whose event files were not archived and whose counts are the
+runner's own, and each artifact's file checksums
 were verified against its manifest. Artifacts expire around 2026-12-04 to 2026-12-06.
 
 Two routes to the wrong executable path are now demonstrated separately:
@@ -637,9 +640,9 @@ revisions and is one more natural first-launch failure.
 
 ### Census of the environment (clean-run probe, by device and inode)
 
-- 42206132757: 540 of 608 Mach-O files are cache hardlinks (179,622,309 of 250,124,485 bytes); 298 of 328 `.dylib`/`.so` files (153,026,928 of 207,325,456 bytes); 0 multiply linked files not linked to the cache; gdalinfo loads 76 libraries, 60 of them cache hardlinks; identical on all 3 instances
+- 42206132757: 540 of 608 Mach-O files are cache hardlinks (179,622,309 of 250,124,485 bytes); 298 of 328 `.dylib`/`.so` files (153,026,928 of 207,325,456 bytes); 0 multiply linked files not linked to the cache; of the images dyld reported for gdalinfo, 76 are files on disk and 60 of those cache hardlinks; identical on all 3 instances
 - 42209002461: 540 of 608 Mach-O files are cache hardlinks (179,622,309 of 250,124,485 bytes); 298 of 328 `.dylib`/`.so` files (153,026,928 of 207,325,456 bytes); 0 multiply linked files not linked to the cache; identical on all 3 instances
-- 42213891575: 540 of 608 Mach-O files are cache hardlinks (179,622,309 of 250,124,485 bytes); 298 of 328 `.dylib`/`.so` files (153,026,928 of 207,325,456 bytes); 0 multiply linked files not linked to the cache; gdalinfo loads 76 libraries, 60 of them cache hardlinks; identical on all 3 instances
+- 42213891575: 540 of 608 Mach-O files are cache hardlinks (179,622,309 of 250,124,485 bytes); 298 of 328 `.dylib`/`.so` files (153,026,928 of 207,325,456 bytes); 0 multiply linked files not linked to the cache; of the images dyld reported for gdalinfo, 76 are files on disk and 60 of those cache hardlinks; identical on all 3 instances
 
 ### Natural phase (failures / first launches, summed over instances)
 
@@ -683,16 +686,20 @@ a one-second pause cut failures from 202 to 3 in 320 and two seconds to 1 in
 320, so a pause removes nearly all of the triggered failures on these runners
 and not all of them. A finished process's lookup of a hardlinked library's
 cache alias never moved that library in 800 pooled launches over three named
-libraries, while one of 800 control launches, with no lookup and no reader,
-placed `libLerc.dylib` at the cache path and passed, the executable at its
-environment path, the previous launch a `libbz2` control
+libraries, while one of 800 control launches, with no added lookup process and no
+reader, reported `libLerc.dylib` at the cache path and nevertheless passed,
+the executable at its environment path, the previous launch a `libbz2` control
 ([run 42213891575](https://github.com/maresb/conda-lock/actions/runs/42213891575),
-instance 3, trial 27, archived dyld output). Libraries can therefore land on
-the cache path without concurrent access, at a low rate and silently under
-the `@rpath` layout, by a route these experiments do not characterize. The
+instance 3, trial 27, archived dyld output; the library's recorded hash
+matches the package). One control launch therefore reported a hardlinked
+library's cache path without an added lookup process or reader, in a setup
+that replaced that library's files before every trial and did not exclude
+background access; whether and how often this happens in ordinary
+installation launches is not established. The
 census bounds the cost at stake: 298 of the environment's 328 `.dylib` and
-`.so` files, 153 of 207 MB, are cache hardlinks, and 60 of the 76 libraries
-gdalinfo loads.
+`.so` files, 153 of 207 MB, are cache hardlinks, and 60 of the 76 file-backed
+images gdalinfo loads; dyld reported 673 images for it, the rest system
+images that are not files on disk.
 
 ## Why this fits the original failure
 
@@ -767,12 +774,12 @@ failure was observed without an artificial reader. In the real install
 sequence with only the executable copied, no library loaded from the cache
 path in 60 recorded launches, and a finished process's lookup of a hardlinked
 library's cache alias never moved that library in 800 launches, but one
-control launch in 800 placed `libLerc.dylib` at the cache path with no
-trigger and no reader, passing because the `@rpath` layout masks it
+control launch in 800 reported `libLerc.dylib` at the cache path with no
+added lookup process and no reader, and nevertheless passed
 ([below](#real-install-sequence-only-the-executable-copied-and-pauses)).
 Installers that hardlink from a package cache therefore expose executables,
-and at a low rate libraries, whose relative dependencies or resources differ
-between aliases. Avoiding hardlinks for such executables is a compatibility fix on
+and in at least one observed launch a library, whose relative dependencies or
+resources differ between aliases. Avoiding hardlinks for such executables is a compatibility fix on
 their side that addresses the demonstrated natural failure; cloning or
 copying all Mach-O executables is a conservative policy broader than that
 failure, and it does not cover the library route. The relocation scheme in
@@ -793,7 +800,8 @@ targeted workaround.
   later, for reasons not resolved.
 - The launched process's first thread can inherit such a record from an
   exited thread of the same or another process. Keeping that thread alive
-  prevented it. Starting two holder threads after the worker exited reduced
+  prevented it in all but one of 2,640 identity launches and in all 80 GDAL
+  launches. Starting two holder threads after the worker exited reduced
   cache-path launches to 3/270, while four holders yielded 0/270, consistent
   with, but not proof of, the launched thread otherwise taking the freed
   identity.
@@ -822,9 +830,9 @@ documented semantics predict; the one run without it is unexplained.
 - Both installers and dyld could address it: installers by cloning or
   copying executables whose relative dependencies differ between aliases,
   which conda-build's relocation scheme makes common (cloning keeps the
-  space savings; 298 of the GDAL environment's 328 libraries are cache
-  hardlinks, and libraries stay exposed at a low rate by a route not
-  characterized here);
+  space savings; 298 of the GDAL environment's 328 library files are cache
+  hardlinks, and one control launch reported a library's cache path without
+  an added lookup or reader);
   dyld by preferring `realpath` of the kernel-supplied
   `executable_path`, which named the launched alias in every recorded
   wrong-path launch, or a link ID. Neither candidate has been validated.
