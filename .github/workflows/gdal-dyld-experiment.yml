@@ -12,6 +12,10 @@ on:
         description: Comma-separated job labels to run; empty runs every job
         required: false
         default: ""
+      probe_args:
+        description: Extra arguments for natural_copy_probe.py (natural-selective job only)
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -178,10 +182,13 @@ jobs:
           init-shell: none
           micromamba-version: 2.10.0-0
       - name: Real install sequence with selective copying and pauses
+        env:
+          PROBE_ARGS: ${{ inputs.probe_args }}
         run: |
+          # shellcheck disable=SC2086  # PROBE_ARGS is a deliberate word-split argument list
           /usr/bin/python3 experiments/gdal-dyld/natural_copy_probe.py \
             --micromamba "$MAMBA_EXE" --root-prefix "$MAMBA_ROOT_PREFIX" \
-            --output "$RUNNER_TEMP/gdal-dyld/probe"
+            --output "$RUNNER_TEMP/gdal-dyld/probe" $PROBE_ARGS
       - name: Collect evidence
         if: ${{ !cancelled() }}
         run: /usr/bin/python3 experiments/gdal-dyld/collect_evidence.py "$RUNNER_TEMP/gdal-dyld"

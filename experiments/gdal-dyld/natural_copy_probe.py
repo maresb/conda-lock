@@ -129,6 +129,12 @@ def parse_args():
         "--delays", default="0,1,2", help="seconds, natural and triggered"
     )
     parser.add_argument("--max-libraries", type=int, default=3)
+    parser.add_argument("--phases", default="natural,triggered")
+    parser.add_argument(
+        "--natural-cells",
+        default="hardlink,copy-app,copy-app-print",
+        help="comma-separated modes; hardlink expands to one cell per delay",
+    )
     args = parser.parse_args()
     if (
         platform.system() != "Darwin"
@@ -138,6 +144,12 @@ def parse_args():
         parser.error("Run only on this experiment's authorized GitHub macOS runner")
     if args.natural_trials < 1 or args.triggered_trials < 1:
         parser.error("Use positive trials")
+    args.phases = args.phases.split(",")
+    args.natural_cells = args.natural_cells.split(",")
+    if not set(args.phases) <= {"natural", "triggered"}:
+        parser.error("Unknown phase")
+    if not set(args.natural_cells) <= {"hardlink", "copy-app", "copy-app-print"}:
+        parser.error("Unknown natural cell")
     return args
 
 
@@ -177,6 +189,8 @@ def main():  # noqa: C901
         "triggered_trials": args.triggered_trials,
         "delays": delays,
         "max_libraries": args.max_libraries,
+        "phases": args.phases,
+        "natural_cells": args.natural_cells,
         "micromamba": subprocess.check_output(
             [*command, "--version"], text=True
         ).strip(),
@@ -279,9 +293,17 @@ def main():  # noqa: C901
 
         def natural_launch(name, key, trial, print_libraries, retry=False):
             started = time.time_ns()
+            # `micromamba run` goes through /bin/bash, a SIP-restricted binary that
+            # drops DYLD_ variables from its environment, so the printing cell sets
+            # the variable inside the command instead of inheriting it.
+            launch = (
+                ["/usr/bin/env", "DYLD_PRINT_LIBRARIES=1", "gdalinfo", "--version"]
+                if print_libraries
+                else ["gdalinfo", "--version"]
+            )
             proc = subprocess.Popen(
-                [*command, "run", "-n", name, "gdalinfo", "--version"],
-                env=env_print if print_libraries else env_clean,
+                [*command, "run", "-n", name, *launch],
+                env=env_clean,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
@@ -327,10 +349,12 @@ def main():  # noqa: C901
             return result
 
         # ---- natural phase -------------------------------------------------
-        cells = [("hardlink", d) for d in delays] + [
-            ("copy-app", 0.0),
-            ("copy-app-print", 0.0),
+        cells = [("hardlink", d) for d in delays if "hardlink" in args.natural_cells]
+        cells += [
+            (m, 0.0) for m in ("copy-app", "copy-app-print") if m in args.natural_cells
         ]
+        if "natural" not in args.phases:
+            cells = []
         cases = [
             (mode, delay, t)
             for mode, delay in cells
@@ -381,6 +405,9 @@ def main():  # noqa: C901
             print("DONE", index_, json.dumps(counts["natural"][key]), flush=True)
 
         # ---- triggered phase -----------------------------------------------
+        if "triggered" not in args.phases:
+            print(json.dumps(counts, indent=2), flush=True)
+            return
         touch_exit = build("touch_exit", output)
         prime_exec = build("prime_exec", output)
         name = "gdal-trig"
@@ -391,16 +418,35 @@ def main():  # noqa: C901
         index = cache_index(root)
 
         # Which libraries does gdalinfo load, and which of them are cache hardlinks?
-        probe = subprocess.run(
-            [str(paths["env_app"]), "--version"],
-            env=env_print,
-            capture_output=True,
-            text=True,
-            timeout=60,
-        )
-        images = gdal_images(probe.stderr)
-        if probe.returncode or not images:
-            raise RuntimeError(f"library listing launch failed: {probe.stderr[-400:]}")
+        images = None
+        for attempt in range(5):
+            probe = subprocess.run(
+                [str(paths["env_app"]), "--version"],
+                env=env_print,
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+            images = gdal_images(probe.stderr)
+            # A failure here is itself a natural first-launch failure; it is
+            # recorded and the launch retried rather than ending the job.
+            record(
+                {
+                    "event": "listing_launch",
+                    "attempt": attempt,
+                    "returncode": probe.returncode,
+                    "original_signature": SIGNATURE in probe.stderr
+                    and "/pkgs/" in probe.stderr,
+                    "stderr": probe.stderr,
+                    "main_image": images[0] if images else None,
+                }
+            )
+            if probe.returncode == 0 and images:
+                break
+        else:
+            raise RuntimeError(
+                f"library listing launch failed five times: {probe.stderr[-400:]}"
+            )
         loaded = []
         for image in images[1:]:
             p = Path(image)
