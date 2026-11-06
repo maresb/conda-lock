@@ -22,7 +22,14 @@ thread, alive or exited. A stale record is not consumed by being read, is
 replaced by an environment record when its holder looks up the environment
 alias, survives five seconds while held, and is rarely seen again a second
 after the identity is freed. Why retries and pauses help is not
-established. The defect is dyld's use of an inode-based `fsgetpath` result,
+established. In the real `micromamba create` sequence with only the
+executable copied, 180 first launches passed and no library loaded from the
+cache path in the 60 that recorded placement; with the installer-like trigger
+and the real executable, a one-second pause reduced failures from 202 to 3 in
+320 and two seconds to 1 in 320; a finished process's lookup of a hardlinked
+library's cache alias never moved that library in 800 launches over three
+libraries, while one control launch in 800 placed `libLerc.dylib` at the
+cache path on its own. The defect is dyld's use of an inode-based `fsgetpath` result,
 which for a hard link may be any alias, as the origin for relative loading,
 in preference to the launched path it also holds.**
 
@@ -37,7 +44,7 @@ cited below.
 Every table below is pasted from the output of
 [summarize_evidence.py](summarize_evidence.py) on that record. Each summary
 was recounted from its raw `events.jsonl`, and each artifact's file checksums
-were verified against its manifest. Artifacts expire around 2026-12-04.
+were verified against its manifest. Artifacts expire around 2026-12-04 to 2026-12-06.
 
 Two routes to the wrong executable path are now demonstrated separately:
 
@@ -578,6 +585,115 @@ compatibility and storage separation; the evidence that an unshared
 executable prevents the failure is the copy and clone cells of the trigger
 experiments above.
 
+## Real install sequence: only the executable copied, and pauses
+
+The earlier evidence on two questions raised in
+[cctools-and-ld64-feedstock#111](https://github.com/conda-forge/cctools-and-ld64-feedstock/pull/111),
+whether `no_link` would have to cover every dylib and whether waiting after
+environment creation avoids the failure, came from a synthetic library fixture
+and from a model of create-then-run. [natural_copy_probe.py](natural_copy_probe.py)
+asks both of the real sequence: `micromamba create` from the explicit GDAL
+lockfile on `macos-26`, three instances per run. A census environment is
+created first and every Mach-O file in it matched by device and inode against
+the package cache. The natural phase then creates a fresh environment per
+trial, in shuffled order, and either launches at once, sleeps 1 s or 2 s, or
+replaces only `bin/gdalinfo` with a byte copy and launches at once, with or
+without `DYLD_PRINT_LIBRARIES=1`; nothing touches either alias between the
+create and the launch except the byte copy itself, one counted launch per
+trial, fingerprints taken afterwards. The triggered phase repeats
+[delay_probe.py](delay_probe.py)'s design with the real executable (a finished
+process looks up the cache alias, an optional pause, a launcher looks up the
+environment alias and spawns), and adds library cells: executable copied, a
+fresh cache inode for one named hardlinked library that gdalinfo loads, the
+same finished-process lookup of that library's cache alias or none, and
+`DYLD_PRINT_LIBRARIES=1` to record where dyld placed it. The variable is set
+only in cells whose outcome is library placement, and its lines are grouped by
+process ID so that only gdalinfo's own process is read.
+
+Five runs were dispatched while the probe was corrected under review. The
+first revision fingerprinted both aliases from a live thread before each
+launch and globbed for the cached executable per trial, so run 42201910644's
+natural cells are not an untouched baseline and are shown only for
+comparison; run 42204859719 was cancelled for the same reason before it
+finished. `micromamba run` executes its command through `/bin/bash`, a
+SIP-restricted binary that drops `DYLD_` variables, so the printing cell in
+runs 42201910644 and 42206132757 recorded the launchers' images and never
+gdalinfo's; run 42209002461 repeats that cell with the variable set inside the
+command via `/usr/bin/env`. Run 42206132757's event files exceeded the
+collector's size limit and were not archived, so its counts are the runner's
+own; run 42213891575 repeats the triggered phase with every printing launch's
+dyld output archived, and re-parsing those logs reproduces its recorded images
+in every launch. One instance of run 42201910644 ended when its library-listing
+launch, the first launch after a create, failed with the original signature,
+after its natural phase had completed; that launch is retried in later
+revisions and is one more natural first-launch failure.
+
+| Run | Probe | Instances | Role |
+|---|---|---:|---|
+| 42201910644 | `72b8c6629` | 2 | first probe revision; natural cells are not a baseline (see note) |
+| 42206132757 | `643b34705` | 3 | clean natural baseline and triggered phase |
+| 42209002461 | `942974c9f` | 3 | printing cell only, variable set inside the command |
+| 42213891575 | `9d69470ae` | 3 | triggered phase only, dyld output archived |
+
+### Census of the environment (clean-run probe, by device and inode)
+
+- 42206132757: 540 of 608 Mach-O files are cache hardlinks (179,622,309 of 250,124,485 bytes); 298 of 328 `.dylib`/`.so` files (153,026,928 of 207,325,456 bytes); 0 multiply linked files not linked to the cache; gdalinfo loads 76 libraries, 60 of them cache hardlinks; identical on all 3 instances
+- 42209002461: 540 of 608 Mach-O files are cache hardlinks (179,622,309 of 250,124,485 bytes); 298 of 328 `.dylib`/`.so` files (153,026,928 of 207,325,456 bytes); 0 multiply linked files not linked to the cache; identical on all 3 instances
+- 42213891575: 540 of 608 Mach-O files are cache hardlinks (179,622,309 of 250,124,485 bytes); 298 of 328 `.dylib`/`.so` files (153,026,928 of 207,325,456 bytes); 0 multiply linked files not linked to the cache; gdalinfo loads 76 libraries, 60 of them cache hardlinks; identical on all 3 instances
+
+### Natural phase (failures / first launches, summed over instances)
+
+| Cell | 42201910644 | 42206132757 | 42209002461 |
+|---|---:|---:|---:|
+| Hardlinked, launched at once | 1/75 | 1/60 |  |
+| Hardlinked, 1 s pause | 1/75 | 1/60 |  |
+| Hardlinked, 2 s pause | 1/75 | 0/60 |  |
+| Executable copied, launched at once | 0/75; gdalinfo images in 0, cache-path images 0 of 0 | 0/60 |  |
+| Executable copied, launched at once, dyld printing |  | 0/60; gdalinfo images in 0, cache-path images 0 of 0 | 0/60; gdalinfo images in 60, cache-path images 0 of 40380 |
+
+### Triggered phase with the real executable (failures / launches, summed over instances)
+
+| Cell | 42201910644 | 42206132757 | 42213891575 | Pooled |
+|---|---:|---:|---:|---:|
+| Hardlinked, cache lookup by a finished process, no pause | 54/80 | 75/120 | 73/120 | 202/320 |
+| Same, 1 s pause | 1/80 | 2/120 | 0/120 | 3/320 |
+| Same, 2 s pause | 0/80 | 1/120 | 0/120 | 1/320 |
+| Hardlinked, no lookup | 0/80 | 0/120 | 0/120 | 0/320 |
+| Copied, cache lookup by a finished process | 0/80 | 0/120 | 0/120 | 0/320 |
+
+### Library cells, executable copied (cache-path placements of the named library / launches with gdalinfo images)
+
+| Library | Lookup of its cache alias by a finished process | 42201910644 | 42206132757 | 42213891575 | Pooled |
+|---|---|---:|---:|---:|---:|
+| `libLerc.dylib` | yes | 0/80 | 0/120 | 0/120 | 0/320 |
+| `libLerc.dylib` | no | 0/80 | 0/120 | 1/120 | 1/320 |
+| `libblosc.1.21.6.dylib` | yes |  | 0/120 | 0/120 | 0/240 |
+| `libblosc.1.21.6.dylib` | no |  | 0/120 | 0/120 | 0/240 |
+| `libbz2.1.0.8.dylib` | yes |  | 0/120 | 0/120 | 0/240 |
+| `libbz2.1.0.8.dylib` | no |  | 0/120 | 0/120 | 0/240 |
+
+All failures in every cell carry the original missing-libcrypto signature.
+The natural failure rate stays near the earlier 4 of 144: in the clean run,
+first launches of the hardlinked executable failed 1 in 60 at once, 1 in 60
+after a second, and 0 in 60 after two seconds, too few to separate the pauses.
+With only the executable copied, 180 clean first launches passed over runs
+42206132757 and 42209002461, and in the 60 that recorded placement, none of
+about 673 images per launch came from the cache path. With the installer-like trigger and the real executable,
+a one-second pause cut failures from 202 to 3 in 320 and two seconds to 1 in
+320, so a pause removes nearly all of the triggered failures on these runners
+and not all of them. A finished process's lookup of a hardlinked library's
+cache alias never moved that library in 800 pooled launches over three named
+libraries, while one of 800 control launches, with no lookup and no reader,
+placed `libLerc.dylib` at the cache path and passed, the executable at its
+environment path, the previous launch a `libbz2` control
+([run 42213891575](https://github.com/maresb/conda-lock/actions/runs/42213891575),
+instance 3, trial 27, archived dyld output). Libraries can therefore land on
+the cache path without concurrent access, at a low rate and silently under
+the `@rpath` layout, by a route these experiments do not characterize. The
+census bounds the cost at stake: 298 of the environment's 328 `.dylib` and
+`.so` files, 153 of 207 MB, are cache hardlinks, and 60 of the 76 libraries
+gdalinfo loads.
+
 ## Why this fits the original failure
 
 [Three more original-sequence jobs](https://github.com/maresb/conda-lock/actions/runs/41803396689)
@@ -647,10 +763,16 @@ copied executable and a hardlinked library whose own dependency is
 produced 39 and 13 wrong-library launches in 60, against 0 in 60 with no
 reader and 0 in 180 with a copied library
 ([CI-RESULTS.md](CI-RESULTS.md#controlled-experiments)); no library-only
-failure was observed without an artificial reader. Installers that hardlink
-from a package cache therefore expose executables, and under concurrent cache
-access libraries, whose relative dependencies or resources differ between
-aliases. Avoiding hardlinks for such executables is a compatibility fix on
+failure was observed without an artificial reader. In the real install
+sequence with only the executable copied, no library loaded from the cache
+path in 60 recorded launches, and a finished process's lookup of a hardlinked
+library's cache alias never moved that library in 800 launches, but one
+control launch in 800 placed `libLerc.dylib` at the cache path with no
+trigger and no reader, passing because the `@rpath` layout masks it
+([below](#real-install-sequence-only-the-executable-copied-and-pauses)).
+Installers that hardlink from a package cache therefore expose executables,
+and at a low rate libraries, whose relative dependencies or resources differ
+between aliases. Avoiding hardlinks for such executables is a compatibility fix on
 their side that addresses the demonstrated natural failure; cloning or
 copying all Mach-O executables is a conservative policy broader than that
 failure, and it does not cover the library route. The relocation scheme in
@@ -690,7 +812,9 @@ documented semantics predict; the one run without it is unexplained.
   clone costs no data copy on APFS. Copying only libraries does not prevent
   the executable-path failure.
 - A pause of half a second or more before the launch left at most one
-  wrong-path launch in twenty on these hosted runners, and a retry after a
+  wrong-path launch in twenty on these hosted runners, and with the real
+  executable a one-second pause left 3 failures in 320 and two seconds 1 in
+  320 against 202 in 320 without a pause; a retry after a
   wrong-path launch passed in every tested condition. Both are mitigations
   whose mechanism is not established, not fixes; a record held by a live
   thread does not expire within five seconds, and what removes the stale
@@ -698,7 +822,9 @@ documented semantics predict; the one run without it is unexplained.
 - Both installers and dyld could address it: installers by cloning or
   copying executables whose relative dependencies differ between aliases,
   which conda-build's relocation scheme makes common (cloning keeps the
-  space savings; libraries stay exposed to the concurrent-lookup route);
+  space savings; 298 of the GDAL environment's 328 libraries are cache
+  hardlinks, and libraries stay exposed at a low rate by a route not
+  characterized here);
   dyld by preferring `realpath` of the kernel-supplied
   `executable_path`, which named the launched alias in every recorded
   wrong-path launch, or a link ID. Neither candidate has been validated.

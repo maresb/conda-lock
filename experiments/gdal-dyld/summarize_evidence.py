@@ -579,6 +579,159 @@ def print_delay(runs):
     per_run_table(runs, "delay-probe", keys, labels)
 
 
+NATURAL_RUNS = [42201910644, 42206132757, 42209002461, 42213891575]
+NATURAL_ROLES = {
+    42201910644: "first probe revision; natural cells are not a baseline (see note)",
+    42206132757: "clean natural baseline and triggered phase",
+    42209002461: "printing cell only, variable set inside the command",
+    42213891575: "triggered phase only, dyld output archived",
+}
+NATURAL_CELLS = [
+    ("hardlink/delay0s", "Hardlinked, launched at once"),
+    ("hardlink/delay1s", "Hardlinked, 1 s pause"),
+    ("hardlink/delay2s", "Hardlinked, 2 s pause"),
+    ("copy-app/delay0s", "Executable copied, launched at once"),
+    ("copy-app-print/delay0s", "Executable copied, launched at once, dyld printing"),
+]
+TRIGGERED_CELLS = [
+    (
+        "hardlink-app/trigger-app/delay0s",
+        "Hardlinked, cache lookup by a finished process, no pause",
+    ),
+    ("hardlink-app/trigger-app/delay1s", "Same, 1 s pause"),
+    ("hardlink-app/trigger-app/delay2s", "Same, 2 s pause"),
+    ("hardlink-app/none/delay0s", "Hardlinked, no lookup"),
+    ("copy-app/trigger-app/delay0s", "Copied, cache lookup by a finished process"),
+]
+
+
+def pooled(run, phase):
+    """Sum each cell's counters over the run's natural-selective instances."""
+    out = {}
+    for job, summary in run["summaries"].items():
+        if not job.startswith("natural-selective"):
+            continue
+        for cell, counts in summary.get(phase, {}).items():
+            if isinstance(counts, dict):
+                acc = out.setdefault(cell, {})
+                for k, v in counts.items():
+                    acc[k] = acc.get(k, 0) + v
+            else:  # the census is a flat counter
+                out[cell] = out.get(cell, 0) + counts
+    return out
+
+
+def print_natural_selective(runs):
+    by_id = {r["id"]: r for r in runs}
+    present = [i for i in NATURAL_RUNS if i in by_id]
+    print("\n## Real install sequence: selective copying and pauses (per run)\n")
+    print("| Run | Probe | Instances | Role |")
+    print("|---|---|---:|---|")
+    for i in present:
+        r = by_id[i]
+        done = sum(
+            1
+            for j in r["jobs"]
+            if j["name"].startswith("natural-selective")
+            and j["conclusion"] == "success"
+        )
+        print(f"| {i} | `{r['head_sha'][:9]}` | {done} | {NATURAL_ROLES[i]} |")
+    print("\n### Census of the environment (clean-run probe, by device and inode)\n")
+    for i in present:
+        c = pooled(by_id[i], "census")
+        n = sum(
+            1
+            for j in by_id[i]["jobs"]
+            if j["name"].startswith("natural-selective")
+            and j["conclusion"] == "success"
+        )
+        if "macho_cache_linked" in c:
+            per = {k: v // n for k, v in c.items()}
+            print(
+                f"- {i}: {per['macho_cache_linked']} of {per['macho_files']} Mach-O files are cache hardlinks "
+                f"({per['macho_cache_linked_bytes']:,} of {per['macho_bytes']:,} bytes); "
+                f"{per['dylib_cache_linked']} of {per['dylib_files']} `.dylib`/`.so` files "
+                f"({per['dylib_cache_linked_bytes']:,} of {per['dylib_bytes']:,} bytes); "
+                f"{per.get('macho_multilink_not_cache', 0)} multiply linked files not linked to the cache; "
+                + (
+                    f"gdalinfo loads {per['loaded_libraries']} libraries, {per['loaded_libraries_cache_linked']} of them cache hardlinks; "
+                    if "loaded_libraries" in per
+                    else ""
+                )
+                + f"identical on all {n} instances"
+            )
+    print("\n### Natural phase (failures / first launches, summed over instances)\n")
+    cols = [i for i in present if pooled(by_id[i], "natural")]
+    print("| Cell | " + " | ".join(str(i) for i in cols) + " |")
+    print("|---|" + "---:|" * len(cols))
+    for key, label in NATURAL_CELLS:
+        cells = []
+        for i in cols:
+            c = pooled(by_id[i], "natural").get(key)
+            if not c:
+                cells.append("")
+                continue
+            text = f"{c['failures']}/{c['launches']}"
+            if "gdal_images_found" in c:
+                text += f"; gdalinfo images in {c['gdal_images_found']}, cache-path images {c.get('cache_images', 0)} of {c.get('images', 0)}"
+            cells.append(text)
+        print(f"| {label} | " + " | ".join(cells) + " |")
+    print(
+        "\n### Triggered phase with the real executable (failures / launches, summed over instances)\n"
+    )
+    cols = [i for i in present if pooled(by_id[i], "triggered")]
+    print("| Cell | " + " | ".join(str(i) for i in cols) + " | Pooled |")
+    print("|---|" + "---:|" * (len(cols) + 1))
+    for key, label in TRIGGERED_CELLS:
+        vals = [pooled(by_id[i], "triggered").get(key, {}) for i in cols]
+        cells = [f"{c['failures']}/{c['launches']}" if c else "" for c in vals]
+        tf = sum(c.get("failures", 0) for c in vals)
+        tl = sum(c.get("launches", 0) for c in vals)
+        print(f"| {label} | " + " | ".join(cells) + f" | {tf}/{tl} |")
+    print(
+        "\n### Library cells, executable copied (cache-path placements of the named library / launches with gdalinfo images)\n"
+    )
+    libs = sorted(
+        {
+            k.split(":")[1].split("/")[0]
+            for i in cols
+            for k in pooled(by_id[i], "triggered")
+            if ":" in k
+        }
+    )
+    print(
+        "| Library | Lookup of its cache alias by a finished process | "
+        + " | ".join(str(i) for i in cols)
+        + " | Pooled |"
+    )
+    print("|---|---|" + "---:|" * (len(cols) + 1))
+    for lib in libs:
+        for trig, label in [("trigger-lib", "yes"), ("none-lib", "no")]:
+            vals = []
+            for i in cols:
+                t = pooled(by_id[i], "triggered")
+                c = t.get(f"copy-app/{trig}:{lib}/delay0s") or (
+                    t.get(f"copy-app/{trig}/delay0s")
+                    if lib == "libLerc.dylib"
+                    else None
+                )
+                vals.append(c or {})
+            cells = [
+                f"{c['target_lib_cache']}/{c['gdal_images_found']}"
+                + (
+                    f" ({c['launches']} launches)"
+                    if c["gdal_images_found"] != c["launches"]
+                    else ""
+                )
+                if c
+                else ""
+                for c in vals
+            ]
+            tc = sum(c.get("target_lib_cache", 0) for c in vals)
+            tl = sum(c.get("gdal_images_found", 0) for c in vals)
+            print(f"| `{lib}` | {label} | " + " | ".join(cells) + f" | {tc}/{tl} |")
+
+
 def main():
     runs = json.load(open(sys.argv[1]))["runs"]
     for section in [
@@ -595,6 +748,7 @@ def main():
         print_retry,
         print_record,
         print_delay,
+        print_natural_selective,
         print_respawn,
         print_fallback,
         print_churn,

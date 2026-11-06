@@ -14375,6 +14375,1459 @@
     }
    },
    "note": "dispatched with only=fallback-probe,record-probe-v3 after the live-worker handshake, per-reset checks, and the oppose cells were added (4562f163b)"
+  },
+  {
+   "conclusion": "failure",
+   "created_at": "2026-11-06T10:20:28Z",
+   "head_sha": "72b8c66298f2a2bd1223f60c14ce03c5f4110637",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/42201910644",
+   "id": 42201910644,
+   "jobs": [
+    {
+     "conclusion": "success",
+     "id": 127838990017,
+     "name": "plan"
+    },
+    {
+     "conclusion": "success",
+     "id": 127839027071,
+     "name": "natural-selective-2"
+    },
+    {
+     "conclusion": "failure",
+     "id": 127839027121,
+     "name": "natural-selective-1"
+    },
+    {
+     "conclusion": "success",
+     "id": 127839027258,
+     "name": "natural-selective-3"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127839029564,
+     "name": "workaround-validation"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127839029682,
+     "name": "matrix.label"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127839029694,
+     "name": "installer-identity"
+    }
+   ],
+   "artifacts": [
+    {
+     "digest": "sha256:574bfabe23600aa9b566c5b675aab909cf0a32474efaf9a8a3dee2d44ed9d1a9",
+     "id": 13497128301,
+     "name": "gdal-trigger-natural-selective-3",
+     "size_in_bytes": 10482873
+    },
+    {
+     "digest": "sha256:ddaabff0d6ace904971f8c3c30b5fbd092cb60f2952bbcbf70f1de95781d70b4",
+     "id": 13497102425,
+     "name": "gdal-trigger-natural-selective-1",
+     "size_in_bytes": 5338200
+    },
+    {
+     "digest": "sha256:447d4a09d4d6ba89b1d8b8301fd63d4e5cb639fb6b90886670cb2dbf0f40d461",
+     "id": 13496609450,
+     "name": "gdal-trigger-natural-selective-2",
+     "size_in_bytes": 10486414
+    }
+   ],
+   "hosts": {
+    "natural-selective-1": [
+     "ProductVersion:\t\t26.7.2",
+     "BuildVersion:\t\t25G332",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387.2",
+     "arm64"
+    ],
+    "natural-selective-2": [
+     "ProductVersion:\t\t26.7.2",
+     "BuildVersion:\t\t25G332",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387.2",
+     "arm64"
+    ],
+    "natural-selective-3": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ]
+   },
+   "summaries": {
+    "natural-selective-1": {
+     "natural": {
+      "hardlink/delay0s": {
+       "launches": 25,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "hardlink/delay2s": {
+       "launches": 25,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "hardlink/delay1s": {
+       "launches": 25,
+       "failures": 1,
+       "original_signature": 1
+      },
+      "copy-app/delay0s": {
+       "launches": 25,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 0
+      }
+     },
+     "triggered": {},
+     "census": {
+      "macho_files": 608,
+      "macho_hardlinked": 540,
+      "macho_bytes": 250124485,
+      "macho_hardlinked_bytes": 179622309,
+      "dylib_files": 328,
+      "dylib_hardlinked": 298,
+      "dylib_bytes": 207325456,
+      "dylib_hardlinked_bytes": 153026928
+     }
+    },
+    "natural-selective-2": {
+     "natural": {
+      "hardlink/delay0s": {
+       "launches": 25,
+       "failures": 1,
+       "original_signature": 1
+      },
+      "hardlink/delay2s": {
+       "launches": 25,
+       "failures": 1,
+       "original_signature": 1
+      },
+      "hardlink/delay1s": {
+       "launches": 25,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/delay0s": {
+       "launches": 25,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 0
+      }
+     },
+     "triggered": {
+      "copy-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/trigger-lib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay2s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "hardlink-app/none/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "hardlink-app/trigger-app/delay1s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/none-lib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 29,
+       "original_signature": 29
+      }
+     },
+     "census": {
+      "macho_files": 608,
+      "macho_hardlinked": 540,
+      "macho_bytes": 250124485,
+      "macho_hardlinked_bytes": 179622309,
+      "dylib_files": 328,
+      "dylib_hardlinked": 298,
+      "dylib_bytes": 207325456,
+      "dylib_hardlinked_bytes": 153026928,
+      "loaded_libraries": 76,
+      "loaded_libraries_hardlinked": 60
+     }
+    },
+    "natural-selective-3": {
+     "natural": {
+      "hardlink/delay0s": {
+       "launches": 25,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "hardlink/delay2s": {
+       "launches": 25,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "hardlink/delay1s": {
+       "launches": 25,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/delay0s": {
+       "launches": 25,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 0
+      }
+     },
+     "triggered": {
+      "copy-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/trigger-lib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay2s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "hardlink-app/none/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "hardlink-app/trigger-app/delay1s": {
+       "launches": 40,
+       "failures": 1,
+       "original_signature": 1
+      },
+      "copy-app/none-lib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 25,
+       "original_signature": 25
+      }
+     },
+     "census": {
+      "macho_files": 608,
+      "macho_hardlinked": 540,
+      "macho_bytes": 250124485,
+      "macho_hardlinked_bytes": 179622309,
+      "dylib_files": 328,
+      "dylib_hardlinked": 298,
+      "dylib_bytes": 207325456,
+      "dylib_hardlinked_bytes": 153026928,
+      "loaded_libraries": 76,
+      "loaded_libraries_hardlinked": 60
+     }
+    }
+   },
+   "note": "first probe revision (72b8c6629): natural cells fingerprinted both aliases from a live thread before each launch and are not an untouched baseline; its printing cell never reached gdalinfo because micromamba run goes through /bin/bash, which drops DYLD_ variables; instance 1 ended when its library-listing launch hit the natural first-launch failure (recorded in its log). Summaries here are recomputed from events.jsonl with the PID-grouped parser of 942974c9f; the artifacts' own summary.json files were counted by the first parser and agree on launches, failures, signatures, and the libLerc placement counts."
+  },
+  {
+   "conclusion": "cancelled",
+   "created_at": "2026-11-06T10:43:40Z",
+   "head_sha": "6a6d75319f0ec9d158c5a434aec3e6bc1db95e2e",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/42204859719",
+   "id": 42204859719,
+   "jobs": [
+    {
+     "conclusion": "success",
+     "id": 127848841636,
+     "name": "plan"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 127848881637,
+     "name": "natural-selective-2"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 127848881651,
+     "name": "natural-selective-1"
+    },
+    {
+     "conclusion": "cancelled",
+     "id": 127848881796,
+     "name": "natural-selective-3"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127848883221,
+     "name": "workaround-validation"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127848883970,
+     "name": "matrix.label"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127848884259,
+     "name": "installer-identity"
+    }
+   ],
+   "artifacts": [],
+   "hosts": {},
+   "summaries": {},
+   "note": "cancelled by me at 10:53 UTC after Codex review found one more pre-launch lookup (the per-trial glob for the cached executable); no artifacts"
+  },
+  {
+   "conclusion": "success",
+   "created_at": "2026-11-06T10:53:48Z",
+   "head_sha": "643b3470580bcdcd64f7431de9526c859d23bd91",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/42206132757",
+   "id": 42206132757,
+   "jobs": [
+    {
+     "conclusion": "success",
+     "id": 127853119580,
+     "name": "plan"
+    },
+    {
+     "conclusion": "success",
+     "id": 127853159166,
+     "name": "natural-selective-2"
+    },
+    {
+     "conclusion": "success",
+     "id": 127853159249,
+     "name": "natural-selective-3"
+    },
+    {
+     "conclusion": "success",
+     "id": 127853159359,
+     "name": "natural-selective-1"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127853161242,
+     "name": "matrix.label"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127853161785,
+     "name": "workaround-validation"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127853162008,
+     "name": "installer-identity"
+    }
+   ],
+   "artifacts": [
+    {
+     "digest": "sha256:3f8ada813f14d136d304a21fc1adc876224e33ac02590c3e6969664c2b0245f7",
+     "id": 13500374313,
+     "name": "gdal-trigger-natural-selective-1",
+     "size_in_bytes": 873941
+    },
+    {
+     "digest": "sha256:3e85a97d2c9bb70073434d4c48363cb72646797c8389bc9b64ddf537c487675f",
+     "id": 13499536635,
+     "name": "gdal-trigger-natural-selective-3",
+     "size_in_bytes": 873905
+    },
+    {
+     "digest": "sha256:6b0b8ed1e4e91095eb577e6c5f17f530055fd283f48b212d4a906ebabaed41d7",
+     "id": 13499472773,
+     "name": "gdal-trigger-natural-selective-2",
+     "size_in_bytes": 874029
+    }
+   ],
+   "hosts": {
+    "natural-selective-1": [
+     "ProductVersion:\t\t26.7.2",
+     "BuildVersion:\t\t25G332",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387.2",
+     "arm64"
+    ],
+    "natural-selective-2": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "natural-selective-3": [
+     "ProductVersion:\t\t26.7.2",
+     "BuildVersion:\t\t25G332",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387.2",
+     "arm64"
+    ]
+   },
+   "summaries": {
+    "natural-selective-1": {
+     "natural": {
+      "hardlink/delay0s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "hardlink/delay2s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "hardlink/delay1s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app-print/delay0s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 0
+      },
+      "copy-app/delay0s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0
+      }
+     },
+     "triggered": {
+      "copy-app/none-lib:libLerc.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay2s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/trigger-lib:libblosc.1.21.6.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/none-lib:libblosc.1.21.6.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 27,
+       "original_signature": 27
+      },
+      "hardlink-app/none/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/none-lib:libbz2.1.0.8.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/trigger-lib:libbz2.1.0.8.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/trigger-lib:libLerc.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay1s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      }
+     },
+     "census": {
+      "macho_files": 608,
+      "macho_cache_linked": 540,
+      "macho_multilink_not_cache": 0,
+      "macho_bytes": 250124485,
+      "macho_cache_linked_bytes": 179622309,
+      "dylib_files": 328,
+      "dylib_cache_linked": 298,
+      "dylib_bytes": 207325456,
+      "dylib_cache_linked_bytes": 153026928,
+      "loaded_libraries": 76,
+      "loaded_libraries_cache_linked": 60
+     }
+    },
+    "natural-selective-2": {
+     "natural": {
+      "hardlink/delay0s": {
+       "launches": 20,
+       "failures": 1,
+       "original_signature": 1
+      },
+      "hardlink/delay2s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "hardlink/delay1s": {
+       "launches": 20,
+       "failures": 1,
+       "original_signature": 1
+      },
+      "copy-app-print/delay0s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 0
+      },
+      "copy-app/delay0s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0
+      }
+     },
+     "triggered": {
+      "copy-app/none-lib:libLerc.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay2s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/trigger-lib:libblosc.1.21.6.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/none-lib:libblosc.1.21.6.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 27,
+       "original_signature": 27
+      },
+      "hardlink-app/none/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/none-lib:libbz2.1.0.8.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/trigger-lib:libbz2.1.0.8.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/trigger-lib:libLerc.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay1s": {
+       "launches": 40,
+       "failures": 1,
+       "original_signature": 1
+      },
+      "copy-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      }
+     },
+     "census": {
+      "macho_files": 608,
+      "macho_cache_linked": 540,
+      "macho_multilink_not_cache": 0,
+      "macho_bytes": 250124485,
+      "macho_cache_linked_bytes": 179622309,
+      "dylib_files": 328,
+      "dylib_cache_linked": 298,
+      "dylib_bytes": 207325456,
+      "dylib_cache_linked_bytes": 153026928,
+      "loaded_libraries": 76,
+      "loaded_libraries_cache_linked": 60
+     }
+    },
+    "natural-selective-3": {
+     "natural": {
+      "hardlink/delay0s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "hardlink/delay2s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "hardlink/delay1s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app-print/delay0s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 0
+      },
+      "copy-app/delay0s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0
+      }
+     },
+     "triggered": {
+      "copy-app/none-lib:libLerc.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay2s": {
+       "launches": 40,
+       "failures": 1,
+       "original_signature": 1
+      },
+      "copy-app/trigger-lib:libblosc.1.21.6.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/none-lib:libblosc.1.21.6.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 21,
+       "original_signature": 21
+      },
+      "hardlink-app/none/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/none-lib:libbz2.1.0.8.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/trigger-lib:libbz2.1.0.8.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/trigger-lib:libLerc.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay1s": {
+       "launches": 40,
+       "failures": 1,
+       "original_signature": 1
+      },
+      "copy-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      }
+     },
+     "census": {
+      "macho_files": 608,
+      "macho_cache_linked": 540,
+      "macho_multilink_not_cache": 0,
+      "macho_bytes": 250124485,
+      "macho_cache_linked_bytes": 179622309,
+      "dylib_files": 328,
+      "dylib_cache_linked": 298,
+      "dylib_bytes": 207325456,
+      "dylib_cache_linked_bytes": 153026928,
+      "loaded_libraries": 76,
+      "loaded_libraries_cache_linked": 60
+     }
+    }
+   },
+   "note": "the clean natural baseline (643b34705): nothing touches either alias between the create and the launch; its printing cell still inherited DYLD_PRINT_LIBRARIES through /bin/bash and recorded no gdalinfo images (reported as missing data); events.jsonl exceeded the collector's 50 MB limit and was not archived, so these are the runner's own summary counts, computed by the PID-grouped parser"
+  },
+  {
+   "conclusion": "success",
+   "created_at": "2026-11-06T11:16:20Z",
+   "head_sha": "942974c9f26973c0778a2e435d4bb2907ab04b57",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/42209002461",
+   "id": 42209002461,
+   "jobs": [
+    {
+     "conclusion": "success",
+     "id": 127862703259,
+     "name": "plan"
+    },
+    {
+     "conclusion": "success",
+     "id": 127862745572,
+     "name": "natural-selective-2"
+    },
+    {
+     "conclusion": "success",
+     "id": 127862745616,
+     "name": "natural-selective-3"
+    },
+    {
+     "conclusion": "success",
+     "id": 127862745617,
+     "name": "natural-selective-1"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127862747157,
+     "name": "installer-identity"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127862747575,
+     "name": "matrix.label"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127862747981,
+     "name": "workaround-validation"
+    }
+   ],
+   "artifacts": [
+    {
+     "digest": "sha256:3dc4bea5f5e4f69f2291c98dfdb251bf9b7ad8814fe1ef89ee476deffdebca81",
+     "id": 13499411333,
+     "name": "gdal-trigger-natural-selective-3",
+     "size_in_bytes": 845300
+    },
+    {
+     "digest": "sha256:b9e655739594854cbb72bef3a59404fed8818602aaf271403a0feae66ba20024",
+     "id": 13498622729,
+     "name": "gdal-trigger-natural-selective-2",
+     "size_in_bytes": 845284
+    },
+    {
+     "digest": "sha256:b3e83419f2737bd5f4856cfcf681c0139d8ec0dbe9034ee91083a10cfb2e5037",
+     "id": 13498368561,
+     "name": "gdal-trigger-natural-selective-1",
+     "size_in_bytes": 846024
+    }
+   ],
+   "hosts": {
+    "natural-selective-1": [
+     "ProductVersion:\t\t26.7.2",
+     "BuildVersion:\t\t25G332",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387.2",
+     "arm64"
+    ],
+    "natural-selective-2": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ],
+    "natural-selective-3": [
+     "ProductVersion:\t\t26.6.2",
+     "BuildVersion:\t\t25G83",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387",
+     "arm64"
+    ]
+   },
+   "summaries": {
+    "natural-selective-1": {
+     "natural": {
+      "copy-app-print/delay0s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 20,
+       "images": 13460,
+       "cache_images": 0,
+       "launches_with_cache_image": 0,
+       "main_image_cache": 0
+      }
+     },
+     "triggered": {},
+     "census": {
+      "macho_files": 608,
+      "macho_cache_linked": 540,
+      "macho_multilink_not_cache": 0,
+      "macho_bytes": 250124485,
+      "macho_cache_linked_bytes": 179622309,
+      "dylib_files": 328,
+      "dylib_cache_linked": 298,
+      "dylib_bytes": 207325456,
+      "dylib_cache_linked_bytes": 153026928
+     }
+    },
+    "natural-selective-2": {
+     "natural": {
+      "copy-app-print/delay0s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 20,
+       "images": 13460,
+       "cache_images": 0,
+       "launches_with_cache_image": 0,
+       "main_image_cache": 0
+      }
+     },
+     "triggered": {},
+     "census": {
+      "macho_files": 608,
+      "macho_cache_linked": 540,
+      "macho_multilink_not_cache": 0,
+      "macho_bytes": 250124485,
+      "macho_cache_linked_bytes": 179622309,
+      "dylib_files": 328,
+      "dylib_cache_linked": 298,
+      "dylib_bytes": 207325456,
+      "dylib_cache_linked_bytes": 153026928
+     }
+    },
+    "natural-selective-3": {
+     "natural": {
+      "copy-app-print/delay0s": {
+       "launches": 20,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 20,
+       "images": 13460,
+       "cache_images": 0,
+       "launches_with_cache_image": 0,
+       "main_image_cache": 0
+      }
+     },
+     "triggered": {},
+     "census": {
+      "macho_files": 608,
+      "macho_cache_linked": 540,
+      "macho_multilink_not_cache": 0,
+      "macho_bytes": 250124485,
+      "macho_cache_linked_bytes": 179622309,
+      "dylib_files": 328,
+      "dylib_cache_linked": 298,
+      "dylib_bytes": 207325456,
+      "dylib_cache_linked_bytes": 153026928
+     }
+    }
+   },
+   "note": "dispatched with probe_args='--phases natural --natural-cells copy-app-print --natural-trials 20' (942974c9f): the printing cell alone, with DYLD_PRINT_LIBRARIES set inside the micromamba run command"
+  },
+  {
+   "conclusion": "success",
+   "created_at": "2026-11-06T11:56:19Z",
+   "head_sha": "9d69470aecf8a1ee419d1ecddd29fefd4121891a",
+   "html_url": "https://github.com/maresb/conda-lock/actions/runs/42213891575",
+   "id": 42213891575,
+   "jobs": [
+    {
+     "conclusion": "success",
+     "id": 127878987175,
+     "name": "plan"
+    },
+    {
+     "conclusion": "success",
+     "id": 127879017969,
+     "name": "natural-selective-2"
+    },
+    {
+     "conclusion": "success",
+     "id": 127879017977,
+     "name": "natural-selective-1"
+    },
+    {
+     "conclusion": "success",
+     "id": 127879018008,
+     "name": "natural-selective-3"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127879019802,
+     "name": "matrix.label"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127879019839,
+     "name": "installer-identity"
+    },
+    {
+     "conclusion": "skipped",
+     "id": 127879020861,
+     "name": "workaround-validation"
+    }
+   ],
+   "artifacts": [
+    {
+     "digest": "sha256:6d667e8bac14e53054a37c0b71aff321b5e19507cfa3364d8730fd347374c906",
+     "id": 13499989439,
+     "name": "gdal-trigger-natural-selective-1",
+     "size_in_bytes": 13980289
+    },
+    {
+     "digest": "sha256:cea8a5cdfba20aa505c54464666650fdb57f16af9fb6b246e0732367eef4e69a",
+     "id": 13499629963,
+     "name": "gdal-trigger-natural-selective-2",
+     "size_in_bytes": 13995000
+    },
+    {
+     "digest": "sha256:86e46b92ec18026ac8e297d3bb998bea9bf00260fda4f0121e4e90ff9651ac59",
+     "id": 13499609139,
+     "name": "gdal-trigger-natural-selective-3",
+     "size_in_bytes": 13980296
+    }
+   ],
+   "hosts": {
+    "natural-selective-1": [
+     "ProductVersion:\t\t26.7.2",
+     "BuildVersion:\t\t25G332",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387.2",
+     "arm64"
+    ],
+    "natural-selective-2": [
+     "ProductVersion:\t\t26.7.2",
+     "BuildVersion:\t\t25G332",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387.2",
+     "arm64"
+    ],
+    "natural-selective-3": [
+     "ProductVersion:\t\t26.7.2",
+     "BuildVersion:\t\t25G332",
+     "\tPROGRAM:dyld  PROJECT:dyld-1387.2",
+     "arm64"
+    ]
+   },
+   "summaries": {
+    "natural-selective-1": {
+     "natural": {},
+     "triggered": {
+      "copy-app/none-lib:libLerc.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay2s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/trigger-lib:libblosc.1.21.6.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/none-lib:libblosc.1.21.6.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 24,
+       "original_signature": 24
+      },
+      "hardlink-app/none/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/none-lib:libbz2.1.0.8.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/trigger-lib:libbz2.1.0.8.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/trigger-lib:libLerc.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay1s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      }
+     },
+     "census": {
+      "macho_files": 608,
+      "macho_cache_linked": 540,
+      "macho_multilink_not_cache": 0,
+      "macho_bytes": 250124485,
+      "macho_cache_linked_bytes": 179622309,
+      "dylib_files": 328,
+      "dylib_cache_linked": 298,
+      "dylib_bytes": 207325456,
+      "dylib_cache_linked_bytes": 153026928,
+      "loaded_libraries": 76,
+      "loaded_libraries_cache_linked": 60
+     }
+    },
+    "natural-selective-2": {
+     "natural": {},
+     "triggered": {
+      "copy-app/none-lib:libLerc.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay2s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/trigger-lib:libblosc.1.21.6.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/none-lib:libblosc.1.21.6.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 25,
+       "original_signature": 25
+      },
+      "hardlink-app/none/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/none-lib:libbz2.1.0.8.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/trigger-lib:libbz2.1.0.8.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/trigger-lib:libLerc.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay1s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      }
+     },
+     "census": {
+      "macho_files": 608,
+      "macho_cache_linked": 540,
+      "macho_multilink_not_cache": 0,
+      "macho_bytes": 250124485,
+      "macho_cache_linked_bytes": 179622309,
+      "dylib_files": 328,
+      "dylib_cache_linked": 298,
+      "dylib_bytes": 207325456,
+      "dylib_cache_linked_bytes": 153026928,
+      "loaded_libraries": 76,
+      "loaded_libraries_cache_linked": 60
+     }
+    },
+    "natural-selective-3": {
+     "natural": {},
+     "triggered": {
+      "copy-app/none-lib:libLerc.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 1,
+       "target_lib_env": 39,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 1,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay2s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/trigger-lib:libblosc.1.21.6.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/none-lib:libblosc.1.21.6.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 24,
+       "original_signature": 24
+      },
+      "hardlink-app/none/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/none-lib:libbz2.1.0.8.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/trigger-lib:libbz2.1.0.8.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "copy-app/trigger-lib:libLerc.dylib/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0,
+       "gdal_images_found": 40,
+       "target_lib_cache": 0,
+       "target_lib_env": 40,
+       "target_lib_missing": 0,
+       "target_lib_unparsed": 0,
+       "cache_images": 0,
+       "main_image_cache": 0
+      },
+      "hardlink-app/trigger-app/delay1s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      },
+      "copy-app/trigger-app/delay0s": {
+       "launches": 40,
+       "failures": 0,
+       "original_signature": 0
+      }
+     },
+     "census": {
+      "macho_files": 608,
+      "macho_cache_linked": 540,
+      "macho_multilink_not_cache": 0,
+      "macho_bytes": 250124485,
+      "macho_cache_linked_bytes": 179622309,
+      "dylib_files": 328,
+      "dylib_cache_linked": 298,
+      "dylib_bytes": 207325456,
+      "dylib_cache_linked_bytes": 153026928,
+      "loaded_libraries": 76,
+      "loaded_libraries_cache_linked": 60
+     }
+    }
+   },
+   "note": "dispatched with probe_args='--phases triggered' (9d69470ae): the triggered phase alone, with every printing launch's dyld output archived in dyld-logs/"
   }
  ]
 }
