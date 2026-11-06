@@ -100,6 +100,25 @@ def gdal_images(stderr):
     return groups[0]
 
 
+def archive_stderr(output, key, trial, retry, stderr):
+    """Write a launch's full stderr to its own log; return what the event keeps."""
+    logs = output / "dyld-logs"
+    logs.mkdir(exist_ok=True)
+    name = (
+        key.replace("/", "_").replace(":", "_")
+        + f"-{trial:03d}"
+        + ("-retry" if retry else "")
+    )
+    (logs / (name + ".log")).write_text(stderr)
+    return {
+        "dyld_log": f"dyld-logs/{name}.log",
+        "stderr_nondyld": [
+            line for line in stderr.splitlines() if not line.startswith("dyld[")
+        ],
+        "dyld_pid_lines": {pid: len(v) for pid, v in dyld_processes(stderr).items()},
+    }
+
+
 def classify(path):
     if "/pkgs/" in path:
         return "cache"
@@ -324,10 +343,13 @@ def main():  # noqa: C901
                 "ended_ns": time.time_ns(),
                 "returncode": proc.returncode,
                 "stdout": stdout,
-                "stderr": stderr,
                 "original_signature": signature,
                 "images": images,
-                "dyld_pids": list(dyld_processes(stderr)) if print_libraries else None,
+                **(
+                    archive_stderr(output, key, trial, retry, stderr)
+                    if print_libraries
+                    else {"stderr": stderr}
+                ),
             }
             record(result)
             if not retry:
@@ -437,8 +459,8 @@ def main():  # noqa: C901
                     "returncode": probe.returncode,
                     "original_signature": SIGNATURE in probe.stderr
                     and "/pkgs/" in probe.stderr,
-                    "stderr": probe.stderr,
                     "main_image": images[0] if images else None,
+                    **archive_stderr(output, "listing", attempt, False, probe.stderr),
                 }
             )
             if probe.returncode == 0 and images:
@@ -607,10 +629,13 @@ def main():  # noqa: C901
                     "ended_ns": time.time_ns(),
                     "returncode": proc.returncode,
                     "stdout": proc.stdout,
-                    "stderr": proc.stderr,
                     "original_signature": signature,
                     "images": images,
-                    "dyld_pids": list(dyld_processes(proc.stderr)) if lib else None,
+                    **(
+                        archive_stderr(output, key, trial, False, proc.stderr)
+                        if lib
+                        else {"stderr": proc.stderr}
+                    ),
                     "target_lib_class": lib_class,
                     "app": fingerprint(paths["env_app"]),
                     "lib": fingerprint(lib["env"]) if lib else None,
