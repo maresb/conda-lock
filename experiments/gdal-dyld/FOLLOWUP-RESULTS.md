@@ -229,7 +229,8 @@ established one.
 [reproduce_thread_exit.py](reproduce_thread_exit.py), 40 trials per cell,
 cache paths in the two exited-cache-worker cells as the range over independent
 runs; every other hardlink cell and every copy and clone cell was 0 in every
-run, except a single launch in one run on `macos-15-intel`:
+run, except one launch in one run on `macos-15-intel` and one in one run on
+`macos-26-intel`:
 
 | Image | macOS | dyld | Arch | Runs | `spawn` | `exec` | Nonzero elsewhere |
 |---|---|---|---|---:|---:|---:|---|
